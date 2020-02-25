@@ -11,7 +11,7 @@ app.controller('bugsControllerExtension', function($scope, $controller, $rootSco
     
     //This function is called when you need to make changes to the new single object.
     
-    
+
     
     $scope.onInit = async function(obj){
         
