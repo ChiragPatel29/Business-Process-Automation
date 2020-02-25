@@ -1743,7 +1743,7 @@ class Settings{
 		"openRegistration": true,
 		"legacyMode": false,
 		"theme": {
-			background: "red",
+			background: "gray",
 			color: "white",
 			alternate: "dodgerblue",
 			contrast: "black"            
