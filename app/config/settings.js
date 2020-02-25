@@ -9,7 +9,7 @@ class Settings{
 		"openRegistration": true,
 		"legacyMode": false,
 		"theme": {
-			background: "blue",
+			background: "red",
 			color: "white",
 			alternate: "dodgerblue",
 			contrast: "black"            
