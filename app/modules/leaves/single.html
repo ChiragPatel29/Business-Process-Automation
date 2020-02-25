@@ -1,0 +1,105 @@
+<form name="forms.leavesForm" id="forms.leavesForm">
+	<div class="form-group row" ng-show="Visible">
+		<label for="user name" class="col-md-4 col-form-label text-md-right">User Name:</label>
+		<div class="col-md-6">
+			<div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
+			    {{data.single.user.username || 'Choose an option'}}
+			  </button>
+			  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				<a class="dropdown-item" ng-repeat="r in data.foreignKeys.users track by $index"  href="" 
+				ng-click="data.single.user_id = r.id; data.single.user = r" ng-if="r.username== currentUser.username ">{{r.username}}</a>
+			  </div>
+			</div>
+			
+		</div>
+	</div>
+	<div class="form-group row" ng-show="Visible">
+		<label for="due_date" class="col-md-4 col-form-label text-md-right">Application Date</label>
+		<div class="col-md-6">
+			<datepicker date-format="yyyy-MM-dd" date-min-limit="{{dtmax}}" date-max-limit="{{dtmax}}" >
+			<input type="text" id="application_date"  name="application_date"
+			 class="form-control" required="application_date" ng-model="data.single.application_date" autocomplete="off" ng-disabled="locked" placeholder="YYYY-MM-DD">
+			</datepicker>
+			<span>{{errMessage}}</span>
+		</div>
+		<div ng-messages="forms.leavesForm.application_date.$error" ng-show="forms.leavesForm.application_date.$dirty">
+			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
+		</div>
+	</div>
+	<div class="form-group row" ng-show="Visible">
+		<label for="start_date" class="col-md-4 col-form-label text-md-right">Start Date</label>
+		<div class="col-md-6">
+			<datepicker date-format="yyyy-MM-dd" required>
+			<input type="text" id="start_date" name="start_date" class="form-control" ng-model="data.single.start_date" autocomplete="off" 
+			 ng-disabled="locked" placeholder="YYYY-MM-DD" required="start_date">
+			</datepicker>
+			<span>{{errMessage}}</span>
+		</div>
+		<div ng-messages="forms.leavesForm.start_date.$error" ng-show="forms.leavesForm.start_date.$dirty">
+			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
+		</div>	
+	</div>
+	<div class="form-group row" ng-show="Visible">
+		<label for="end_date" class="col-md-4 col-form-label text-md-right">End Date</label>
+		<div class="col-md-6">
+			<datepicker date-format="yyyy-MM-dd" date-min-limit="{{data.single.start_date}}" >
+			<input type="text" id="end_date" name="end_date" class="form-control" ng-model="data.single.end_date" autocomplete="off" 
+			autocomplete="off" required="end_date" ng-change='data1(data.single.start_date,data.single.end_date)'  ng-disabled="locked" placeholder="YYYY-MM-DD">
+			</datepicker>
+			<span>{{errMessage}}</span>
+		</div>
+		<div ng-messages="forms.leavesForm.end_date.$error" ng-show="forms.leavesForm.end_date.$dirty">
+			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
+		</div>
+		<div ng-messages="forms.leavesForm.due_date.$error" ng-show="forms.leavesForm.due_date.$dirty">
+			<div class="small col-red" ng-message="min">{{M.REQUIRED}}</div>
+		</div>
+	</div>
+	
+	<div class="form-group row" ng-show="Visible">
+		<label for="leave_type" class="col-md-4 col-form-label text-md-right">Leave Type:</label>
+		<div class="col-md-6">
+			<div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" 
+			  aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
+			    {{data.single.leave_type.name_type || 'Choose an option'}}
+			  </button>
+			  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				<a class="dropdown-item" ng-repeat="r in data.foreignKeys.leave_types track by $index"  href="" 
+				ng-click="data.single.leave_type_id = r.id; data.single.leave_type = r">{{r.name_type}}</a>
+			  </div>
+			</div>			
+		</div>
+	</div>
+	
+	<div class="form-group row" >
+		<label for="leave_reason" class="col-md-4 col-form-label text-md-right">Reason</label>
+		<div class="col-md-6">
+			<input id="reason" name="reason	" type="text" class="form-control" ng-model="data.single.reason" required ng-disabled="locked" autofocus>
+		</div>
+		<div ng-messages="forms.leavesForm.reason.$error" ng-show="forms.leavesForm.reason.$dirty">
+			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
+		</div>
+	</div>
+	<div class="form-group row" ng-show="IsVisible">
+		<label for="status" class="col-md-4 col-form-label text-md-right">Status:</label>
+		<div class="col-md-6">
+			<div class="dropdown">
+				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" multiple aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
+					{{data.single.status.name || 'choose'}}
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<a class="dropdown-item" ng-repeat="d in data.foreignKeys.statuses track by $index " 
+					href="" ng-click="data.single.status_id = d.id; data.single.status = d" ng-if="d.type=='Leave'">{{d.name}}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+    <div class="form-group row">
+        <div class='col-md-6 offset-md-4'>
+          <p class="small col-red" ng-if="error">{{error}}</p>
+          <div class="alerts-container"></div>
+        </div>
+    </div>
+</form>
