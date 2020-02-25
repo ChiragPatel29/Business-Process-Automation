@@ -14,6 +14,22 @@
 			
 		</div>
 	</div>
+
+	<div class="form-group row" ng-show="Visible">
+		<label for="leave_type" class="col-md-4 col-form-label text-md-right">Leave Type:</label>
+		<div class="col-md-6">
+			<div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" 
+			  aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
+			    {{data.single.leave_type.name_type || 'Choose an option'}}
+			  </button>
+			  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				<a class="dropdown-item" ng-repeat="r in data.foreignKeys.leave_types track by $index"  href="" 
+				ng-click="data.single.leave_type_id = r.id; data.single.leave_type = r">{{r.name_type}}</a>
+			  </div>
+			</div>			
+		</div>
+	</div>
 	<div class="form-group row" ng-show="Visible">
 		<label for="due_date" class="col-md-4 col-form-label text-md-right">Application Date</label>
 		<div class="col-md-6">
@@ -57,21 +73,6 @@
 		</div>
 	</div>
 	
-	<div class="form-group row" ng-show="Visible">
-		<label for="leave_type" class="col-md-4 col-form-label text-md-right">Leave Type:</label>
-		<div class="col-md-6">
-			<div class="dropdown">
-			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" 
-			  aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
-			    {{data.single.leave_type.name_type || 'Choose an option'}}
-			  </button>
-			  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-				<a class="dropdown-item" ng-repeat="r in data.foreignKeys.leave_types track by $index"  href="" 
-				ng-click="data.single.leave_type_id = r.id; data.single.leave_type = r">{{r.name_type}}</a>
-			  </div>
-			</div>			
-		</div>
-	</div>
 	
 	<div class="form-group row" >
 		<label for="leave_reason" class="col-md-4 col-form-label text-md-right">Reason</label>
