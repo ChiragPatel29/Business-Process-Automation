@@ -12,7 +12,7 @@ app.controller('timesheetsControllerExtension', function($scope,$filter, $contro
     //This function is called when you need to make changes to the new single object.
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
-        obj.is_active = 1;
+        //obj.is_active = 1;
     };
     
 

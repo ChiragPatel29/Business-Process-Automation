@@ -1570,9 +1570,9 @@ function RegisterMenuItems(){
                 {action: 'bugs', icon: 'bug_report', color: 'brown', text: 'Bugs'},
                 {action: 'projects', icon: 'assignment', color: 'brown', text: 'Project'},
         	    {action: 'user_stories', icon: 'list', color: 'brown', text: 'User_stories'},
-        	    {action: 'departments', icon: 'portrait', color: 'orange', text: 'Department'},
+        	    //{action: 'departments', icon: 'portrait', color: 'orange', text: 'Department'},
                 {action: 'milestones', icon: 'flag', color: 'black', text: 'Milestones'},
-                {action: 'designations', icon: 'assignment', color: 'blue', text: 'Designation'},
+                //{action: 'designations', icon: 'assignment', color: 'blue', text: 'Designation'},
                 {action: 'reports', icon: 'pie_chart', color: 'purple', text: 'Reports',
         	    	items: [
         	    			{action: 'reports/1', icon: 'pie_chart', color: 'red', text: 'Sample Report #1'},
@@ -5636,7 +5636,7 @@ app.controller('timesheetsControllerExtension', function($scope,$filter, $contro
     //This function is called when you need to make changes to the new single object.
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
-        obj.is_active = 1;
+        //obj.is_active = 1;
     };
     
 
