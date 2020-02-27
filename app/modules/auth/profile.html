@@ -11,7 +11,7 @@
   <div class="row">
     <div class="col-sm card inner-container {{lockedClass}}">
         <div class="{{editingClass}}  text-align-center" >
-            <img ng-src="{{H.getAbsolutePath(currentUser.profile.image) ||  'images/user.png'}}" alt="{{currentUser.username}}" class="logo200" >
+            <img ng-src="{{ H.getAbsolutePath(currentUser.profile.image ? ( currentUser.profile.image.startsWith('http') ? currentUser.profile.image : S.baseUrl + '/' +  currentUser.profile.image ) : currentUser.profile.image) ||  'images/user.png'}}" alt="{{currentUser.username}}" class="logo200" >
             <h3>{{currentUser.profile.first_name + ' ' + currentUser.profile.last_name}}</h3>
             <h5>{{currentUser.email}}</h5>
             <p class="title">{{currentUser.role}} <i>of</i> {{currentUser.organization.name}}</p>
