@@ -135,6 +135,7 @@
 	<div class="form-group row">
 		<label for="budget" class="col-md-4 col-form-label text-md-right">Budget</label>
 		<div class="col-md-6">
+			<span style="position: absolute;margin-top:8px ;margin-left: 5px;"><i class="fa fa-inr"></i></span>
 			<input id="budget" name="budget" type="" class="form-control" ng-model="data.single.budget" required ng-disabled="locked">
 		</div>
 		<div ng-messages="forms.projectForms.budget.$error" ng-show="forms.projectForms.budget.$dirty">

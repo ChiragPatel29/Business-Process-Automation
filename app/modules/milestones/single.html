@@ -150,11 +150,12 @@
 
 
 	<div class="form-group row">
-		<label for="amount" class="col-md-4 col-form-label text-md-right">{{M.amount}}:</label>
+		<label for="amout" class="col-md-4 col-form-label text-md-right">{{M.amount}}:</label>
 		<div class="col-md-6">
-			<input id="amount" name="amount" type="number" class="form-control" ng-model="data.single.amount" required ng-disabled="locked" autofocus>
+			<span style="position: absolute;margin-top:8px ;margin-left: 5px;"><i class="fa fa-inr"></i></span>
+			<input id="amout" name="amout" type="number" class="form-control" ng-model="data.single.amout" required ng-disabled="locked" autofocus>
 		</div>
-		<div ng-messages="forms.milestonesForm.amount.$error" ng-show="forms.milestonesForm.amount.$dirty">
+		<div ng-messages="forms.milestonesForm.amout.$error" ng-show="forms.milestonesForm.amout.$dirty">
 			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
 		</div>
 	</div>
@@ -173,25 +174,41 @@
 			  <input type="hidden" class="form-control" id="status" name="status" ng-model="data.single.project_id" ng-required="data.singleKeysInfo.project_id.required" />
 				<div ng-if="data.singleKeysInfo.project_id.required && !data.single.project_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div>
             </div>          
-        </div>
+        </div> 
 	</div>
 	
-	<div class="form-group row">
-        <label for="user_group_id" class="col-md-4 col-form-label text-md-right">{{M.user_group_id}}:</label>
-        <div class="col-md-6">
-            <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle" type="button" id="user_group_id" name="user_group_id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
-                {{data.single.user_group.group_id || 'Choose an option'}}
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" ng-repeat="r in data.foreignKeys.user_groups track by $index"  href="" 
-				ng-click="data.single.user_group_id = r.id; data.single.user_group = r">{{r.group_id}}</a>
-			  </div>
-			  <input type="hidden" class="form-control" id="status" name="status" ng-model="data.single.user_group_id" ng-required="data.singleKeysInfo.user_group_id.required" />
+	<!--<div class="form-group row">-->
+ <!--       <label for="user_group_id" class="col-md-4 col-form-label text-md-right">{{M.user_group_id}}:</label>-->
+ <!--       <div class="col-md-6">-->
+ <!--           <div class="dropdown">-->
+ <!--             <button class="btn btn-default dropdown-toggle" type="button" id="user_group_id" name="user_group_id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="locked">-->
+ <!--               {{data.single.user_group.group_id || 'Choose an option'}}-->
+ <!--             </button>-->
+ <!--             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">-->
+ <!--               <a class="dropdown-item" ng-repeat="r in data.foreignKeys.user_groups track by $index"  href="" -->
+	<!--			ng-click="data.single.user_group_id = r.id; data.single.user_group = r">{{r.group_id}}</a>-->
+	<!--		  </div>-->
+	<!--		  <input type="hidden" class="form-control" id="status" name="status" ng-model="data.single.user_group_id" ng-required="data.singleKeysInfo.user_group_id.required" />-->
+	<!--			<div ng-if="data.singleKeysInfo.user_group_id.required && !data.single.user_group_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div>-->
+ <!--           </div>          -->
+ <!--       </div>-->
+ <!--   </div>-->
+ 	<div class="form-group row">
+		<label for="is_active" class="col-md-4 col-form-label text-md-right">User Group</label>
+		<div class="col-md-6">
+			<div class="dropdown">
+				<button class="btn btn-default dropdown-toggle" type="button" id="user_group_id" name="user_group_id" data-toggle="dropdown" multiple aria-haspopup="true" aria-expanded="false" required ng-disabled="locked">
+					{{data.single.user_group.group.name || '---Select---'}}
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.user_groups track by $index " href="" ng-click="data.single.user_group_id = c.id; data.single.user_group = c">{{c.group.name}}</a>
+				</div>
+				<input type="hidden" class="form-control" id="user_group_id" name="user_group_id" ng-model="data.single.user_group_id" ng-required="data.singleKeysInfo.user_group_id.required" />
 				<div ng-if="data.singleKeysInfo.user_group_id.required && !data.single.user_group_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div>
-            </div>          
-        </div>
-    </div>
+
+			</div>
+		</div>
+	</div>
 
 	<div class="form-group row" date-min-limit="{{data.single.due_date}}">
 		<label for="release_date" class="col-md-4 col-form-label text-md-right">{{M.release_date}}</label>
@@ -221,15 +238,15 @@
 		</div>
 	</div>
 
-	<div class="form-group row">
-		<label for="is_deleted" class="col-md-4 col-form-label text-md-right">Is Deleted:</label>
-		<div class="col-md-6">
-			<div class="custom-control custom-switch form-switch">
-				<input class="custom-control-input" type="checkbox" id="is_deleted" name="is_deleted" ng-disabled="locked" ng-model="data.single.is_deleted">
-				<label class="custom-control-label" for="is_deleted"></label>
-			</div>
-		</div>
-	</div>
+	<!--<div class="form-group row">-->
+	<!--	<label for="is_deleted" class="col-md-4 col-form-label text-md-right">Is Deleted:</label>-->
+	<!--	<div class="col-md-6">-->
+	<!--		<div class="custom-control custom-switch form-switch">-->
+	<!--			<input class="custom-control-input" type="checkbox" id="is_deleted" name="is_deleted" ng-disabled="locked" ng-model="data.single.is_deleted">-->
+	<!--			<label class="custom-control-label" for="is_deleted"></label>-->
+	<!--		</div>-->
+	<!--	</div>-->
+	<!--</div>-->
 
     <div class="form-group row">
         <div class='col-md-6 offset-md-4'>
