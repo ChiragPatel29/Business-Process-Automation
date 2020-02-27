@@ -114,7 +114,7 @@
 				  </button>
 				  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 					<a class="dropdown-item" ng-repeat="r in data.foreignKeys.users track by $index"  href="" 
-					ng-click="data.single.user_id = r.id; data.single.user = r">{{r.username}}</a>
+					ng-click="data.single.user_id = r.id; data.single.user = r" ng-if="r.username==currentUser.username">{{r.username}}</a>
 				  </div>
 				</div>          
 			</div>
@@ -184,7 +184,7 @@
 			<div class="form-group row" ng-if="data.singleKeysInfo[i].type == 'date' || data.singleKeysInfo[i].type == 'datetime'">
 				<label for="{{resourceName}}_{{i}}" class="col-md-4 col-form-label text-md-right">{{data.singleKeysInfo[i].title}}: <span ng-if="data.singleKeysInfo[i].required" class="small col-red">*</span></label>
 				<div class="col-md-6">
-						<datepicker date-format="yyyy-MM-dd" date-min-limit="{{dtmax}}">
+						<datepicker date-format="yyyy-MM-dd" date-min-limit="{{dtmax}}" date-max-limit="{{dtmax}}">
 							<input type="text" 
 								name="{{resourceName}}_{{i}}" 
 								class="form-control" 
@@ -202,7 +202,7 @@
 		<div class="form-group row">
 			<label for="total_hours" class="col-md-4 col-form-label text-md-right">Total Hours</label>
 			<div class="col-md-6" ng-click="diff()">
-				<input id="total_hours" name="total_hours " type="text" class="form-control"  ng-model="data.single.total_hours" ng-value = "data.single.total_hours" required ng-disabled="locked" autofocus>
+				<input id="total_hours" name="total_hours " type="text" class="form-control"  ng-model="data.single.total_hours" ng-value = "data.single.total_hours" ng-readonly="data.single.total_hours" required ng-disabled="locked" autofocus>
 			</div>
 			<div ng-messages="forms.timesheetsForm.total_hours.$error" ng-show="forms.timesheetsForm.total_hours.$dirty">
 				<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>

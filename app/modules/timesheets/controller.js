@@ -8,7 +8,10 @@
 //'autoRoutes' and then override the templates using setTemplate function.
 //Note that for 'autoRoutes', it is not even required to write Controller Extensions unless you want to modify the behaviour.
 app.controller('timesheetsControllerExtension', function($scope,$filter, $controller, $rootScope, $http, $location, Popup, H, M) {
-    
+    var date = new Date().getDate();
+    var month = new Date().getMonth()+1;
+    var year = new Date().getFullYear();
+    $scope.dtmax  = year+"-"+month+"-"+date;
     //This function is called when you need to make changes to the new single object.
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
