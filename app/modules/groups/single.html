@@ -2,9 +2,9 @@
 	<div class="form-group row">
 		<label for="groupTitle" class="col-md-4 col-form-label text-md-right">{{M.FIELD_GROUPNAME}}:</label>
 		<div class="col-md-6">
-			<input id="groupTitle" name="groupTitle" type="text" class="form-control" ng-model="data.single.title" required ng-disabled="locked">
+			<input id="name" name="name" type="text" class="form-control" ng-model="data.single.name" required ng-disabled="locked">
 		</div>
-		<div ng-messages="forms.groupsForm.groupTitle.$error" ng-show="forms.groupsForm.groupTitle.$dirty">
+		<div ng-messages="forms.groupsForm.name.$error" ng-show="forms.groupsForm.name.$dirty">
 			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
 		</div>
 	</div>
@@ -18,7 +18,7 @@
 		</div>
 	</div>
 </form>
-<section ng-if="data.single.id">
+<!-- <section ng-if="data.single.id">
 	<form ng-submit="addGroupUser(selectedUser)">
 		<div class="form-group row">
 			<label for="query" class="col-md-4 col-form-label text-md-right"></label>
@@ -32,7 +32,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 		<!--<div layout="row" layout-sm="column">-->
 		<!--	<div flex=80>-->
 		<!--		<md-autocomplete class="no-bottom md-no-underline" md-no-cache="true" md-selected-item="selectedUser" md-items="item in getUsers(searchText)" md-search-text="searchText" md-item-text="item.username" md-floating-label="People" md-delay=3 ng-disabled="locked">-->
@@ -48,7 +48,7 @@
 		<!--		<a ng-disabled="locked" class="top-margin-20 btn-floating btn-medium waves-effect waves-light blue" ng-click="addGroupUser(selectedUser)"><i class="material-icons">add</i></a>-->
 		<!--	</div>-->
 		<!--</div>-->
-	</form>
+	<!-- </form>
 	<div style="overflow:auto">
 	<table class="table">
 	        <tbody>
@@ -58,13 +58,13 @@
 	          </tr>
 	        </tbody>
 	</table>
-	</div>
+	</div> -->
 	<!--<div class="chip" id="peopleChips" ng-repeat="item in data.groupUsers" ng-if="data.groupUsers && data.groupUsers.length > 0">-->
 	<!--	<img src="images/user.png">-->
 	<!--	<span>{{item.user.username}} ({{item.user.email}}) - {{item.user.role}}</span>-->
 	<!--	<i class="close material-icons" ng-click="removeGroupUser(item)" ng-hide="locked">close</i>-->
 	<!--</div>-->
-</section>
+<!-- </section>
 <div ng-if="(data.single.role == 'superadmin' && currentUser.role !='superadmin')">
 	<div class="middle-center-heading">{{M.UNAUTHORIZED_AREA}}</div>
 	<style type="text/css">
@@ -76,4 +76,4 @@
 			font-size: xx-large;
 		}
 	</style>
-</div>
+</div> -->
