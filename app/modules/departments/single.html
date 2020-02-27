@@ -90,6 +90,19 @@ Dynamic Example
      	</div>		
 	</div>
 </form>
+<div ng-if="(data.single.role == 'superadmin' && currentUser.role !='superadmin')">
+	<div class="middle-center-heading">{{M.UNAUTHORIZED_AREA}}</div>
+	<style type="text/css">
+		.middle-center-heading{
+				left: 50%;
+				position: absolute;
+				top: 50%;
+				margin-left: -300px;
+				font-size: xx-large;
+		}
+	</style>
+  </div>
+  
 
 <!--Static Example-->
 

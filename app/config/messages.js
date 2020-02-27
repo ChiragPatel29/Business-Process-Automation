@@ -93,13 +93,7 @@ app.service('M', function($http) {
 		"FIELD_SEARCH_IN": "Search In",
 		"FIELD_FILTER": "Filter",
 		"FIELD_ORDER_BY": "Order By",
-		"FIELD_ORDER_DIR": "Order Direction",
-		"INITIAL_DATE" : "Initial Date", 
-        "due_date" : "Due Date",
-        "amount" : "Amount",
-        "project_id" : "Project Name",
-        "user_group_id" : "Group Id",
-        "release_date" : "Release Date",
-        "is_active" : "Is Active"        
+		"FIELD_ORDER_DIR": "Order Direction"
+		        
 	};
 });

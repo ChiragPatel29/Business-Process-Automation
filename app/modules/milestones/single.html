@@ -113,9 +113,9 @@
 	</div>
 
 	<div class="form-group row">
-		<label for="initial_date" class="col-md-4 col-form-label text-md-right">{{M.INITIAL_DATE}}</label>
+		<label for="initial_date" class="col-md-4 col-form-label text-md-right">Initial Date:</label>
 		<div class="col-md-6">
-			<datepicker date-format="yyyy-MM-dd">
+			<datepicker date-format="yyyy-MM-dd" date-min-limit="{{dtmax}}">
 			<!--<input type="text" id="due_date" name="due_date" class="form-control"  ng-model="data.single.due_date" date-picker  ng-required="initial_date.required" min="{{currentDate | date:'yyyy-MM-dd'}}" ng-disabled="locked" placeholder="YYYY-MM-DD">-->
 			<input type="text" id="initial_date" name="initial_date" class="form-control" ng-model="data.single.initial_date" autocomplete="off" ng-disabled="locked" placeholder="YYYY-MM-DD" required="initial_date">
 			</datepicker>
@@ -131,7 +131,7 @@
 	</div>
 
 	<div class="form-group row">
-		<label for="due_date" class="col-md-4 col-form-label text-md-right">{{M.due_date}}</label>
+		<label for="due_date" class="col-md-4 col-form-label text-md-right">Due Date:</label>
 		<div class="col-md-6">
 			<datepicker date-format="yyyy-MM-dd" date-min-limit="{{data.single.initial_date}}">
 			<!--<input type="text" id="due_date" name="due_date" class="form-control"  ng-model="data.single.due_date" date-picker  ng-required="initial_date.required" min="{{currentDate | date:'yyyy-MM-dd'}}" ng-disabled="locked" placeholder="YYYY-MM-DD">-->
@@ -150,7 +150,7 @@
 
 
 	<div class="form-group row">
-		<label for="amout" class="col-md-4 col-form-label text-md-right">{{M.amount}}:</label>
+		<label for="amout" class="col-md-4 col-form-label text-md-right">Amount:</label>
 		<div class="col-md-6">
 			<span style="position: absolute;margin-top:8px ;margin-left: 5px;"><i class="fa fa-inr"></i></span>
 			<input id="amout" name="amout" type="number" class="form-control" ng-model="data.single.amout" required ng-disabled="locked" autofocus>
@@ -161,7 +161,7 @@
 	</div>
 
 	<div class="form-group row" >
-        <label for="project_id" class="col-md-4 col-form-label text-md-right">{{M.project_id}}:</label>
+        <label for="project_id" class="col-md-4 col-form-label text-md-right">Project Name:</label>
         <div class="col-md-6">
             <div class="dropdown">
               <button class="btn btn-default dropdown-toggle" type="button" id="project_id" name="project_id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
@@ -194,7 +194,7 @@
  <!--       </div>-->
  <!--   </div>-->
  	<div class="form-group row">
-		<label for="is_active" class="col-md-4 col-form-label text-md-right">User Group</label>
+		<label for="is_active" class="col-md-4 col-form-label text-md-right">User Group:</label>
 		<div class="col-md-6">
 			<div class="dropdown">
 				<button class="btn btn-default dropdown-toggle" type="button" id="user_group_id" name="user_group_id" data-toggle="dropdown" multiple aria-haspopup="true" aria-expanded="false" required ng-disabled="locked">
@@ -211,7 +211,7 @@
 	</div>
 
 	<div class="form-group row" date-min-limit="{{data.single.due_date}}">
-		<label for="release_date" class="col-md-4 col-form-label text-md-right">{{M.release_date}}</label>
+		<label for="release_date" class="col-md-4 col-form-label text-md-right">Release Date:</label>
 		<div class="col-md-6">
 			<!-- <datepicker date-format="yyyy-MM-dd" date-min-limit="{{data.single.due_date}}"> -->
 			<!--<input type="text" id="due_date" name="due_date" class="form-control"  ng-model="data.single.due_date" date-picker  ng-required="initial_date.required" min="{{currentDate | date:'yyyy-MM-dd'}}" ng-disabled="locked" placeholder="YYYY-MM-DD">-->
@@ -229,7 +229,7 @@
 	</div>
 
 	<div class="form-group row">
-		<label for="is_active" class="col-md-4 col-form-label text-md-right">{{M.is_active}}:</label>
+		<label for="is_active" class="col-md-4 col-form-label text-md-right">Is Active:</label>
 		<div class="col-md-6">
 			<div class="custom-control custom-switch form-switch">
 				<input class="custom-control-input" type="checkbox" id="is_active" name="is_active" ng-true-value="1" ng-disabled="locked" ng-model="data.single.is_active">

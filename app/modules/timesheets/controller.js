@@ -47,7 +47,7 @@ app.controller('timesheetsControllerExtension', function($scope,$filter, $contro
         //     // var s_min = start.split(":")[1];
         //     // var e_hr = end.split(":")[0];
         //     // var e_min = end.split(":")[1];
-            return  end - start;
+            return  Math.abs(end - start);
         //     //return Math.abs((parseInt(e_hr) - parseInt(s_hr)) * 60) + Math.abs(parseInt(e_min) - parseInt(s_min))
            }
          }

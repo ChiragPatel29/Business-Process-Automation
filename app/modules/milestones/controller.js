@@ -90,6 +90,11 @@ app.controller('milestonesControllerExtension', function($scope, $route, $contro
     // If you don't like the layout, and you want to replace it with your own, you can use the following method.
     // Note that if you override the 'list-items', then you have to use ng-repeat or any other mechanism to iterate over your data that is available in $scope.data.list.
     // $scope.setTemplate('list-items', 'app/your-path/your-template.html');
+    var date = new Date().getDate();
+    var month = new Date().getMonth()+1;
+    var year = new Date().getFullYear();
+    $scope.dtmax  = year+"-"+month+"-"+date;
+    
     $scope.data1 = function (initial_date, due_date)
 		{	
             $scope.errMessage = '';

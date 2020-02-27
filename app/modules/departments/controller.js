@@ -10,7 +10,9 @@
 app.controller('departmentsControllerExtension', function($scope, $controller, $rootScope, $http, $location, Popup, H, M) {
     
     //This function is called when you need to make changes to the new single object.
-	
+	if(!(['admin', 'superadmin'].indexOf($rootScope.currentUser.role) > -1)){
+        $location.path('unauthorized');
+    }
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
         // obj.is_active = 1;
