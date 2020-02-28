@@ -43,6 +43,9 @@ app.controller('profilesControllerExtension', function($scope, $controller, $roo
     //This function is called before the create (POST) request goes to API
     $scope.beforeSave = async function(obj, next){
         //You can choose not to call next(), thus rejecting the save request. This can be used for extra validations.
+        if(!(['admin', 'superadmin'].indexOf($rootScope.currentUser.role) > -1)){
+            $location.path('unauthorized');
+        }
         next();
     };
 
