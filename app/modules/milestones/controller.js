@@ -132,6 +132,24 @@ app.controller('milestonesControllerExtension', function($scope, $route, $contro
                 alert("... Error:" + e.data.error.message);
             });
     }   
+
+    $scope.currentDate = new Date();
+        $scope.checkDate = function(dt)
+        {
+            console.log( H.toDate(dt));    
+            return H.toDate(dt) > $scope.currentDate;
+        }
+        $scope.checkDay = function(dt)
+        {
+            // console.log( H.toDate(dt));    
+             $scope.diffTime = Math.ceil($scope.currentDate-H.toDate(dt) );
+             $scope.diff= Math.ceil($scope.diffTime / (1000 * 60 * 60 * 24)); 
+             if($scope.diff > 0)
+             {
+             return $scope.diff+' days';
+             }
+            //  console.log($scope.diff);            
+        }
     
 
 });

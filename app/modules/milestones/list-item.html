@@ -56,6 +56,15 @@
     </div>
 </td>
 
+<td>
+	<!-- <span class="small col-green">{{ item['due_date']}} </span> -->
+	<span class="medium col-red"> {{  checkDay(item['due_date'])  }}{{$scope.diff}} </span>
+	<br>
+	<span class="medium col-red"> {{  checkDate(item['due_date']) ? '' : 'Delayed' }} </span>
+	<span class="medium col-blue"> {{  checkDate(item['due_date']) ? 'OnTime' : '' }} </span>
+	
+</td>
+
 <!--The following code creates a link to view detailed record. You can use 'currentRoute' to represent the current base route that matches your API. e.g. 'tasks' in this case.-->
 <td>
     <a href="#!/{{currentRoute}}/{{item.id}}">View</a>
