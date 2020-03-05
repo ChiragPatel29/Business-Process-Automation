@@ -165,11 +165,12 @@
         <div class="col-md-6">
             <div class="dropdown">
               <button class="btn btn-default dropdown-toggle" type="button" id="project_id" name="project_id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
-                {{data.single.project.title || 'Choose an option'}}
+                {{data.single.project.title  || 'Choose an option'}}
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" ng-repeat="r in data.foreignKeys.projects track by $index"  href="" 
-                ng-click="data.single.project_id = r.id; data.single.project = r">{{r.title}}</a>
+                <a class="dropdown-item" ng-repeat="r in data.foreignKeys.projects track by $index" ng-if="r.is_deleted=='0'"  href="" 
+				ng-click="data.single.project_id = r.id; data.single.project = r">{{r.title}}</a>
+				
 			  </div>
 			  <input type="hidden" class="form-control" id="status" name="status" ng-model="data.single.project_id" ng-required="data.singleKeysInfo.project_id.required" />
 				<div ng-if="data.singleKeysInfo.project_id.required && !data.single.project_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div>
@@ -201,7 +202,7 @@
 					{{data.single.user_group.group.name || '---Select---'}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.user_groups track by $index " href="" ng-click="data.single.user_group_id = c.id; data.single.user_group = c">{{c.group.name}}</a>
+					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.user_groups track by $index " href=""  ng-click="data.single.user_group_id = c.id; data.single.user_group = c">{{c.group.name}}</a>
 				</div>
 				<input type="hidden" class="form-control" id="user_group_id" name="user_group_id" ng-model="data.single.user_group_id" ng-required="data.singleKeysInfo.user_group_id.required" />
 				<div ng-if="data.singleKeysInfo.user_group_id.required && !data.single.user_group_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div>

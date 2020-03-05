@@ -18,10 +18,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
 		
 		$scope.data1 = function (initial_date, due_date)
 		{
-			// alert("hello");
-            $scope.errMessage = '';
-            // $scope.minDate = new Date();
-            
+            $scope.errMessage = '';   
             if (initial_date > due_date)
             {
                 $scope.errMessage = 'End Date should be greater than start date';
@@ -29,12 +26,46 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
             }
            
         };
-        
-	// $scope.data1=function(initial_date)
-	// {
-	// 	$scope.start=initial_date;
-	// }
-		
+        // $scope.due_date=$scope.due_date;
+        // var date1 = new Date($scope.dtmax);
+        // var date2 = new Date(dt);
+        // var diffTime = Math.abs(date2 - date1);
+        // var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        // console.log(diffDays);
+
+        $scope.currentDate = new Date();
+        $scope.checkDate = function(dt)
+        {
+            console.log( H.toDate(dt));    
+            return H.toDate(dt) > $scope.currentDate;
+        }
+        $scope.checkDay = function(dt)
+        {
+            // console.log( H.toDate(dt));    
+             $scope.diffTime = Math.ceil($scope.currentDate-H.toDate(dt) );
+             $scope.diff= Math.ceil($scope.diffTime / (1000 * 60 * 60 * 24)); 
+             if($scope.diff > 0)
+             {
+             return $scope.diff+' days';
+             }
+            //  console.log($scope.diff);            
+        }
+    $scope.Visible = false;
+    console.log($rootScope.currentUser.role);
+    // if($rootScope.currentUser.role=='ninja')
+    // {
+    //     console.log("hi");
+    // }        
+    if($rootScope.currentUser.role == 'user')
+    {       
+        $scope.Visible=false;
+    }
+    $scope.IsVisible = false;
+    if($rootScope.currentUser.role == 'admin')
+    {
+        $scope.IsVisible=true;
+    }
+
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
         // obj.is_active = 1;
@@ -64,11 +95,13 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
          //obj.type='project';
+         $scope.setListHeaders(['Id','Title','Initial_date','Due_date','Budget','Logo','Description','User Group','Status','is_deleted','delay']);
         
-        //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
+        // You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
+        
     };
-    
+    console.log($scope.dtmax);
   //    $scope.checkErr = function(initial_date,due_date){
   //  $scope.errMessage = '';
   //  $scope.curDate = new Date();
@@ -96,6 +129,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         	alert("select proper date");
         	$route.reload();
         }
+        
         next();
     };
 
@@ -113,7 +147,9 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     //This function is called before the update (PUT) request goes to API
     $scope.beforeUpdate = async function(obj, next){
         //You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
+        console.log(JSON.stringify(obj));
         next();
+        
         delete obj.logo;
     };
 
@@ -153,12 +189,16 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     // }
 
     // If you want don't want to display certain columns in the list view you can remove them by defining the function below.
-   if($rootScope.currentUser.role=='user')
-   {
+    // $scope.setListHeader=function()
+    // {
+    //     return['add'];
+    // }
+    if($rootScope.currentUser.role=='user')
+    {
     $scope.removeListHeaders = function(){
         return ['Id','Is Deleted'];
     }
-   }
+   }    
 
     // If you want to refresh the data loaded in grid, you can call the following method
     // $scope.refreshData();
@@ -174,6 +214,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     
 
 });
+
 
 
 app.directive("myfileInput", function($parse, $http, S, upload) {

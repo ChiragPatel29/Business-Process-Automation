@@ -173,6 +173,7 @@
 		<label for="is_active" class="col-md-4 col-form-label text-md-right">User Group</label>
 		<div class="col-md-6">
 			<div class="dropdown">
+				
 				<button class="btn btn-default dropdown-toggle" type="button" id="user_group_id" name="user_group_id" data-toggle="dropdown" multiple aria-haspopup="true" aria-expanded="false" required ng-disabled="locked">
 					{{data.single.user_group.group.name || '---Select---'}}
 				</button>
@@ -193,9 +194,13 @@
 			<div class="dropdown">
 				<button class="btn btn-default dropdown-toggle" type="button" id="status_id" name="status_id" data-toggle="dropdown" multiple aria-haspopup="true" ng-required="true" aria-expanded="false" ng-disabled="locked">
 					{{data.single.status.name || '---Select---'}}
+					
 				</button>
+				
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="d in data.foreignKeys.statuses track by $index" ng-if="d.type=='Project'" href="" ng-click="data.single.status_id = d.id; data.single.status = d; ">{{d.name}}</a>
+					
+					<a class="dropdown-item" ng-repeat="d in data.foreignKeys.statuses track by $index" ng-if="d.type=='Project'" href="" ngChange="data.single.status_id" ng-click="data.single.status_id = d.id; data.single.status = d; ">{{d.name}}</a>
+					
 				</div>
 
 				<input type="hidden" class="form-control" id="status_id" name="status_id" ng-model="data.single.status_id" ng-required="data.singleKeysInfo.status_id.required" />
