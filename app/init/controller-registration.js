@@ -1,14 +1,17 @@
 /*global app, ControllerFactory, RegisterRoutes, RegisterData*/
-function RegisterEasyController(route, headers, controller, auto = false) {
-	app.controller(route + 'ControllerBase', ControllerFactory(route));
+function RegisterEasyController(route, headers, controller, auto = false, alias = null) {
+	var x = (alias ? alias : route);
+	console.log('registering ' + x + 'ControllerBase');
 
-	app.controller(route + 'Controller', function($scope, $controller, H) {
+	app.controller(x + 'ControllerBase', ControllerFactory(route));
+
+	app.controller(x + 'Controller', function($scope, $controller, H) {
 		//Copy all scope variables from Base Controller
-		$controller(route + 'ControllerBase', {
+		$controller(x + 'ControllerBase', {
 			$scope: $scope
 		});
 		try {
-			$controller(route + 'ControllerExtension', {
+			$controller(x + 'ControllerExtension', {
 				$scope: $scope
 			});
 		} catch (ex) {
@@ -45,5 +48,19 @@ function RegisterEasyController(route, headers, controller, auto = false) {
 
 	for (var i = 0; i < autoRoutes.length; i++) {
 		RegisterEasyController(autoRoutes[i], null, null, true /*, data[easyRoutes[i]].headers*/ );
+	}
+})();
+
+
+//Register Aliases
+(function() {
+	var aliases = RegisterRoutes().aliases || [];
+	//var data = RegisterData();
+
+	for (var i in aliases) {
+		alias = i;
+		route = aliases[i];
+		console.log('trying to register ' + alias + ' for route ' + route);
+		RegisterEasyController(route, null, null, true, alias /*, data[easyRoutes[i]].headers*/ );
 	}
 })();

@@ -1,3 +1,5 @@
+
+
 <!--This is the template that will be used in new/edit screens. It should be in <form></form> tag. The name of the form should be matching the name of your API route, prefixed with 'froms.' and suffixed by 'Form'. e.g. in this case, it would be 'forms.tasksForm'-->
 
 <!--Dynamic Example-->
@@ -100,8 +102,8 @@
 <form name="forms.tasksForm" id="forms.tasksForm">
 	<div class="form-group row">
 		<label for="task_title" class="col-md-4 col-form-label text-md-right">Title:</label>
-		<div class="col-md-6">
-			<input id="task_title" name="task_title" type="text" class="form-control" ng-model="data.single.title" required ng-disabled="locked" autofocus>
+		<div class="col-md-6 ">
+			<input id="task_title" name="task_title" type="text" class="form-control "  ng-model="data.single.title" required ng-disabled="locked" autofocus>
 		</div>
 		<div ng-messages="forms.tasksForm.task_title.$error" ng-show="forms.tasksForm.task_title.$dirty">
 			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
@@ -146,10 +148,11 @@
 					{{data.single.status.name || 'Choose an option'}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="d in data.foreignKeys.statuses track by $index " ng-if="d.type == 'Task'" href="" ng-click="data.single.status_id = d.id; data.single.status = d">{{d.name}}</a>
+					<a class="dropdown-item" ng-repeat="d in data.foreignKeys.statuses track by $index " ng-if="d.type == 'Task'" href=""
+					 ng-click="data.single.status_id = d.id; data.single.status = d">{{d.name}}</a>
 				</div>
 				<input type="hidden" class="form-control" id="status" name="status" ng-model="data.single.status_id" ng-required="data.singleKeysInfo.status_id.required" />
-				<div ng-if="data.singleKeysInfo.status_id.required && !data.single.status_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div>
+				<!-- <div ng-if="data.singleKeysInfo.status_id.required && !data.single.status_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div> -->
 			</div>
 
 		</div>
@@ -170,15 +173,17 @@
 		<div class="col-md-6">
 			<div class="dropdown">
 				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
-					{{data.single.user.username || 'Choose an option'}}
+					{{data.single.assign_tos.username || 'Choose an option'}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="r in data.foreignKeys.users track by $index" href="" ng-click="data.single.assign_to = r.id; data.single.user = r">{{r.username}}</a>
+					<a class="dropdown-item" ng-repeat="r in data.foreignKeys.assign_tos track by $index" href="" 
+					ng-click="data.single.assign_to_id = r.id; data.single.assign_tos  = r">{{r.username}}</a>
 				</div>
-				<input type="hidden" class="form-control" id="assign_to" name="assign_to" ng-model="data.single.assign_to" ng-required="data.singleKeysInfo.assign_to.required" />
-				<div ng-if="data.singleKeysInfo.assign_to.required && !data.single.assign_to && saveClicked" class="small col-red">{{M.REQUIRED}}</div>
+				<input type="hidden" class="form-control" id="assign_to_id" name="assign_to_id" ng-model="data.single.assign_to_id" ng-required="data.singleKeysInfo.assign_to_id.required" />
+				<!-- <div ng-if="data.singleKeysInfo.assign_to_id.required && !data.single.assign_to_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div> -->
 			</div>
 		</div>
+		
 	</div>
 	
 	
@@ -201,18 +206,22 @@
 	<!--</div>-->
 	
 	<div class="form-group row">
-		<label for="is_active" class="col-md-4 col-form-label text-md-right">Updated by</label>
+		<label for="is_active" class="col-md-4 col-form-label text-md-right">Updated by:</label>
 		<div class="col-md-6">
 			<div class="dropdown">
 				<button class="btn btn-default dropdown-toggle" type="button" id="updated_by" name="updated_by" data-toggle="dropdown" multiple aria-haspopup="true" aria-expanded="false" required ng-disabled="locked">
-					{{data.single.user.username || 'Choose an option'}}
+					{{data.single.updated_bies.username || 'Choose an option'}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.users track by $index " href="" ng-click="data.single.updated_by = c.id; data.single.user = c">{{c.username}}</a>
+					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.updated_bies track by $index " href="" ng-click="data.single.updated_by_id= c.id; data.single.updated_bies = c">{{c.username}}</a>
 				</div>
+				<input type="hidden" class="form-control" id="updated_by_id" name="updated_by_id" ng-model="data.single.updated_by_id" ng-required="data.singleKeysInfo.updated_by_id.required" />
+				<!-- <div ng-if="data.singleKeysInfo.updated_by_id.required && !data.single.updated_by_id && saveClicked" 
+				class="small col-red">{{M.REQUIRED}}</div> -->
 			</div>
 		</div>
 	</div>
+
 
 	<div class="form-group row">
 		<label for="task_user_story_id" class="col-md-4 col-form-label text-md-right">User Story:</label>
@@ -226,7 +235,6 @@
 				</div>
 				<input type="hidden" class="form-control" id="user_story_id" name="user_story_id" ng-model="data.single.user_story_id" ng-required="data.singleKeysInfo.user_story_id.required" />
 				<div ng-if="data.singleKeysInfo.user_story_id.required && !data.single.user_story_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div>
-
 			</div>
 		</div>
 	</div>
@@ -250,7 +258,7 @@
 	<div class="form-group row">
 		<label for="task_estimated_hours" class="col-md-4 col-form-label text-md-right">Estimated Hours:</label>
 		<div class="col-md-6">
-			<input id="task_estimated_hours" name="task_estimated_hours" type="text" class="form-control" ng-model="data.single.estimated_hours" required ng-disabled="locked" autofocus>
+			<input id="task_estimated_hours" name="task_estimated_hours" type="time" class="form-control" ng-model="data.single.estimated_hour" required ng-disabled="locked" autofocus>
 		</div>
 		<div ng-messages="forms.tasksForm.task_estimated_hours.$error" ng-show="forms.tasksForm.task_estimated_hours.$dirty">
 			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
@@ -260,15 +268,12 @@
 	<div class="form-group row">
 		<label for="task_actual_hours" class="col-md-4 col-form-label text-md-right">Actual Hours:</label>
 		<div class="col-md-6">
-			<input id="task_actual_hours" name="task_actual_hours" type="text" class="form-control" ng-model="data.single.actual_hours" required ng-disabled="locked" autofocus>
+			<input id="task_actual_hours" name="task_actual_hours" type="time" class="form-control" ng-model="data.single.actual_hour" required ng-disabled="locked" autofocus>
 		</div>
 		<div ng-messages="forms.tasksForm.task_actual_hours.$error" ng-show="forms.tasksForm.task_actual_hours.$dirty">
 			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
 		</div>
 	</div>
-
-
-
 
 	<div class="form-group row" ng-show="visible">
 		<label for="task_is_active" class="col-md-4 col-form-label text-md-right">{{M.FIELD_ACTIVE}}:</label>
@@ -290,17 +295,3 @@
 </form>
 
 
-
-
-<!--Updated At Column allow null-->
-
-
-<!--   	<div class="form-group row">-->
-<!--	<label for="task_updated_at" class="col-md-4 col-form-label text-md-right">{{M.FIELD_UPDATED_AT}}:</label>-->
-<!--	<div class="col-md-6">-->
-<!--		<input id="task_updated_at" name="task_updated_at" type="text" class="form-control" ng-model="data.single.updated_at" required ng-disabled="locked" autofocus>-->
-<!--	</div>-->
-<!--	<div ng-messages="forms.tasksForm.task_updated_at.$error" ng-show="forms.tasksForm.task_updated_at.$dirty">-->
-<!--		<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>-->
-<!--	</div>-->
-<!--</div>-->

@@ -7,7 +7,7 @@
 //you need to provide templates inside 'app/modules/tasks' folder. If you want to keep your templates somewhere else, you can pick
 //'autoRoutes' and then override the templates using setTemplate function.
 //Note that for 'autoRoutes', it is not even required to write Controller Extensions unless you want to modify the behaviour.
-app.controller('bugsControllerExtension', function($scope, $controller, $rootScope, $http, $location, Popup, H, M) {
+app.controller('bugsControllerExtension', function($scope,$route, $controller, $rootScope, $http, $location, Popup, H, M) {
     
     //This function is called when you need to make changes to the new single object.
     
@@ -32,14 +32,14 @@ app.controller('bugsControllerExtension', function($scope, $controller, $rootSco
         //This is where you can modify your query parameters.    
         // query.is_active = 1;
         query.is_deleted = 0;
-         
+         console.log($rootScope.currentUser.role);
         //return query;
     };
 
     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        console.log(obj);
+        //console.log(obj);
         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
     };
@@ -47,25 +47,39 @@ app.controller('bugsControllerExtension', function($scope, $controller, $rootSco
     //This function is called before the create (POST) request goes to API
     $scope.beforeSave = async function(obj, next){
         //You can choose not to call next(), thus rejecting the save request. This can be used for extra validations.
-       
-       if($scope.errMessage)
-        {
-        	// $route.reload();
-        	alert("select proper date");
-        	$route.reload();
-        }
+        
+        delete obj.status;
+        delete obj.priority;
+        delete obj.fix_bies;
+        delete obj.assign_tos;
+        delete obj.caught_bies;
+        delete obj.user_story; 
+        
+
+    //    if($scope.errMessage)
+    //     {
+    //     	// $route.reload();
+    //     	alert("select proper date");
+    //     	$route.reload();
+    //     }
         next();
     };
 
     //This function is called after the create (POST) request is returned from API
     $scope.onSave = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been created.
+        
+        
+
+        console.log("Post data : "+obj);
         next();
     };
     
     //This function is called before the update (PUT) request goes to API
     $scope.beforeUpdate = async function(obj, next){
         //You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
+       // alert(obj);
+        console.log(JSON.stringify(obj));
         next();
         
         
@@ -74,6 +88,7 @@ app.controller('bugsControllerExtension', function($scope, $controller, $rootSco
     //This function is called after the update (PUT) request is returned from API
     $scope.onUpdate = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been updated.
+        console.log("onsubmit "+obj);
         next();
     };
     
@@ -108,22 +123,22 @@ app.controller('bugsControllerExtension', function($scope, $controller, $rootSco
     
     // this is is_deleted functionlity
     
-    // $scope.a=1
-    // $scope.update=function(id){
-    //     var data = {
-    //             is_deleted:$scope.a
-    //     };
+    $scope.a=1
+    $scope.update=function(id){
+        var data = {
+                is_deleted:$scope.a
+        };
         
-    //     $http.put(H.S.baseUrl + '/bugs/' + id,data).then(function(res)
-    //     {
+        $http.put(H.S.baseUrl + '/bugs/' + id,data).then(function(res)
+        {
             
-    //             console.log(data);
-    //             $route.reload();
-    //     },
-    //         function(e) {
-    //             alert("... Error:" + e.data.error.message);
-    //         });
-    // }
+                console.log(data);
+                $route.reload();
+        },
+            function(e) {
+                alert("... Error:" + e.data.error.message);
+            });
+    }
 
 	
 	

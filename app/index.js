@@ -344,6 +344,31 @@ app.config(async function($routeProvider, $resourceProvider, $httpProvider, $con
 			});
 		}
 
+		 var aliases = customRoutesProvider.routes.aliases;
+		
+		 for (var i in aliases) {
+		 	var r= i;
+			
+			routes.push({
+				route: r,
+				template: 'common/templates/list',
+				controller: r
+			});
+			routes.push({
+				route: r + '/new',
+				template: 'common/templates/new',
+				controller: r
+			});
+			routes.push({
+				route: r + '/:id',
+				template: 'common/templates/edit',
+				controller: r
+			});
+			existingRoutes.push(r);
+	
+		}
+				
+
 		if (Settings.get().autoMasters) {
 			var initInjector = angular.injector(['ng']);
 			var $http = initInjector.get('$http');
@@ -359,7 +384,6 @@ app.config(async function($routeProvider, $resourceProvider, $httpProvider, $con
 								color: '',
 								text: Helper.toTitleCase(Helper.replaceAll(i[j], '_', ' '))
 							});
-
 
 							routes.push({
 								route: i[j],
@@ -501,6 +525,1005 @@ app.run(function($rootScope, $location, $cookies, H) {
 
 
 });
+// //ControllerFactory helps wrap basic CRUD operations for any API resource
+// function ControllerFactory(resourceName, options, extras) {
+// 	return function($scope, $rootScope, $http, $routeParams, $location, Popup, H, M, S, R) {
+// 		//Get resource by name. Usually it would be you API i.e. generated magically from your database table.
+
+// 		$scope.resourceName = resourceName;
+// 		var Resource = H.R.get(resourceName);
+
+// 		$http.get(S.baseUrl + '/metadata/table?id=' + resourceName).then(function(r) {
+// 			$scope.metadata = r.data;
+// 			$scope.buildSingleHeaders();
+            
+// 			setTimeout(function(){
+// 				$scope.data.onuploadCallbacks = []
+// 				$scope.data.singleKeys.forEach(function(i){
+// 					if((i.endsWith('_file') || i.endsWith('_image') || i.endsWith('_photo') || i.endsWith('_video') || i.endsWith('_sound') || i.endsWith('_music') || i.endsWith('_audio') || i.endsWith('_attachment') || i.endsWith('file') || i.endsWith('attachment') || i.endsWith('image'))){
+// 				    	$scope.data.onuploadCallbacks[i] = function(r){
+// 					    	$scope.data.single[i] = r.data.file;
+// 						}
+// 			    	}
+
+// 				});	
+// 			}, 300);
+            
+// 		}, function(e) {});
+
+// 		//Scope variables
+// 		$scope.data = {};
+// 		$scope.data.single = new Resource();
+// 		$scope.data.list = [];
+// 		$scope.data.limit = 10;
+// 		$scope.data.currentPage = 1;
+// 		$scope.data.pages = [];
+// 		$scope.errors = [];
+// 		$scope.MODES = {
+// 			'view': 'view',
+// 			'edit': 'edit',
+// 			'add': 'add'
+// 		};
+// 		$scope.mode = $scope.MODES.view;
+// 		$scope.locked = true;
+// 		$scope.forms = {};
+// 		$scope.H = H;
+// 		$scope.M = M;
+//         $scope.templates = {};
+        
+//         $scope.data.permissions = H.S.defaultPermissions;
+
+// 		//Set currentRoute
+// 		$scope.currentRoute = (function() {
+// 			var route = $location.path().substring(1);
+// 			var slash = route.indexOf('/');
+// 			if (slash > -1) {
+// 				route = route.substring(0, slash);
+// 			}
+// 			return route;
+// 		})();
+
+// 		$scope.currentRouteHref = "#!" + $scope.currentRoute;
+// 		$scope.newRouteHref = "#!" + $scope.currentRoute + "/new";
+// 		$scope.editRouteHref = "#!" + $scope.currentRoute + "/:id";
+
+// 		//Default error handler
+// 		var errorHandler = function(error) {
+// 			if (error && error.status) {
+// 				switch (error.status) {
+// 					case 404:
+// 						$scope.errors.push({
+// 							message: H.MESSAGES.E404
+// 						});
+// 						break;
+// 					case 422:
+// 						$scope.errors.push({
+// 							message: H.MESSAGES.E422
+// 						});
+// 						break;
+// 					case 405:
+// 						$scope.errors.push({
+// 							message: H.MESSAGES.E405
+// 						});
+// 						break;
+// 					case 400:
+// 						$scope.errors.push({
+// 							message: H.MESSAGES.E400
+// 						});
+// 						break;
+// 					case 500:
+// 						$scope.errors.push({
+// 							message: H.MESSAGES.E500
+// 						});
+// 						break;
+// 					case 401:
+// 						$rootScope.$emit('loginRequired');
+// 					case 403:
+// 						$location.path('unauthorized');
+// 					default:
+// 						$scope.errors.push({
+// 							message: H.MESSAGES.E500
+// 						});
+// 						break;
+// 				}
+// 			}
+// 		};
+
+// 		//Initializa new single objetc
+// 		$scope.initSingle = function() {
+// 			$scope.data.single = new Resource();
+//             $scope.data.selectedForeignKeys = [];
+// 			//$scope.buildSingleHeaders();
+// 		};
+
+// 		//Get all rows from your API/table. Provide a query filter in case you want reduced dataset.
+// 		$scope.query = function(q, callback) {
+// 			if (!q) {
+// 				q = {};
+// 			}
+// 			Resource.query(q, function(result) {
+// 				if (result) {
+// 					$scope.data.list = result;
+// 				}
+// 				if (callback) {
+// 					callback(result);
+// 				}
+// 			}, function(error) {
+// 				errorHandler(error);
+// 				if (callback) {
+// 					callback(error);
+// 				}
+// 			});
+// 		};
+
+// 		//Get specific record
+// 		$scope.count = function(query, callback) {
+// 			query = query || {
+// 				count: true
+// 			};
+// 			if (!query['count']) query['count'] = true;
+// 			Resource.query(query, function(result) {
+// 				$scope.data.records = result[0].count;
+// 				if (callback) {
+// 					callback(result);
+// 				}
+// 			}, function(error) {
+// 				errorHandler(error);
+// 				if (callback) {
+// 					callback(error);
+// 				}
+// 			});
+// 		};
+
+
+// 		//Get specific record
+// 		$scope.get = function(id, callback) {
+// 			Resource.get({
+// 				id: id
+// 			}, function(result) {
+// 				$scope.data.single = result;
+// 				//$scope.buildSingleHeaders();
+// 				if (callback) {
+// 					callback(result);
+// 				}
+// 			}, function(error) {
+// 				errorHandler(error);
+// 				if (callback) {
+// 					callback(error);
+// 				}
+// 			});
+// 		};
+
+// 		//Delete specific record
+// 		$scope.delete = function(obj, callback) {
+// 			if (obj && obj.$delete) {
+// 				if (S.legacyMode) {
+// 					$http.post(S.baseUrl + "/" + resourceName + "/delete/", obj).then(function(r) {
+// 						if (callback && r.data) {
+// 							callback(r.data);
+// 						}
+// 					}, function(e) {
+// 						errorHandler(e);
+// 						if (callback) {
+// 							callback(e);
+// 						}
+// 					});
+// 				} else {
+// 					obj.$delete(function(r) {
+// 						if (callback) {
+// 							callback(r);
+// 						}
+// 					}, function(e) {
+// 						errorHandler(e);
+// 						if (callback) {
+// 							callback(e);
+// 						}
+// 					});
+// 				}
+
+// 			} else if (!isNaN(obj)) {
+// 				$scope.get(obj, function(result) {
+// 					if (result && result.$delete) {
+// 						result.$delete();
+// 						if (callback) {
+// 							callback();
+// 						}
+// 					}
+// 				});
+// 			}
+// 		};
+
+// 		$scope.deleteMany = function(resource, obj, callback) {
+// 			if (obj) {
+// 				var r = resource || resourceName;
+// 				var url = H.SETTINGS.baseUrl + "/" + r + "/";
+// 				if (H.S.legacyMode) url = url + "delete/";
+// 				if (Array.isArray(obj)) {
+// 					url = url + "?id=" + JSON.stringify(obj);
+// 				} else {
+// 					if (obj.id) {
+// 						url = url + obj.id;
+// 					}
+// 				}
+// 				if (H.S.legacyMode) {
+// 					return $http.post(url, []).then(function(r) {
+// 						if (callback) {
+// 							callback(r.data);
+// 						}
+// 						return r.data;
+// 					}, function(e) {
+// 						errorHandler(e);
+// 						if (callback) {
+// 							callback(e.data);
+// 						}
+// 						return e.data;
+// 					});
+// 				} else {
+// 					return $http.delete(url).then(function(r) {
+// 						if (callback) {
+// 							callback(r.data);
+// 						}
+// 						return r.data;
+// 					}, function(e) {
+// 						errorHandler(e);
+// 						if (callback) {
+// 							callback(e.data);
+// 						}
+// 						return e.data;
+// 					});
+// 				}
+// 			}
+
+// 		}
+
+// 		//Save a record
+// 		$scope.save = function(obj, callback) {
+// 			if (obj && obj.$save) {
+// 				var promise = obj.$save();
+// 				promise.then(function(r) {
+// 					if (callback) {
+// 						callback(r);
+// 					}
+// 				}, function(e) {
+// 					errorHandler(e);
+// 					if (callback) {
+// 						callback(e);
+// 					}
+// 				});
+// 			} else if ($scope.data.single) {
+// 				var promise = $scope.data.single.$save();
+// 				promise.then(function(r) {
+// 					if (callback) {
+// 						callback(r);
+// 					}
+// 				}, function(e) {
+// 					errorHandler(e);
+// 					if (callback) {
+// 						callback(e);
+// 					}
+// 				});
+// 			}
+// 		};
+
+// 		$scope.post = function(resource, arr, callback) {
+// 			var r = resource || resourceName;
+// 			var url = H.SETTINGS.baseUrl + "/" + r;
+// 			if (arr) {
+// 				if (H.SETTINGS.enableSaaS) {
+// 					arr.map(function(p) {
+// 						if (!p.secret) p.secret = $rootScope.currentUser.secret;
+// 					});
+// 				}
+// 				return $http.post(url, arr)
+// 					.then((function(data, status, headers, config) {
+// 						if (callback) {
+// 							callback(data.data);
+// 						}
+// 						return data.data;
+// 					}), (function(e) {
+// 						errorHandler(e);
+// 						if (callback) {
+// 							callback(e.data);
+// 						}
+// 						return e.data;
+// 					}));
+// 			}
+
+// 		}
+
+// 		$scope.update = function(obj, callback) {
+// 			var url = H.SETTINGS.baseUrl + "/" + resourceName;
+
+// 			if (H.S.legacyMode) {
+// 				return $http.post(url + "/update", obj)
+// 					.then((function(data, status, headers, config) {
+// 						if (callback) {
+// 							callback(data.data);
+// 						}
+// 						return data.data;
+// 					}), (function(e) {
+// 						errorHandler(e);
+// 						if (callback) {
+// 							callback(e.data);
+// 						}
+// 						return e.data;
+// 					}));
+// 			} else {
+// 				return $http.put(url, obj)
+// 					.then((function(data, status, headers, config) {
+// 						if (callback) {
+// 							callback(data.data);
+// 						}
+// 						return data.data;
+// 					}), (function(e) {
+// 						errorHandler(e.data);
+// 						if (callback) {
+// 							callback(e.data);
+// 						}
+// 						return e.data;
+// 					}));
+
+// 			}
+
+// 		};
+
+// 		//Clear errors
+// 		$scope.clearErrors = function() {
+// 			$scope.errors = [];
+// 		};
+
+// 		//Refresh data
+// 		$scope.refreshData = function() {
+// 			$scope.listAll();
+// 		};
+        
+// 		$scope.data.sortCache = {};
+        
+// 		$scope.applySort = function(h){
+// 			$scope.data.queryOptions = $scope.data.queryOptions || {};
+// 			$scope.data.viewOptions = $scope.data.viewOptions || {};
+// 			$scope.data.viewOptions.rawData = $scope.data.viewOptions.rawDataTemp;
+// 			$scope.data.queryOptions.orderBy = h;
+// 			if($scope.data.sortCache[h] && $scope.data.sortCache[h] == "asc"){
+// 				$scope.data.sortCache[h] = "desc";
+// 			} else {
+// 				$scope.data.sortCache[h] = "asc";
+// 			}
+// 			var orderDirections = { "asc" : { title: "Ascending", key: "asc"}, "desc": { title: "Descending", key: "desc"}};
+// 			$scope.data.queryOptions.orderDirection = orderDirections[$scope.data.sortCache[h]];
+// 			$scope.refreshData();
+// 		}
+        
+// 		$scope.applyOptions = function(){
+// 			$scope.data.viewOptions = $scope.data.viewOptions || {};
+// 			$scope.data.viewOptions.rawData = $scope.data.viewOptions.rawDataTemp;
+// 			$scope.refreshData();
+// 		}
+        
+// 		$scope.setActive = function(i) {
+// 			return ($rootScope.currentPage == i) ? 'active' : 'waves-effect';
+// 		};
+
+// 		$scope.mergeQueryOptions = function(query){
+// 			if(query && $scope.data.queryOptions){
+// 				if($scope.data.queryOptions.searchField && $scope.data.queryOptions.search){
+// 					query[$scope.data.queryOptions.searchField + '[in]'] = $scope.data.queryOptions.search;
+// 				}
+// 				if($scope.data.queryOptions.orderBy){
+// 					query.order = $scope.data.queryOptions.orderBy; 
+// 				}
+// 				if($scope.data.queryOptions.orderDirection && $scope.data.queryOptions.orderDirection.key && ['asc', 'desc'].indexOf($scope.data.queryOptions.orderDirection.key) > -1){
+// 					query.orderType = $scope.data.queryOptions.orderDirection.key; 
+// 				}
+// 				if($scope.data.queryOptions.limit){
+// 					$scope.data.limit = $scope.data.queryOptions.limit;
+// 				}                
+// 			}
+// 			return query;
+			
+// 		}
+        
+// 		//Load all entries on initialization
+// 		$scope.listAll = async function(currentPage) {
+// 			if (!$scope.beforeLoadAll) $scope.beforeLoadAll = async function(query) {
+// 				return query;
+// 			};
+// 			var countQueryParam = {
+// 				count: false
+// 			};
+//             countQueryParam = $scope.mergeQueryOptions(countQueryParam);            
+// 			var countQuery = await $scope.beforeLoadAll(countQueryParam) || countQueryParam;
+
+// 			//$scope.loading = true;
+// 			$scope.count(countQuery, async function() {
+// 				$scope.loading = true;
+// 				$scope.data.pagesCount = parseInt(($scope.data.records - 1) / $scope.data.limit) + 1;
+// 				$scope.data.pages = [];
+// 				for (var i = 0; i < $scope.data.pagesCount; i++) {
+// 					$scope.data.pages.push(i + 1);
+// 				}
+// 				if (!currentPage) {
+// 					if (!($scope.data.pages.indexOf($rootScope.currentPage) > -1)) {
+// 						if ($rootScope.currentPage > 0) {
+// 							$rootScope.currentPage = $scope.data.pages[$scope.data.pagesCount - 1];
+// 						} else {
+// 							$rootScope.currentPage = 1;
+// 						}
+// 					}
+// 				} else {
+// 					$rootScope.currentPage = currentPage;
+// 				}
+// 				var dataQueryParam = {
+// 					limit: $scope.data.limit,
+// 					offset: ($rootScope.currentPage - 1) * $scope.data.limit
+// 				};
+//                 dataQueryParam = $scope.mergeQueryOptions(dataQueryParam);                
+// 				var dataQuery = await $scope.beforeLoadAll(dataQueryParam) || dataQueryParam;
+
+// 				$scope.query(dataQuery, function(r) {
+// 					$scope.loading = false;
+                    
+// 					setTimeout(function(){
+// 						if(!$scope.loadedOnce){
+// 							$scope.loadedOnce = true;
+// 							$("table").tableExport();
+// 						}
+// 					}, 500);
+                    
+// 					if (r && r.length > 0) {
+// 						// var headers = Object.getOwnPropertyNames(r[0]);
+// 						// $scope.data.listHeadersRaw = headers;
+// 						// if(headers.indexOf("id") > -1) headers.splice(headers.indexOf("id"), 1);
+// 						// if(headers.indexOf("secret") > -1) headers.splice(headers.indexOf("secret"), 1);
+// 						// headers = headers.filter(function(p){ return (p.slice(-3) !== "_id")});
+// 						// if($scope.removeListHeaders){
+// 						// 	var removeHeaders = $scope.removeListHeaders();
+// 						// 	for (var i = 0; i < removeHeaders.length; i++) {
+// 						// 		var h = removeHeaders[i];
+// 						// 		if(headers.indexOf(h) > -1) headers.splice(headers.indexOf(h), 1);
+// 						// 	}
+// 						// }
+// 						// $scope.data.listKeys = headers;
+// 						// headers = headers.map(function(p){ return H.toTitleCase(H.replaceAll(p, '_', ' '))});
+
+// 						$scope.data.listKeys = $scope.data.singleKeys.map(function(p){ return p; });
+// 						var headers = $scope.data.singleKeys.map(function(p) {
+// 							return $scope.data.singleKeysInfo[p].title;
+// 						});
+						
+// 						if($scope.removeListHeaders){
+// 							var removeHeaders = $scope.removeListHeaders();
+// 							for (var i = 0; i < removeHeaders.length; i++) {
+// 								var h = removeHeaders[i];
+// 								if(headers.indexOf(h) > -1) {
+// 									var ind = headers.indexOf(h);
+// 									headers.splice(ind, 1);
+// 									$scope.data.listKeys.splice(ind, 1);
+// 								}
+// 							}
+// 						}
+                        
+// 						$scope.setListHeaders(headers);
+// 						setTimeout(function(){
+// 							try{
+// 								$('.tableexport-caption').detach();
+// 								$('table').tableExport();
+// 							} catch(ex){
+								
+// 							}
+							
+// 						}, 1000);                        
+// 					}
+                    
+//                     if(dataQuery.order && dataQuery.orderType) $scope.data.sortCache[dataQuery.order] = dataQuery.orderType;
+                    
+// 					if ($scope.onLoadAll) $scope.onLoadAll(r);
+// 				});
+
+// 			});
+// 		};
+
+// 		$scope.listAllPrev = function() {
+// 			if (($scope.currentPage - 1) > 0) {
+// 				$scope.listAll($scope.currentPage - 1);
+// 			}
+// 		}
+
+// 		$scope.listAllNext = function() {
+// 			if (($scope.currentPage + 1) <= $scope.data.pages.length) {
+// 				$scope.listAll($scope.currentPage + 1);
+// 			}
+// 		}
+
+// 		//Load entry on initialization
+// 		$scope.loadSingle = async function(callback) {
+// 			//$scope.loading = true;
+// 			$scope.get($routeParams.id, async function(r) {
+// 				if ($scope.onLoad) await $scope.onLoad(r);
+// 				if (callback) callback(r);
+// 				GLOBALS.methods.autoFocus();
+// 				//$scope.loading = false;
+// 			});
+// 		};
+
+
+// 		//Toggle Visibility
+// 		$scope.toggleVisibility = function(item) {
+// 			item.visible = !item.visible;
+// 		};
+
+// 		//Toggle lock
+// 		$scope.toggleLock = function() {
+// 			$scope.locked = !$scope.locked;
+// 			if(!$scope.locked){
+//                 $scope.mode = $scope.MODES.edit;
+// 				GLOBALS.methods.autoFocus();
+// 			}            
+// 		};
+
+// 		//Update a single record
+// 		$scope.updateSingle = function(callback) {
+// 			//$scope.loading = true;
+//             $scope.saveClicked = true;
+// 			if ($scope.beforeUpdate) {
+// 				$scope.beforeUpdate($scope.data.single, function(r) {
+// 					var update = true;
+// 					if ($scope.beforeUpdateBase) update = $scope.beforeUpdateBase();
+// 					if (update) {
+// 						$scope.update($scope.data.single, function(r) {
+// 							$scope.locked = true;
+
+// 							if (r && r.error) {
+// 								if ($scope.onError) {
+// 									$scope.onError(r.error, function(e) {
+// 										if ($scope.onErrorBase) $scope.onErrorBase(e);
+// 										return;
+// 									});
+// 									return;
+// 								} else {
+// 									if ($scope.onErrorBase) $scope.onErrorBase(r.error);
+// 									return;
+// 								}
+// 							}
+
+// 							if ($scope.onUpdate) {
+// 								$scope.onUpdate(r, function(r) {
+// 									if ($scope.onUpdateBase) $scope.onUpdateBase(r);
+// 								});
+// 							} else {
+// 								if ($scope.onUpdateBase) $scope.onUpdateBase(r);
+// 							}
+
+// 							if (callback) callback(r);
+// 							//$scope.loading = false;
+// 						});
+// 					}
+
+// 				});
+// 			} else {
+// 				var update = true;
+// 				if ($scope.beforeUpdateBase) update = $scope.beforeUpdateBase();
+// 				if (update) {
+// 					$scope.update($scope.data.single, function(r) {
+// 						$scope.locked = true;
+
+// 						if (r && r.error) {
+// 							if ($scope.onError) {
+// 								$scope.onError(r.error, function(e) {
+// 									if ($scope.onErrorBase) $scope.onErrorBase(e);
+// 									return;
+// 								});
+// 								return;
+// 							} else {
+// 								if ($scope.onErrorBase) $scope.onErrorBase(r.error);
+// 								return;
+// 							}
+// 						}
+
+// 						if ($scope.onUpdate) {
+// 							$scope.onUpdate(r, function(r) {
+// 								if ($scope.onUpdateBase) $scope.onUpdateBase(r);
+// 							});
+// 						} else {
+// 							if ($scope.onUpdateBase) $scope.onUpdateBase(r);
+// 						}
+
+// 						if (callback) callback(r);
+// 						//$scope.loading = false;
+// 					});
+// 				}
+// 			}
+// 		};
+// 		//Initialize a single record
+// 		$scope.newSingle = async function(callback) {
+// 			$scope.locked = false;
+//             $scope.mode = $scope.MODES.add;
+// 			$scope.initSingle();
+// 			if ($scope.onInit) await $scope.onInit($scope.data.single);
+// 			if (callback) callback();
+// 		};
+
+// 		//Save a new single record
+// 		$scope.saveSingle = function(callback) {
+// 			//$scope.loading = true;
+//             $scope.saveClicked = true;
+// 			if ($scope.beforeSave) {
+// 				$scope.beforeSave($scope.data.single, function(r) {
+// 					var save = true;
+// 					if ($scope.beforeSaveBase) save = $scope.beforeSaveBase();
+// 					if (save) {
+// 						$scope.save($scope.data.single, function(r) {
+// 							$scope.locked = true;
+
+// 							if ((r && r.error) || (r && r.data && r.data.error)) {
+// 								if ($scope.onError) {
+// 									$scope.onError(r.error, function(e) {
+// 										if ($scope.onErrorBase) $scope.onErrorBase(e);
+// 										return;
+// 									});
+// 									return;
+// 								} else {
+// 									if ($scope.onErrorBase) $scope.onErrorBase(r.data.error);
+// 									return;
+// 								}
+// 							}
+
+// 							if ($scope.onSave) {
+// 								$scope.onSave(r, function(r) {
+// 									if ($scope.onSaveBase) $scope.onSaveBase(r);
+// 								});
+// 							} else {
+// 								if ($scope.onSaveBase) $scope.onSaveBase(r);
+// 							}
+
+// 							if (callback) callback(r);
+// 							//$scope.loading = false;
+// 						});
+// 					}
+// 				});
+// 			} else {
+// 				var save = true;
+// 				if ($scope.beforeSaveBase) save = $scope.beforeSaveBase();
+// 				if (save) {
+// 					$scope.save($scope.data.single, function(r) {
+// 						$scope.locked = true;
+
+// 						if ((r && r.error) || (r && r.data && r.data.error)) {
+// 							if ($scope.onError) {
+// 								$scope.onError(r.error, function(e) {
+// 									if ($scope.onErrorBase) $scope.onErrorBase(e);
+// 									return;
+// 								});
+// 								return;
+// 							} else {
+// 								if ($scope.onErrorBase) $scope.onErrorBase(r.data.error);
+// 								return;
+// 							}
+// 						}
+
+// 						if ($scope.onSave) {
+// 							$scope.onSave(r, function(r) {
+// 								if ($scope.onSaveBase) $scope.onSaveBase(r);
+// 							});
+// 						} else {
+// 							if ($scope.onSaveBase) $scope.onSaveBase(r);
+// 						}
+
+// 						if (callback) callback(r);
+// 						//$scope.loading = false;
+// 					});
+// 				}
+// 			}
+
+// 		};
+
+// 		//Change a property in single
+// 		$scope.changeSingle = function(property, value) {
+// 			this.data.single[property] = value;
+// 		};
+
+
+// 		/*Define options
+// 			init:true -> Load all records when the controller loads
+// 		*/
+// 		if (options) {
+// 			$scope.options = options;
+// 			if ($scope.options.init) {
+// 				$scope.query();
+// 			}
+// 		}
+
+// 		//Any extra stuff you might want to merge into the data object
+// 		if (extras) {
+// 			for (var e in extras) {
+// 				$scope.data[e] = extras[e];
+// 			}
+// 		}
+
+
+// 		//Localized resources
+// 		$scope.textResources = {
+// 			title: {
+// 				single: '',
+// 				list: ''
+// 			},
+// 			templates: {
+// 				edit: '',
+// 				create: '',
+// 				list: ''
+// 			}
+// 		};
+
+// 		$scope.initTextResources = function(listTitle, singleTitle, listTemplate, listItemTemplate, listHeaderTemplate, listFooterTemplate, newTemplate, editTemplate, singleHeaderTemplate, singleFooterTemplate) {
+// 			$scope.textResources.title.list = listTitle;
+// 			$scope.textResources.title.single = singleTitle;
+// 			$scope.textResources.templates.list = listTemplate;
+// 			$scope.textResources.templates.listItem = listItemTemplate;
+// 			$scope.textResources.templates.listHeader = listHeaderTemplate;
+// 			$scope.textResources.templates.listFooter = listFooterTemplate;
+// 			$scope.textResources.templates.create = newTemplate;
+// 			$scope.textResources.templates.edit = editTemplate;
+// 			$scope.textResources.templates.singleHeader = singleHeaderTemplate;
+// 			$scope.textResources.templates.singleFooter = singleFooterTemplate;
+// 		};
+
+// 		$scope.initTextResourcesEasy = function(route, singular) {
+// 			if (!route || route == '') {
+// 				route = $scope.currentRoute;
+// 			}
+// 			var plural = route.toUpperCase();
+			
+//             //if (!singular || singular == '') singular = plural.substring(0, plural.length - 1);
+// 			if (!singular || singular == '') singular = H.toSingular(plural).toUpperCase();
+
+//             var listTemplate = 'app/modules/' + route + '/list.html';
+// 			var listItemTemplate = 'app/modules/' + route + '/list-item.html';
+// 			var listHeaderTemplate = 'app/modules/' + route + '/list-header.html';
+// 			var listFooterTemplate = 'app/modules/' + route + '/list-footer.html';
+// 			var singleTemplate = 'app/modules/' + route + '/single.html';
+// 			var singleHeaderTemplate = 'app/modules/' + route + '/single-header.html';
+// 			var singleFooterTemplate = 'app/modules/' + route + '/single-footer.html';
+
+// 			$scope.initTextResources(plural, singular, listTemplate, listItemTemplate, listHeaderTemplate, listFooterTemplate, singleTemplate, singleTemplate, singleHeaderTemplate, singleFooterTemplate);
+// 		};
+
+
+// 		$scope.initTextResourcesAuto = function(route, singular) {
+// 			if (!route || route == '') {
+// 				route = $scope.currentRoute;
+// 			}
+// 			var plural = route.toUpperCase();
+
+//             //if (!singular || singular == '') singular = plural.substring(0, plural.length - 1);
+// 			if (!singular || singular == '') singular = H.toSingular(plural).toUpperCase();;
+
+// 			var common = "common/templates";
+
+
+// 			var listTemplate = 'app/modules/' + common + '/list-extra.html';
+// 			var listItemTemplate = 'app/modules/' + common + '/list-item.html';
+// 			var listHeaderTemplate = 'app/modules/' + common + '/list-header.html';
+// 			var listFooterTemplate = 'app/modules/' + common + '/list-footer.html';
+// 			var singleTemplate = 'app/modules/' + common + '/single.html';
+// 			var singleHeaderTemplate = 'app/modules/' + common + '/single-header.html';
+// 			var singleFooterTemplate = 'app/modules/' + common + '/single-footer.html';
+
+// 			$scope.initTextResources(plural, singular, listTemplate, listItemTemplate, listHeaderTemplate, listFooterTemplate, singleTemplate, singleTemplate, singleHeaderTemplate, singleFooterTemplate);
+// 		};
+
+// 		$scope.setTitle = function(t, v) {
+// 			$scope.textResources.title[t] = v;
+// 		};
+
+// 		$scope.getTitle = function(t) {
+// 			switch (t) {
+// 				case 'single':
+// 					if ($scope.getSingularTitle) return $scope.getSingularTitle();
+// 					return $scope.textResources.title.single;
+// 				case 'list':
+// 					return $scope.textResources.title.list;
+// 				default:
+// 					return $scope.textResources.title.list;
+// 			}
+// 		};
+
+// 		$scope.getTemplate = function(t) {
+// 			switch (t) {
+// 				case 'edit':
+// 					return $scope.textResources.templates.edit;
+// 				case 'new':
+// 					return $scope.textResources.templates.create;
+// 				case 'list':
+// 					return $scope.textResources.templates.list;
+// 				case 'list-item':
+// 					return $scope.textResources.templates.listItem;
+// 				case 'list-header':
+// 					return $scope.textResources.templates.listHeader;
+// 				case 'list-footer':
+// 					return $scope.textResources.templates.listFooter;
+// 				case 'single-header':
+// 					return $scope.textResources.templates.singleHeader;
+// 				case 'single-footer':
+// 					return $scope.textResources.templates.singleFooter;
+// 				default:
+// 					return '';
+// 			}
+
+// 		};
+        
+// 		$scope.setTemplate = function(key, value){
+// 			$scope.templates[key] = value;
+// 		}
+
+// 		$scope.getTableHeaders = function() {
+// 			var headers = [];
+// 			if ($scope.data.list && $scope.data.list.length > 0 && $scope.data.list[0]) {
+// 				headers = Object.getOwnPropertyNames($scope.data.list[0]);
+// 			}
+// 			return headers;
+// 		};
+
+// 		$scope.setListHeaders = function(headers) {
+// 			$scope.data.listHeaders = headers;
+// 		};
+
+// 		$scope.changeListHeaders = function(header, replacement) {
+// 			if ($scope.data.listHeaders && $scope.data.listHeaders.indexOf(header) > -1) {
+// 				$scope.data.listHeaders[$scope.data.listHeaders.indexOf(header)] = replacement;
+// 			}
+// 		};
+
+// 		$scope.buildSingleHeaders = function() {
+// 			$scope.data.singleKeys = [] //Object.getOwnPropertyNames($scope.data.single).filter(function(p){ return !(p.startsWith('$') || p == 'secret'); });
+// 			$scope.data.foreignKeys = {};
+// 			$scope.data.foreignKeysResources = {};
+// 			$scope.data.singleKeysInfo = {};
+// 			for (i in $scope.metadata) {
+// 				var o = JSON.parse(JSON.stringify($scope.metadata[i]));
+// 				var k = o.Field;
+// 				if (k == "secret") continue;
+// 				$scope.data.singleKeys.push(k);
+// 				var type = "text";
+// 				var required = o.Null == 'NO';
+// 				var title = H.toTitleCase(H.replaceAll(k, '_', ' '));
+// 				if(title.endsWith(' Id')) title = title.substring(0,title.length - 3);
+// 				if (o.Key == "MUL"){
+// 					type = "fkey";
+// 					//fkeyTable = title.replace(' ', '_').toLowerCase() + 's';
+// 					fkeyTable = H.toPlural(title.replace(' ', '_').toLowerCase());					
+// 					$scope.data.foreignKeysResources[fkeyTable] = R.get(fkeyTable);
+					
+// 					(function(fkeyTable){
+// 						$scope.data.foreignKeysResources[fkeyTable].query({}, function(r){
+// 							$scope.data.foreignKeys[fkeyTable] = r;
+// 						}, function(e){
+// 						});
+// 					})(fkeyTable);
+// 				} else if (k.startsWith("is_") || o.Type == "tinyint(1)") {
+// 					type = "bool";
+// 				} else if (o.Type.startsWith("int") || o.Type.startsWith("bigint") || o.Type.startsWith("mediumint") || o.Type.startsWith("smallint") || o.Type.startsWith("float") || o.Type.startsWith("double") || o.Type.startsWith("tinyint")) {
+// 					type = "number";
+// 				} else if (o.Type == "date"){
+// 					type = "date";
+// 				} else if (o.Type == "datetime"){
+// 					type = "datetime";
+// 				} else if (k.endsWith("email")) {
+// 					type = "email";
+// 				} else if (k.indexOf("password") > -1) {
+// 					type = "password";
+// 				} else if (o.Type == "text") {
+// 					type = "textarea";
+// 				} else {
+// 					type = "text";
+// 				}
+// 				$scope.data.singleKeysInfo[k] = {
+// 					type: type,
+// 					title: title,
+// 					required: required
+// 				};
+// 			}
+
+// 		}
+
+// 		$scope.showDialog = function(ev, title, content, okText = "OK", cancelText = "Cancel", okHandler, cancelHandler, closeHandler) {
+// 			Popup.show({
+// 					title: title,
+// 					body: content,
+// 					buttons: [{
+// 						text: okText,
+// 						theme: 'success',
+// 						click: function(callback, btn, data) {
+// 							if (okHandler) okHandler();
+// 							if (callback) callback(btn);
+// 						},
+// 						cleanup: function(data) {
+
+// 						}
+// 					}, {
+// 						text: cancelText,
+// 						theme: 'warning',
+// 						click: function(callback, btn, data) {
+// 							if (cancelHandler) cancelHandler();
+// 						}
+// 					}],
+// 					scope: $scope,
+// 					spinner: true,
+// 					close: closeHandler || function(data) {
+
+// 					}
+// 				})
+// 				// var confirm = $mdDialog.confirm()
+// 				//       .title(title)
+// 				//       .textContent(content)
+// 				//       .ariaLabel('')
+// 				//       .targetEvent(ev)
+// 				//       .ok(okText)
+// 				//       .cancel(cancelText);
+
+// 			// $mdDialog.show(confirm).then(function() {
+// 			//   if(okHandler) okHandler();
+// 			// }, function() {
+// 			//   if(cancelHandler) cancelHandler();
+// 			// });
+// 		};
+
+// 		$scope.onErrorBase = function(obj) {
+// 			$scope.showDialog(null, M.ERROR_TITLE, M.SAVED_ERROR, M.SAVED_OK, M.SAVED_CANCEL, function() {
+// 				$scope.locked = false;
+// 			}, function() {
+// 				$location.path($scope.currentRoute);
+// 			}, function(){ 
+// 				$scope.locked = false; 
+// 			});
+// 		};
+
+// 		$scope.onSaveBase = function(obj) {
+// 			$scope.showDialog(null, M.SAVED_TITLE, M.SAVED_MESSAGE, M.SAVED_OK, M.SAVED_CANCEL, function() {
+// 				$scope.newSingle();
+// 			}, function() {
+// 				$location.path($scope.currentRoute);
+// 			}, function() {
+//                 $scope.mode = $scope.MODES.view;
+//             });
+// 		};
+
+// 		$scope.onUpdateBase = function(obj) {
+// 			$scope.showDialog(null, M.SAVED_TITLE, M.SAVED_MESSAGE, M.SAVED_OK, M.SAVED_CANCEL, function() {}, function() {
+// 				$location.path($scope.currentRoute);
+// 			});
+// 		};
+
+// 		$scope.beforeSaveBase = $scope.beforeUpdateBase = function(obj) {
+// 			return (!Object.keys($scope.forms[$scope.currentRoute + "Form"].$error).length);
+// 		};
+
+// 		$scope.goToEdit = function() {
+// 			$location.path($scope.currentRoute + "/" + $scope.data.single.id);
+// 		};
+
+// 		$scope.goToNew = function() {
+// 			$location.path($scope.currentRoute + "/" + "new");
+// 		};
+
+// 		$scope.initLaunched = false;
+// 		$scope.launchInit = async function(){
+// 			if(!$scope.initLaunched){
+// 				if($scope.init) await $scope.init();
+// 				$scope.initLaunched = true;	
+// 			}
+// 		}
+		
+// 		$scope.$watch('init', function(n, o){
+// 			$scope.launchInit();
+// 		});
+        
+		
+// 		GLOBALS.methods.autoFocus();
+
+// 	};
+// }
+
+
 //ControllerFactory helps wrap basic CRUD operations for any API resource
 function ControllerFactory(resourceName, options, extras) {
 	return function($scope, $rootScope, $http, $routeParams, $location, Popup, H, M, S, R) {
@@ -1354,6 +2377,7 @@ function ControllerFactory(resourceName, options, extras) {
 			$scope.data.foreignKeys = {};
 			$scope.data.foreignKeysResources = {};
 			$scope.data.singleKeysInfo = {};
+			var aliases = RegisterRoutes().aliases;
 			for (i in $scope.metadata) {
 				var o = JSON.parse(JSON.stringify($scope.metadata[i]));
 				var k = o.Field;
@@ -1366,8 +2390,9 @@ function ControllerFactory(resourceName, options, extras) {
 				if (o.Key == "MUL"){
 					type = "fkey";
 					//fkeyTable = title.replace(' ', '_').toLowerCase() + 's';
-					fkeyTable = H.toPlural(title.replace(' ', '_').toLowerCase());					
-					$scope.data.foreignKeysResources[fkeyTable] = R.get(fkeyTable);
+					fkeyTable = H.toPlural(title.replace(' ', '_').toLowerCase());		
+					var fKeyTableOrAlias = aliases[fkeyTable] ? aliases[fkeyTable] : fkeyTable;			
+					$scope.data.foreignKeysResources[fkeyTable] = R.get(fKeyTableOrAlias);
 					
 					(function(fkeyTable){
 						$scope.data.foreignKeysResources[fkeyTable].query({}, function(r){
@@ -1398,6 +2423,14 @@ function ControllerFactory(resourceName, options, extras) {
 					required: required
 				};
 			}
+
+			console.log('DATA');
+			console.log($scope.data.singleKeys);
+			console.log($scope.data.singleKeysInfo);
+			console.log($scope.data.foreignKeys);
+			console.log($scope.data.foreignKeysResources);
+
+			
 
 		}
 
@@ -1499,16 +2532,19 @@ function ControllerFactory(resourceName, options, extras) {
 	};
 }
 /*global app, ControllerFactory, RegisterRoutes, RegisterData*/
-function RegisterEasyController(route, headers, controller, auto = false) {
-	app.controller(route + 'ControllerBase', ControllerFactory(route));
+function RegisterEasyController(route, headers, controller, auto = false, alias = null) {
+	var x = (alias ? alias : route);
+	console.log('registering ' + x + 'ControllerBase');
 
-	app.controller(route + 'Controller', function($scope, $controller, H) {
+	app.controller(x + 'ControllerBase', ControllerFactory(route));
+
+	app.controller(x + 'Controller', function($scope, $controller, H) {
 		//Copy all scope variables from Base Controller
-		$controller(route + 'ControllerBase', {
+		$controller(x + 'ControllerBase', {
 			$scope: $scope
 		});
 		try {
-			$controller(route + 'ControllerExtension', {
+			$controller(x + 'ControllerExtension', {
 				$scope: $scope
 			});
 		} catch (ex) {
@@ -1547,6 +2583,20 @@ function RegisterEasyController(route, headers, controller, auto = false) {
 		RegisterEasyController(autoRoutes[i], null, null, true /*, data[easyRoutes[i]].headers*/ );
 	}
 })();
+
+
+//Register Aliases
+(function() {
+	var aliases = RegisterRoutes().aliases || [];
+	//var data = RegisterData();
+
+	for (var i in aliases) {
+		alias = i;
+		route = aliases[i];
+		console.log('trying to register ' + alias + ' for route ' + route);
+		RegisterEasyController(route, null, null, true, alias /*, data[easyRoutes[i]].headers*/ );
+	}
+})();
 function RegisterMenuItems(){
     return [
         {
@@ -1559,43 +2609,44 @@ function RegisterMenuItems(){
 	        allowedRoles: ['user', 'admin', 'superadmin']
         },
         {
+            header: 'Project Administration',
+            showHeader: true,
+            showSeparator: true,
+            items: [
+                {action: 'projects', icon: 'assignment', color: 'brown', text: 'Project'},
+                {action: 'user_stories', icon: 'list', color: 'brown', text: 'User_stories'},
+                {action: 'tasks', icon: 'assignment_turned_in', color: 'green', text: 'Tasks'},
+                {action: 'bugs', icon: 'bug_report', color: 'brown', text: 'Bugs'},
+                {action: 'milestones', icon: 'flag', color: 'black', text: 'Milestones'},
+              
+                // {action: 'settings', icon: 'settings', color: '', text: 'Settings'},
+        	    // {action: 'categories', icon: 'list', color: 'orange', text: 'Categories'},
+        	    // {action: 'users', icon: 'person', color: 'blue', text: 'Users'},
+                // {action: 'groups', icon: 'group', color: 'green', text: 'Groups'},
+                // {action: 'user_groups', icon: 'group', color: 'green', text: 'user Groups'}
+                ],
+	        allowedRoles: ['admin','user']
+        },
+        {
             header: '',
             showHeader: false,
             showSeparator: false,
             items: [
-        	    {action: 'tasks', icon: 'assignment_turned_in', color: 'green', text: 'Tasks'},
         	    {action: 'profiles', icon: 'person', color: 'green', text: 'Profile'},
                 {action: 'leaves', icon: 'note_add', color: 'green', text: 'Leaves'},
                 {action: 'timesheets', icon: 'timeline', color: 'green', text: 'Timesheet'},
-                {action: 'bugs', icon: 'bug_report', color: 'brown', text: 'Bugs'},
-                {action: 'projects', icon: 'assignment', color: 'brown', text: 'Project'},
-        	    {action: 'user_stories', icon: 'list', color: 'brown', text: 'User_stories'},
-        	   // {action: 'departments', icon: 'portrait', color: 'orange', text: 'Department'},
-                {action: 'milestones', icon: 'flag', color: 'black', text: 'Milestones'},
-               // {action: 'designations', icon: 'assignment', color: 'blue', text: 'Designation'},
+                
+                // {action: 'departments', icon: 'portrait', color: 'orange', text: 'Department'},
+                 // {action: 'designations', icon: 'assignment', color: 'blue', text: 'Designation'},
                 {action: 'reports', icon: 'pie_chart', color: 'purple', text: 'Reports',
         	    	items: [
         	    			{action: 'reports/1', icon: 'pie_chart', color: 'red', text: 'Sample Report #1'},
         	    			{action: 'reports/2', icon: 'pie_chart', color: 'green', text: 'Sample Report #2'},
         	    		]
         	    },
-        	    {action: 'alerts', icon: 'alarm', color: 'red', text: 'Alerts'}
+        	  //  {action: 'alerts', icon: 'alarm', color: 'red', text: 'Alerts'}
 	        ],
 	        allowedRoles: ['user', 'admin']
-        },
-        {
-            header: 'Administration',
-            showHeader: true,
-            showSeparator: true,
-            items: [
-        	    {action: 'settings', icon: 'settings', color: '', text: 'Settings'},
-        	    {action: 'categories', icon: 'list', color: 'orange', text: 'Categories'},
-        	    {action: 'users', icon: 'person', color: 'blue', text: 'Users'},
-                {action: 'groups', icon: 'group', color: 'green', text: 'Groups'},
-                {action: 'user_groups', icon: 'group', color: 'green', text: 'user Groups'}
-                
-	        ],
-	        allowedRoles: ['admin']
         },
         {
             header: 'Customer Management',
@@ -1724,8 +2775,15 @@ function RegisterRoutes() {
         autoRoutes: ['departments','designations','user_groups'
 
     ], // Either you can provide the names of your tables here, or you can excluded some of the routes below in autoRoutesExcludes
-        autoRoutesExcluded: [] // If you don't specify autoRoutes, all of your tables except routes defined in customRoutes and easyRoutes will automatically have UI under Masters menu. You can exclude some of those tables here
-    };
+        autoRoutesExcluded: [],
+         // If you don't specify autoRoutes, all of your tables except routes defined in customRoutes and easyRoutes will automatically have UI under Masters menu. You can exclude some of those tables here
+         aliases: {
+            "assign_tos" : "users",
+            "caught_bies" : "users",
+            "fix_bies" : "users", 
+            "updated_bies" : "users"
+        }
+        };
 }
 /*global app*/
 class Settings{
@@ -3388,7 +4446,7 @@ app.controller('unauthorizedController', function($scope, H){
 //you need to provide templates inside 'app/modules/tasks' folder. If you want to keep your templates somewhere else, you can pick
 //'autoRoutes' and then override the templates using setTemplate function.
 //Note that for 'autoRoutes', it is not even required to write Controller Extensions unless you want to modify the behaviour.
-app.controller('bugsControllerExtension', function($scope, $controller, $rootScope, $http, $location, Popup, H, M) {
+app.controller('bugsControllerExtension', function($scope,$route, $controller, $rootScope, $http, $location, Popup, H, M) {
     
     //This function is called when you need to make changes to the new single object.
     
@@ -3413,14 +4471,14 @@ app.controller('bugsControllerExtension', function($scope, $controller, $rootSco
         //This is where you can modify your query parameters.    
         // query.is_active = 1;
         query.is_deleted = 0;
-         
+         console.log($rootScope.currentUser.role);
         //return query;
     };
 
     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        console.log(obj);
+        //console.log(obj);
         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
     };
@@ -3428,25 +4486,39 @@ app.controller('bugsControllerExtension', function($scope, $controller, $rootSco
     //This function is called before the create (POST) request goes to API
     $scope.beforeSave = async function(obj, next){
         //You can choose not to call next(), thus rejecting the save request. This can be used for extra validations.
-       
-       if($scope.errMessage)
-        {
-        	// $route.reload();
-        	alert("select proper date");
-        	$route.reload();
-        }
+        
+        delete obj.status;
+        delete obj.priority;
+        delete obj.fix_bies;
+        delete obj.assign_tos;
+        delete obj.caught_bies;
+        delete obj.user_story; 
+        
+
+    //    if($scope.errMessage)
+    //     {
+    //     	// $route.reload();
+    //     	alert("select proper date");
+    //     	$route.reload();
+    //     }
         next();
     };
 
     //This function is called after the create (POST) request is returned from API
     $scope.onSave = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been created.
+        
+        
+
+        console.log("Post data : "+obj);
         next();
     };
     
     //This function is called before the update (PUT) request goes to API
     $scope.beforeUpdate = async function(obj, next){
         //You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
+       // alert(obj);
+        console.log(JSON.stringify(obj));
         next();
         
         
@@ -3455,6 +4527,7 @@ app.controller('bugsControllerExtension', function($scope, $controller, $rootSco
     //This function is called after the update (PUT) request is returned from API
     $scope.onUpdate = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been updated.
+        console.log("onsubmit "+obj);
         next();
     };
     
@@ -3489,22 +4562,22 @@ app.controller('bugsControllerExtension', function($scope, $controller, $rootSco
     
     // this is is_deleted functionlity
     
-    // $scope.a=1
-    // $scope.update=function(id){
-    //     var data = {
-    //             is_deleted:$scope.a
-    //     };
+    $scope.a=1
+    $scope.update=function(id){
+        var data = {
+                is_deleted:$scope.a
+        };
         
-    //     $http.put(H.S.baseUrl + '/bugs/' + id,data).then(function(res)
-    //     {
+        $http.put(H.S.baseUrl + '/bugs/' + id,data).then(function(res)
+        {
             
-    //             console.log(data);
-    //             $route.reload();
-    //     },
-    //         function(e) {
-    //             alert("... Error:" + e.data.error.message);
-    //         });
-    // }
+                console.log(data);
+                $route.reload();
+        },
+            function(e) {
+                alert("... Error:" + e.data.error.message);
+            });
+    }
 
 	
 	
@@ -4172,6 +5245,15 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 
 	$scope.data = {
 		counters: {
+			timesheetsCounter: {
+				title: 'TimeSheet',
+				value: '...',
+				icon: 'timeline',
+				background: 'purple',
+				color: 'white',
+				action: 'timesheets',
+				allowedRoles: ['user', 'admin']
+			},
 			tasksCounter: {
 				title: 'Tasks',
 				value: '...',
@@ -4179,13 +5261,41 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 				background: 'green',
 				color: 'white',
 				action: 'tasks',
-				allowedRoles: ['user', 'admin']
+				allowedRoles: ['user']
 			},
+			projectsCounter: {
+				title: 'Projects',
+				value: '...',
+				icon: 'assignment',
+				background: 'primary',
+				color: 'white',
+				action: 'projects',
+				allowedRoles: ['user']
+			},
+			bugsCounter: {
+				title: 'Bugs',
+				value: '...',
+				icon: 'bug_report',
+				background: 'red',
+				color: 'white',
+				action: 'bugs',
+				allowedRoles: ['user']
+			},
+			leavesCounter: {
+				title: 'Leaves',
+				value: '...',
+				icon: 'note_add',
+				background: 'black',
+				color: 'white',
+				action: 'leaves',
+				allowedRoles: ['user','admin']
+			},
+			
 			usersCounter: {
 				title: 'Users',
 				value: '...',
 				icon: 'person',
-				background: 'purple',
+				background: 'green',
 				color: 'white',
 				action: 'users',
 				allowedRoles: ['admin']
@@ -4194,9 +5304,27 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 				title: 'Groups',
 				value: '...',
 				icon: 'group',
-				background: 'pink',
+				background: 'gray',
 				color: 'white',
 				action: 'groups',
+				allowedRoles: ['admin']
+			},
+			departmentsCounter: {
+				title: 'Departments',
+				value: '...',
+				icon: 'portrait',
+				background: 'brown',
+				color: 'white',
+				action: 'departments',
+				allowedRoles: ['admin']
+			},
+			designationsCounter: {
+				title: 'Designation',
+				value: '...',
+				icon: 'assignment',
+				background: 'blue',
+				color: 'white',
+				action: 'designations',
 				allowedRoles: ['admin']
 			},
 			organizationsCounter: {
@@ -4249,7 +5377,8 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 	
 	function setCount(resourceName, counterName) {
 		R.count(resourceName, function (result) {
-			$scope.data.counters[counterName].value = result;
+		
+		//	$scope.data.counters[counterName].value = result;
 		});
 	}
 	
@@ -5516,6 +6645,180 @@ app.controller('settingsController', function($scope, $rootScope, $http, $cookie
     GLOBALS.methods.autoFocus();
 
 });
+// /*global app*/
+// //The name of the controller should be plural that matches with your API, ending with ControllerExtension. 
+// //Example: your API is http://localhost:8080/api/tasks then the name of the controller is tasksControllerExtension.
+// //To register this controller, just go to app/config/routes.js and add 'tasks' in 'easyRoutes' or 'autoRoutes' array.
+// //
+// //The main difference in 'easyRoutes' and 'autoRoutes' is that 'autoRoutes' generates complete CRUD pages, where as in 'easyRoutes'
+// //you need to provide templates inside 'app/modules/tasks' folder. If you want to keep your templates somewhere else, you can pick
+// //'autoRoutes' and then override the templates using setTemplate function.
+// //Note that for 'autoRoutes', it is not even required to write Controller Extensions unless you want to modify the behaviour.
+// app.controller('tasksControllerExtension', function($scope, $controller, $rootScope, $http, $location, Popup, H, M) {
+    
+//     $scope.visible = false;
+//     if($rootScope.currentUser.role=='admin')
+//     {
+//     	$scope.visible=true;
+//     }
+    
+//     //This function is called when you need to make changes to the new single object.
+//     $scope.onInit = async function(obj){
+//         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
+//         obj.is_active = 1;
+//     };
+    
+//     //This function is called when you are in edit mode. i.e. after a call has returned from one of your API that returns a single object. e.g http://localhost:8080/api/tasks/1
+//     $scope.onLoad = async function(obj){
+//         //$scope.data.single is available here. 'obj' refers to the same. It represents the object you are trying to edit.
+        
+//     };
+    
+//     //This function is called when you are in list mode. i.e. before a call has been placed to one of your API that returns a the paginated list of all objects matching your API.
+//     $scope.beforeLoadAll = async function(query){
+//         //This is where you can modify your query parameters.    
+//         //query.is_active = 1;
+//         //return query;
+//         if($scope.errMessage)
+//         {
+//         	// $route.reload();
+//         	alert("Select Proper Date");
+//         	$route.reload();
+//         }
+//         query.is_deleted=0;
+//     };
+
+//     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
+//     $scope.onLoadAll = async function(obj){
+//         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
+        
+//         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
+//         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
+//     };
+    
+//     //This function is called before the create (POST) request goes to API
+//     $scope.beforeSave = async function(obj, next){
+//         //You can choose not to call next(), thus rejecting the save request. This can be used for extra validations.
+//     	delete obj.status_id;
+//     	delete obj.user_story_id;
+//     	delete obj.priority_id;
+//     	delete obj.updated_by;
+// 		delete obj.assign_to;
+		
+//         next();
+//     };
+
+//     //This function is called after the create (POST) request is returned from API
+//     $scope.onSave = async function (obj, next){
+//         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been created.
+//         next();
+//     };
+    
+//     //This function is called before the update (PUT) request goes to API
+//     $scope.beforeUpdate = async function(obj, next){
+//         //You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
+//         next();
+//     };
+
+//     //This function is called after the update (PUT) request is returned from API
+//     $scope.onUpdate = async function (obj, next){
+//         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been updated.
+//         next();
+//     };
+    
+//     //This function will be called whenever there is an error during save/update operations.
+//     $scope.onError = async function (obj, next){
+//         //You can choose not to call next(), thus preventing the page to display the popup that confirms there has been an error.
+        
+//         next();
+        
+//     };
+//     var date = new Date().getDate();
+// 	var month = new Date().getMonth()+1;
+// 	var year = new Date().getFullYear();
+// 	// var pattern = /^([0-9]{2})-([0-9]{2})-([0-9]{4})$/;
+// 	$scope.dtmax  = year+"-"+month+"-"+date;
+// 	// $scope.dtmax  = date+"-"+month+"-"+year;
+// 	// console.log($scope.dtmax);
+// 	// $scope.data1 = function (initial_date,due_date)
+// 	// 	{
+// 	// 	//	$scope.abcd = initial_date;
+// 	// 		// alert("hello");
+//  //           $scope.errMessage = '';
+//  //           if (initial_date > due_date)
+//  //           {
+//  //               $scope.errMessage = 'End Date should be greater than start date';
+//  //               return false;
+//  //           }
+//  //       };
+//   $scope.data1 = function (initial_date, due_date)
+// 		{
+// 			// var pattern = /^([0-9]{2})-([0-9]{2})-([0-9]{4})$/;
+// 			// alert("hello");
+//             $scope.errMessage = '';
+//             if (initial_date > due_date )
+//             {
+//                 $scope.errMessage = 'End Date should be greater than start date';
+//                 return false;
+//             }
+//         };
+  
+  
+  
+//   $scope.a=1
+//     $scope.remove=function(id){
+//         var data = {
+//                 is_deleted:$scope.a
+//         };
+        
+//         $http.put(H.S.baseUrl + '/tasks/' + id,data).then(function(res)
+//         {
+            
+//                 console.log(data);
+//                 $route.reload();
+//         },
+//             function(e) {
+//                 alert("... Error:" + e.data.error.message);
+//             });
+//     }
+  
+  
+  
+  
+  
+//     // If the singular of your title is having different spelling then you can define it as shown below.
+//     // $scope.getSingularTitle = function(){
+//     //     return "TASK";
+//     // }
+
+//     // If you want don't want to display certain columns in the list view you can remove them by defining the function below.
+//     // if($rootScope.currentUser.role == 'user' || $rootScope.currentUser.role == 'admin')
+//     // {
+//     $scope.removeListHeaders = function(){
+//         return ['Is Deleted'];
+//     }
+//     //}
+
+//     // If you want to refresh the data loaded in grid, you can call the following method
+//     // $scope.refreshData();
+    
+//     // If you are using autoRoutes, and you want to override any templates, you may use the following function
+//     // $scope.setTemplate('list-item', 'app/your-path/your-template.html');
+//     // $scope.setTemplate('single', 'app/your-path/your-template.html');
+    
+//     // list-item.html template uses the 'td' element which will be rendered inside a 'table' & 'tr'. 
+//     // If you don't like the layout, and you want to replace it with your own, you can use the following method.
+//     // Note that if you override the 'list-items', then you have to use ng-repeat or any other mechanism to iterate over your data that is available in $scope.data.list.
+//     // $scope.setTemplate('list-items', 'app/your-path/your-template.html');
+    
+
+// });
+
+
+
+
+
+
 /*global app*/
 //The name of the controller should be plural that matches with your API, ending with ControllerExtension. 
 //Example: your API is http://localhost:8080/api/tasks then the name of the controller is tasksControllerExtension.
@@ -5525,7 +6828,7 @@ app.controller('settingsController', function($scope, $rootScope, $http, $cookie
 //you need to provide templates inside 'app/modules/tasks' folder. If you want to keep your templates somewhere else, you can pick
 //'autoRoutes' and then override the templates using setTemplate function.
 //Note that for 'autoRoutes', it is not even required to write Controller Extensions unless you want to modify the behaviour.
-app.controller('tasksControllerExtension', function($scope, $controller, $rootScope, $http, $location, Popup, H, M) {
+app.controller('tasksControllerExtension', function($scope, $controller, $rootScope, $http, $location, Popup, H, M , $route) {
     
     $scope.visible = false;
     if($rootScope.currentUser.role=='admin')
@@ -5557,6 +6860,7 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
         	$route.reload();
         }
         query.is_deleted=0;
+        
     };
 
     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
@@ -5570,11 +6874,11 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
     //This function is called before the create (POST) request goes to API
     $scope.beforeSave = async function(obj, next){
         //You can choose not to call next(), thus rejecting the save request. This can be used for extra validations.
-    	delete obj.status_id;
-    	delete obj.user_story_id;
-    	delete obj.priority_id;
-    	delete obj.updated_by;
-		delete obj.assign_to;
+    	delete obj.status;
+    	delete obj.user_story;
+    	delete obj.priority;
+    	delete obj.updated_bies;
+		delete obj.assign_tos;
 		
         next();
     };
@@ -5588,27 +6892,56 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
     //This function is called before the update (PUT) request goes to API
     $scope.beforeUpdate = async function(obj, next){
         //You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
+        alert("helo");
+        console.log($scope.data);
         next();
     };
 
     //This function is called after the update (PUT) request is returned from API
     $scope.onUpdate = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been updated.
+        alert("update click");
         next();
     };
     
     //This function will be called whenever there is an error during save/update operations.
     $scope.onError = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms there has been an error.
-        
-        next();
-        
+        next();       
     };
+    // console.log(date.toISOString().slice(0,10));
     var date = new Date().getDate();
 	var month = new Date().getMonth()+1;
 	var year = new Date().getFullYear();
 	// var pattern = /^([0-9]{2})-([0-9]{2})-([0-9]{4})$/;
-	$scope.dtmax  = year+"-"+month+"-"+date;
+    $scope.dtmax  = year+"-"+month+"-"+date;
+    //console.log($scope.dtmax);
+
+      //  console.log("this is  new time "+H.toDateTime(data.single.su));
+
+    $scope.currentDate = new Date();
+    $scope.checkDate = function(dt){
+        console.log( H.toDate(dt));
+        console.log($scope.currentDate);
+        return H.toDate(dt) > $scope.currentDate;
+    }
+
+
+    $scope.checkDay = function(dt)
+        {
+            // console.log( H.toDate(dt));    
+             $scope.diffTime = Math.ceil($scope.currentDate-H.toDate(dt) );
+             $scope.diff= Math.ceil($scope.diffTime / (1000 * 60 * 60 * 24)); 
+             if($scope.diff >=   0)
+             {
+             return $scope.diff+' days';
+             }
+            //  console.log($scope.diff);            
+        }
+
+
+
+    // console.log($scope.dtmax);
 	// $scope.dtmax  = date+"-"+month+"-"+year;
 	// console.log($scope.dtmax);
 	// $scope.data1 = function (initial_date,due_date)
@@ -5636,22 +6969,7 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
   
   
   
-  $scope.a=1
-    $scope.remove=function(id){
-        var data = {
-                is_deleted:$scope.a
-        };
-        
-        $http.put(H.S.baseUrl + '/tasks/' + id,data).then(function(res)
-        {
-            
-                console.log(data);
-                $route.reload();
-        },
-            function(e) {
-                alert("... Error:" + e.data.error.message);
-            });
-    }
+  
   
   
   
@@ -5681,9 +6999,29 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
     // If you don't like the layout, and you want to replace it with your own, you can use the following method.
     // Note that if you override the 'list-items', then you have to use ng-repeat or any other mechanism to iterate over your data that is available in $scope.data.list.
     // $scope.setTemplate('list-items', 'app/your-path/your-template.html');
-    
+   
+    console.log("hello");
+$scope.a=1
+$scope.remove=function(id){
+    var data = {
+        is_deleted:$scope.a
+    };
+    console.log("function called")
+    $http.put(H.S.baseUrl + '/tasks/' + id,data).then(function(res)
+    {
+        console.log(data);
+        $route.reload();
+    },
+    function(e) {
+        alert("... Error:" + e.data.error.message);
+    });
+}
+
 
 });
+
+
+
 /*global app*/
 //The name of the controller should be plural that matches with your API, ending with ControllerExtension. 
 //Example: your API is http://localhost:8080/api/tasks then the name of the controller is tasksControllerExtension.

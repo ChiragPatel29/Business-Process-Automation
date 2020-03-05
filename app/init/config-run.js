@@ -131,6 +131,31 @@ app.config(async function($routeProvider, $resourceProvider, $httpProvider, $con
 			});
 		}
 
+		 var aliases = customRoutesProvider.routes.aliases;
+		
+		 for (var i in aliases) {
+		 	var r= i;
+			
+			routes.push({
+				route: r,
+				template: 'common/templates/list',
+				controller: r
+			});
+			routes.push({
+				route: r + '/new',
+				template: 'common/templates/new',
+				controller: r
+			});
+			routes.push({
+				route: r + '/:id',
+				template: 'common/templates/edit',
+				controller: r
+			});
+			existingRoutes.push(r);
+	
+		}
+				
+
 		if (Settings.get().autoMasters) {
 			var initInjector = angular.injector(['ng']);
 			var $http = initInjector.get('$http');
@@ -146,7 +171,6 @@ app.config(async function($routeProvider, $resourceProvider, $httpProvider, $con
 								color: '',
 								text: Helper.toTitleCase(Helper.replaceAll(i[j], '_', ' '))
 							});
-
 
 							routes.push({
 								route: i[j],
