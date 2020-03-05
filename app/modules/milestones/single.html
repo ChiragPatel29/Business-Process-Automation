@@ -214,11 +214,14 @@
 		<label for="release_date" class="col-md-4 col-form-label text-md-right">Release Date:</label>
 		<div class="col-md-6">
 			<!-- <datepicker date-format="yyyy-MM-dd" date-min-limit="{{data.single.due_date}}"> -->
-			<!--<input type="text" id="due_date" name="due_date" class="form-control"  ng-model="data.single.due_date" date-picker  ng-required="initial_date.required" min="{{currentDate | date:'yyyy-MM-dd'}}" ng-disabled="locked" placeholder="YYYY-MM-DD">-->
+			<!-- <input type="text" id="due_date" name="due_date" class="form-control"  ng-model="data.single.due_date" date-picker  ng-required="initial_date.required" min="{{currentDate | date:'yyyy-MM-dd'}}" ng-disabled="locked" placeholder="YYYY-MM-DD"> -->
+			
 			<input type="datetime-local" id="release_date" name="release_date" class="form-control" ng-model="data.single.release_date" autocomplete="off" ng-change='data2(data.single.due_date,data.single.release_date)' required="release_date.required" ng-disabled="locked" placeholder="YYYY-MM-DD" >
+			<!-- <input type="text" id="release_date" name="release_date" class="form-control" ng-model="data.single.release_date" autocomplete="off" ng-change='data2(data.single.due_date,data.single.release_date)' required="release_date.required" ng-disabled="locked" placeholder="YYYY-MM-DD" > -->
 			<!-- </datepicker> -->
 			<span style="color :rgb(255, 0, 0);">{{errMessage1}}</span>
-			<!--<input type="date" class="form-control" id="due_date" ng-model="endDate" ng-change='checkErr(startDate,endDate)' />-->
+			
+
 		</div>
 		<div ng-messages="forms.milestonesForm.release_date.$error" ng-show="forms.milestonesForm.release_date.$dirty">
 			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
