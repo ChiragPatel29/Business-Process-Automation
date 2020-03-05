@@ -58,10 +58,10 @@
 
 <td>
 	<!-- <span class="small col-green">{{ item['due_date']}} </span> -->
-	<span class="medium col-red"> {{  checkDay(item['due_date'])  }}{{$scope.diff}} </span>
+	<span class="medium col-red"> {{  checkDay(item['release_date'])  }}{{$scope.diff}} </span>
 	<br>
-	<span class="medium col-red"> {{  checkDate(item['due_date']) ? '' : 'Delayed' }} </span>
-	<span class="medium col-blue"> {{  checkDate(item['due_date']) ? 'OnTime' : '' }} </span>
+	<span class="medium col-red"> {{  checkDate(item['release_date']) ? '' : 'Delayed' }} </span>
+	<span class="medium col-blue"> {{  checkDate(item['release_date']) ? 'OnTime' : '' }} </span>
 	
 </td>
 
