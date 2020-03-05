@@ -13,6 +13,15 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 
 	$scope.data = {
 		counters: {
+			timesheetsCounter: {
+				title: 'TimeSheet',
+				value: '...',
+				icon: 'timeline',
+				background: 'purple',
+				color: 'white',
+				action: 'timesheets',
+				allowedRoles: ['user', 'admin']
+			},
 			tasksCounter: {
 				title: 'Tasks',
 				value: '...',
@@ -20,13 +29,41 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 				background: 'green',
 				color: 'white',
 				action: 'tasks',
-				allowedRoles: ['user', 'admin']
+				allowedRoles: ['user']
 			},
+			projectsCounter: {
+				title: 'Projects',
+				value: '...',
+				icon: 'assignment',
+				background: 'primary',
+				color: 'white',
+				action: 'projects',
+				allowedRoles: ['user']
+			},
+			bugsCounter: {
+				title: 'Bugs',
+				value: '...',
+				icon: 'bug_report',
+				background: 'red',
+				color: 'white',
+				action: 'bugs',
+				allowedRoles: ['user']
+			},
+			leavesCounter: {
+				title: 'Leaves',
+				value: '...',
+				icon: 'note_add',
+				background: 'black',
+				color: 'white',
+				action: 'leaves',
+				allowedRoles: ['user','admin']
+			},
+			
 			usersCounter: {
 				title: 'Users',
 				value: '...',
 				icon: 'person',
-				background: 'purple',
+				background: 'green',
 				color: 'white',
 				action: 'users',
 				allowedRoles: ['admin']
@@ -35,9 +72,27 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 				title: 'Groups',
 				value: '...',
 				icon: 'group',
-				background: 'pink',
+				background: 'gray',
 				color: 'white',
 				action: 'groups',
+				allowedRoles: ['admin']
+			},
+			departmentsCounter: {
+				title: 'Departments',
+				value: '...',
+				icon: 'portrait',
+				background: 'brown',
+				color: 'white',
+				action: 'departments',
+				allowedRoles: ['admin']
+			},
+			designationsCounter: {
+				title: 'Designation',
+				value: '...',
+				icon: 'assignment',
+				background: 'blue',
+				color: 'white',
+				action: 'designations',
 				allowedRoles: ['admin']
 			},
 			organizationsCounter: {
@@ -90,7 +145,8 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 	
 	function setCount(resourceName, counterName) {
 		R.count(resourceName, function (result) {
-			$scope.data.counters[counterName].value = result;
+		
+		//	$scope.data.counters[counterName].value = result;
 		});
 	}
 	
