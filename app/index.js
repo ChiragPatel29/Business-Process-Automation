@@ -1570,9 +1570,9 @@ function RegisterMenuItems(){
                 {action: 'bugs', icon: 'bug_report', color: 'brown', text: 'Bugs'},
                 {action: 'projects', icon: 'assignment', color: 'brown', text: 'Project'},
         	    {action: 'user_stories', icon: 'list', color: 'brown', text: 'User_stories'},
-        	    {action: 'departments', icon: 'portrait', color: 'orange', text: 'Department'},
+        	   // {action: 'departments', icon: 'portrait', color: 'orange', text: 'Department'},
                 {action: 'milestones', icon: 'flag', color: 'black', text: 'Milestones'},
-                {action: 'designations', icon: 'assignment', color: 'blue', text: 'Designation'},
+               // {action: 'designations', icon: 'assignment', color: 'blue', text: 'Designation'},
                 {action: 'reports', icon: 'pie_chart', color: 'purple', text: 'Reports',
         	    	items: [
         	    			{action: 'reports/1', icon: 'pie_chart', color: 'red', text: 'Sample Report #1'},
@@ -1703,14 +1703,8 @@ app.service('M', function($http) {
 		"FIELD_SEARCH_IN": "Search In",
 		"FIELD_FILTER": "Filter",
 		"FIELD_ORDER_BY": "Order By",
-		"FIELD_ORDER_DIR": "Order Direction",
-		"INITIAL_DATE" : "Initial Date", 
-        "due_date" : "Due Date",
-        "amount" : "Amount",
-        "project_id" : "Project Name",
-        "user_group_id" : "Group Id",
-        "release_date" : "Release Date",
-        "is_active" : "Is Active"        
+		"FIELD_ORDER_DIR": "Order Direction"
+		        
 	};
 });
 function RegisterRoutes() {
@@ -1838,7 +1832,8 @@ app.service('H', function($location, $timeout, $http, md5, S, M, R, upload) {
 		getUUID: Helper.getUUID,
 		toDateTime: Helper.toDateTime,
 		toMySQLDateTime: Helper.toMySQLDateTime,
-		toMySQLDate: Helper.toMySQLDate,
+    toMySQLDate: Helper.toMySQLDate,
+    toDate: Helper.toDate,
 		checkLicenseValidity: Helper.checkLicenseValidity,
 		getOpenRoutes: function(){
 			var openRoutes = RegisterRoutes().customRoutes.filter(function(p){ return p.auth === false});
@@ -1915,14 +1910,27 @@ class Helper {
 	}
 	
 	static toDateTime(str){
-		// Split timestamp into [ Y, M, D, h, m, s ]
+   	// Split timestamp into [ Y, M, D, h, m, s ]
 		var t = str.split(/[- :]/);
-		
+   	
 		// Apply each element to the Date function
 		var d = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+    
 		
 		return d;
-	}
+  }
+  
+  static toDate(str){
+    // Split timestamp into [ Y, M, D, h, m, s ]
+   var t = str.split(/[- :]/);
+    
+   // Apply each element to the Date function
+   var d = new Date(Date.UTC(t[0], t[1]-1, t[2]));
+   
+   
+   return d;
+ }
+ 
 	
 	static toMySQLDateTime(dt){
 		return dt.getUTCFullYear() + "-" + Helper.twoDigits(1 + dt.getUTCMonth()) + "-" + Helper.twoDigits(dt.getUTCDate()) + " " + Helper.twoDigits(dt.getUTCHours()) + ":" + Helper.twoDigits(dt.getUTCMinutes()) + ":" + Helper.twoDigits(dt.getUTCSeconds());
@@ -3702,7 +3710,9 @@ app.controller('contactsControllerExtension', function($scope, $controller, $roo
 app.controller('departmentsControllerExtension', function($scope, $controller, $rootScope, $http, $location, Popup, H, M) {
     
     //This function is called when you need to make changes to the new single object.
-	
+	if(!(['admin', 'superadmin'].indexOf($rootScope.currentUser.role) > -1)){
+        $location.path('unauthorized');
+    }
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
         // obj.is_active = 1;
@@ -3853,7 +3863,9 @@ app.factory('upload', function($http) {
 app.controller('designationsControllerExtension', function($scope, $controller, $rootScope, $http, $location, Popup, H, M) {
     
     //This function is called when you need to make changes to the new single object.
-	
+	if(!(['admin', 'superadmin'].indexOf($rootScope.currentUser.role) > -1)){
+        $location.path('unauthorized');
+    }
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
         // obj.is_active = 1;
@@ -4483,6 +4495,11 @@ app.controller('milestonesControllerExtension', function($scope, $route, $contro
     // If you don't like the layout, and you want to replace it with your own, you can use the following method.
     // Note that if you override the 'list-items', then you have to use ng-repeat or any other mechanism to iterate over your data that is available in $scope.data.list.
     // $scope.setTemplate('list-items', 'app/your-path/your-template.html');
+    var date = new Date().getDate();
+    var month = new Date().getMonth()+1;
+    var year = new Date().getFullYear();
+    $scope.dtmax  = year+"-"+month+"-"+date;
+    
     $scope.data1 = function (initial_date, due_date)
 		{	
             $scope.errMessage = '';
@@ -5132,6 +5149,9 @@ app.controller('profilesControllerExtension', function($scope, $controller, $roo
     //This function is called before the create (POST) request goes to API
     $scope.beforeSave = async function(obj, next){
         //You can choose not to call next(), thus rejecting the save request. This can be used for extra validations.
+        if(!(['admin', 'superadmin'].indexOf($rootScope.currentUser.role) > -1)){
+            $location.path('unauthorized');
+        }
         next();
     };
 
@@ -5203,10 +5223,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
 		
 		$scope.data1 = function (initial_date, due_date)
 		{
-			// alert("hello");
-            $scope.errMessage = '';
-            // $scope.minDate = new Date();
-            
+            $scope.errMessage = '';   
             if (initial_date > due_date)
             {
                 $scope.errMessage = 'End Date should be greater than start date';
@@ -5214,12 +5231,46 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
             }
            
         };
-        
-	// $scope.data1=function(initial_date)
-	// {
-	// 	$scope.start=initial_date;
-	// }
-		
+        // $scope.due_date=$scope.due_date;
+        // var date1 = new Date($scope.dtmax);
+        // var date2 = new Date(dt);
+        // var diffTime = Math.abs(date2 - date1);
+        // var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        // console.log(diffDays);
+
+        $scope.currentDate = new Date();
+        $scope.checkDate = function(dt)
+        {
+            // console.log( H.toDate(dt));    
+            return H.toDate(dt) > $scope.currentDate;
+        }
+        $scope.checkDay = function(dt)
+        {
+            // console.log( H.toDate(dt));    
+             $scope.diffTime = Math.ceil($scope.currentDate-H.toDate(dt) );
+             $scope.diff= Math.ceil($scope.diffTime / (1000 * 60 * 60 * 24)); 
+             if($scope.diff > 0)
+             {
+             return $scope.diff+' days';
+             }
+            //  console.log($scope.diff);            
+        }
+    $scope.Visible = false;
+    // console.log($rootScope.currentUser.role);
+    // if($rootScope.currentUser.role=='ninja')
+    // {
+    //     console.log("hi");
+    // }        
+    if($rootScope.currentUser.role == 'user')
+    {       
+        $scope.Visible=false;
+    }
+    $scope.IsVisible = false;
+    if($rootScope.currentUser.role == 'admin')
+    {
+        $scope.IsVisible=true;
+    }
+
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
         // obj.is_active = 1;
@@ -5249,11 +5300,13 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
          //obj.type='project';
+         $scope.setListHeaders(['Id','Title','Initial_date','Due_date','Budget','Logo','Description','User Group','Status','is_deleted','delay']);
         
-        //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
+        // You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
+        
     };
-    
+    console.log($scope.dtmax);
   //    $scope.checkErr = function(initial_date,due_date){
   //  $scope.errMessage = '';
   //  $scope.curDate = new Date();
@@ -5281,6 +5334,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         	alert("select proper date");
         	$route.reload();
         }
+        
         next();
     };
 
@@ -5298,7 +5352,9 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     //This function is called before the update (PUT) request goes to API
     $scope.beforeUpdate = async function(obj, next){
         //You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
+        console.log(JSON.stringify(obj));
         next();
+        
         delete obj.logo;
     };
 
@@ -5338,12 +5394,16 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     // }
 
     // If you want don't want to display certain columns in the list view you can remove them by defining the function below.
-   if($rootScope.currentUser.role=='user')
-   {
+    // $scope.setListHeader=function()
+    // {
+    //     return['add'];
+    // }
+    if($rootScope.currentUser.role=='user')
+    {
     $scope.removeListHeaders = function(){
         return ['Id','Is Deleted'];
     }
-   }
+   }    
 
     // If you want to refresh the data loaded in grid, you can call the following method
     // $scope.refreshData();
@@ -5359,6 +5419,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     
 
 });
+
 
 
 app.directive("myfileInput", function($parse, $http, S, upload) {
@@ -5633,7 +5694,10 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
 //'autoRoutes' and then override the templates using setTemplate function.
 //Note that for 'autoRoutes', it is not even required to write Controller Extensions unless you want to modify the behaviour.
 app.controller('timesheetsControllerExtension', function($scope,$filter, $controller, $rootScope, $http, $location, Popup, H, M) {
-    
+    var date = new Date().getDate();
+    var month = new Date().getMonth()+1;
+    var year = new Date().getFullYear();
+    $scope.dtmax  = year+"-"+month+"-"+date;
     //This function is called when you need to make changes to the new single object.
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
@@ -5672,7 +5736,7 @@ app.controller('timesheetsControllerExtension', function($scope,$filter, $contro
         //     // var s_min = start.split(":")[1];
         //     // var e_hr = end.split(":")[0];
         //     // var e_min = end.split(":")[1];
-            return  end - start;
+            return  Math.abs(end - start);
         //     //return Math.abs((parseInt(e_hr) - parseInt(s_hr)) * 60) + Math.abs(parseInt(e_min) - parseInt(s_min))
            }
          }

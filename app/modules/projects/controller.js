@@ -36,7 +36,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         $scope.currentDate = new Date();
         $scope.checkDate = function(dt)
         {
-            console.log( H.toDate(dt));    
+            // console.log( H.toDate(dt));    
             return H.toDate(dt) > $scope.currentDate;
         }
         $scope.checkDay = function(dt)
@@ -51,7 +51,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
             //  console.log($scope.diff);            
         }
     $scope.Visible = false;
-    console.log($rootScope.currentUser.role);
+    // console.log($rootScope.currentUser.role);
     // if($rootScope.currentUser.role=='ninja')
     // {
     //     console.log("hi");
