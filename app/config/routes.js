@@ -15,13 +15,12 @@ function RegisterRoutes() {
         autoRoutes: ['departments','designations','user_groups'
 
     ], // Either you can provide the names of your tables here, or you can excluded some of the routes below in autoRoutesExcludes
-        autoRoutesExcluded: [],
-         // If you don't specify autoRoutes, all of your tables except routes defined in customRoutes and easyRoutes will automatically have UI under Masters menu. You can exclude some of those tables here
-         aliases: {
+        autoRoutesExcluded: [], // If you don't specify autoRoutes, all of your tables except routes defined in customRoutes and easyRoutes will automatically have UI under Masters menu. You can exclude some of those tables here
+        aliases: {
             "assign_tos" : "users",
             "caught_bies" : "users",
             "fix_bies" : "users", 
-            "updated_bies" : "users"
         }
-        };
+    };
 }
+ 

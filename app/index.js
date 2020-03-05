@@ -2775,17 +2775,15 @@ function RegisterRoutes() {
         autoRoutes: ['departments','designations','user_groups'
 
     ], // Either you can provide the names of your tables here, or you can excluded some of the routes below in autoRoutesExcludes
-        autoRoutesExcluded: [],
-         // If you don't specify autoRoutes, all of your tables except routes defined in customRoutes and easyRoutes will automatically have UI under Masters menu. You can exclude some of those tables here
-         aliases: {
+        autoRoutesExcluded: [], // If you don't specify autoRoutes, all of your tables except routes defined in customRoutes and easyRoutes will automatically have UI under Masters menu. You can exclude some of those tables here
+        aliases: {
             "assign_tos" : "users",
             "caught_bies" : "users",
             "fix_bies" : "users", 
-            "updated_bies" : "users"
         }
-        };
+    };
 }
-/*global app*/
+ /*global app*/
 class Settings{
 	static get(){
 		return {
@@ -6344,67 +6342,31 @@ app.controller('profilesControllerExtension', function($scope, $controller, $roo
 app.controller('projectsControllerExtension', function($scope, $controller, $rootScope, $http, $location,$route, Popup, H, M) {
     
     //This function is called when you need to make changes to the new single object.
-		var date = new Date().getDate();
-		var month = new Date().getMonth()+1;
+        var date = new Date().getDate();    
+        var month = new Date().getMonth()+1;
 		var year = new Date().getFullYear();
-		$scope.dtmax  = year+"-"+month+"-"+date;
-		// console.log($scope.dtmax);
-		
-		$scope.data1 = function (initial_date, due_date)
-		{
-            $scope.errMessage = '';   
-            if (initial_date > due_date)
-            {
-                $scope.errMessage = 'End Date should be greater than start date';
-                return false;
-            }
-           
-        };
-        // $scope.due_date=$scope.due_date;
-        // var date1 = new Date($scope.dtmax);
-        // var date2 = new Date(dt);
-        // var diffTime = Math.abs(date2 - date1);
-        // var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-        // console.log(diffDays);
-
+		$scope.dtmax  = year+"-"+month+"-"+(date);
+        // console.log($scope.dtmax);
+        
         $scope.currentDate = new Date();
-        $scope.checkDate = function(dt)
-        {
-            // console.log( H.toDate(dt));    
+        $scope.checkDate = function(dt){
+            console.log( H.toDate(dt));
+            console.log($scope.currentDate);
             return H.toDate(dt) > $scope.currentDate;
         }
-        $scope.checkDay = function(dt)
-        {
-            // console.log( H.toDate(dt));    
-             $scope.diffTime = Math.ceil($scope.currentDate-H.toDate(dt) );
-             $scope.diff= Math.ceil($scope.diffTime / (1000 * 60 * 60 * 24)); 
-             if($scope.diff > 0)
-             {
-             return $scope.diff+' days';
-             }
-            //  console.log($scope.diff);            
-        }
-    $scope.Visible = false;
-    // console.log($rootScope.currentUser.role);
-    // if($rootScope.currentUser.role=='ninja')
-    // {
-    //     console.log("hi");
-    // }        
-    if($rootScope.currentUser.role == 'user')
-    {       
-        $scope.Visible=false;
-    }
-    $scope.IsVisible = false;
-    if($rootScope.currentUser.role == 'admin')
-    {
-        $scope.IsVisible=true;
-    }
-
+		
+		
+        
+	// $scope.data1=function(initial_date)
+	// {
+	// 	$scope.start=initial_date;
+	// }
+		
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
         // obj.is_active = 1;
         // query.status.type=='project';
-       
+        
     };
     
     //This function is called when you are in edit mode. i.e. after a call has returned from one of your API that returns a single object. e.g http://localhost:8080/api/tasks/1
@@ -6422,6 +6384,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         //return query;
          //query.status.type=='project';
         query.is_deleted = 0;
+
         // query.type='project';
     };
 
@@ -6429,7 +6392,24 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
          //obj.type='project';
-         $scope.setListHeaders(['Id','Title','Initial_date','Due_date','Budget','Logo','Description','User Group','Status','is_deleted','delay']);
+        //  var d = new Date();
+      //console.log(obj[2].due_date);
+      //console.log(dat);
+      for(var i=0;i<obj.length; i++)
+      {
+
+        if(obj[i].due_date <= $scope.dtmax){
+
+            //var msg = "your project is late";
+            console.log("project is late");
+           // $scope.obj[i];
+        }
+        else{
+            //$scope.msg = "OnTime";
+            console.log("OnTime");
+        }
+
+      }  
         
         // You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
