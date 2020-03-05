@@ -18,10 +18,20 @@
 				<img class="file-field-list" ng-if="['jpg', 'png', 'gif'].indexOf(item[key].substr(item[key].length - 3)) > -1 || ['jpeg'].indexOf(item[key].substr(item[key].length - 4)) > -1" ng-src="{{ S.baseUrl + '/' + item[key] }}" ng-alt="{{item[key].substr(item[key].lastIndexOf('/') + 1)}}">
 			</div>				
 			<!--<a ng-if="!(['mp4', 'ogg', 'jpg', 'png', 'gif', 'peg'].indexOf(item[key].substr(item[key].length - 3)) > -1)" ng-href="{{ S.baseUrl + '/' + item[key] }}"> {{item[key].substr(item[key].lastIndexOf('/') + 1)}}</a>	-->
-    </div>
+	
+		</div>
+	
     <div ng-if="(key.endsWith('_file') || key.endsWith('_image') || key.endsWith('_photo') || key.endsWith('_video') || key.endsWith('_sound') || key.endsWith('_music') || key.endsWith('_audio') || key.endsWith('_attachment') || key.endsWith('file') || key.endsWith('attachment') || key.endsWith('image') ) && data.viewOptions.rawData">
 			<a ng-if="item[key]" ng-href="{{ H.getAbsolutePath(S.baseUrl + '/' + item[key]) }}">{{ H.getAbsolutePath(S.baseUrl + '/' + item[key]) }}</a>
     </div>
+</td>
+<td>
+	<!-- <span class="small col-green">{{ item['due_date']}} </span> -->
+	<span class="medium col-red"> {{  checkDay(item['due_date'])  }}{{$scope.diff}} </span>
+	<br>
+	<span class="medium col-red"> {{  checkDate(item['due_date']) ? '' : 'Delayed' }} </span>
+	<span class="medium col-blue"> {{  checkDate(item['due_date']) ? 'OnTime' : '' }} </span>
+	
 </td>
 
 <!--The following code creates a link to view detailed record. You can use 'currentRoute' to represent the current base route that matches your API. e.g. 'tasks' in this case.-->
@@ -29,5 +39,5 @@
     <a href="#!/{{currentRoute}}/{{item.id}}">View</a>
     <button class="btn btn-link" ng-click="remove(item.id)" ng-if="currentUser.role=='admin'">Delete</button>
 </td>
-    
-</td>
+
+	
