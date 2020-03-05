@@ -19,7 +19,8 @@ app.service('H', function($location, $timeout, $http, md5, S, M, R, upload) {
 		getUUID: Helper.getUUID,
 		toDateTime: Helper.toDateTime,
 		toMySQLDateTime: Helper.toMySQLDateTime,
-		toMySQLDate: Helper.toMySQLDate,
+    toMySQLDate: Helper.toMySQLDate,
+    toDate: Helper.toDate,
 		checkLicenseValidity: Helper.checkLicenseValidity,
 		getOpenRoutes: function(){
 			var openRoutes = RegisterRoutes().customRoutes.filter(function(p){ return p.auth === false});
@@ -96,14 +97,27 @@ class Helper {
 	}
 	
 	static toDateTime(str){
-		// Split timestamp into [ Y, M, D, h, m, s ]
+   	// Split timestamp into [ Y, M, D, h, m, s ]
 		var t = str.split(/[- :]/);
-		
+   	
 		// Apply each element to the Date function
 		var d = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+    
 		
 		return d;
-	}
+  }
+  
+  static toDate(str){
+    // Split timestamp into [ Y, M, D, h, m, s ]
+   var t = str.split(/[- :]/);
+    
+   // Apply each element to the Date function
+   var d = new Date(Date.UTC(t[0], t[1]-1, t[2]));
+   
+   
+   return d;
+ }
+ 
 	
 	static toMySQLDateTime(dt){
 		return dt.getUTCFullYear() + "-" + Helper.twoDigits(1 + dt.getUTCMonth()) + "-" + Helper.twoDigits(dt.getUTCDate()) + " " + Helper.twoDigits(dt.getUTCHours()) + ":" + Helper.twoDigits(dt.getUTCMinutes()) + ":" + Helper.twoDigits(dt.getUTCSeconds());
