@@ -525,1004 +525,6 @@ app.run(function($rootScope, $location, $cookies, H) {
 
 
 });
-// //ControllerFactory helps wrap basic CRUD operations for any API resource
-// function ControllerFactory(resourceName, options, extras) {
-// 	return function($scope, $rootScope, $http, $routeParams, $location, Popup, H, M, S, R) {
-// 		//Get resource by name. Usually it would be you API i.e. generated magically from your database table.
-
-// 		$scope.resourceName = resourceName;
-// 		var Resource = H.R.get(resourceName);
-
-// 		$http.get(S.baseUrl + '/metadata/table?id=' + resourceName).then(function(r) {
-// 			$scope.metadata = r.data;
-// 			$scope.buildSingleHeaders();
-            
-// 			setTimeout(function(){
-// 				$scope.data.onuploadCallbacks = []
-// 				$scope.data.singleKeys.forEach(function(i){
-// 					if((i.endsWith('_file') || i.endsWith('_image') || i.endsWith('_photo') || i.endsWith('_video') || i.endsWith('_sound') || i.endsWith('_music') || i.endsWith('_audio') || i.endsWith('_attachment') || i.endsWith('file') || i.endsWith('attachment') || i.endsWith('image'))){
-// 				    	$scope.data.onuploadCallbacks[i] = function(r){
-// 					    	$scope.data.single[i] = r.data.file;
-// 						}
-// 			    	}
-
-// 				});	
-// 			}, 300);
-            
-// 		}, function(e) {});
-
-// 		//Scope variables
-// 		$scope.data = {};
-// 		$scope.data.single = new Resource();
-// 		$scope.data.list = [];
-// 		$scope.data.limit = 10;
-// 		$scope.data.currentPage = 1;
-// 		$scope.data.pages = [];
-// 		$scope.errors = [];
-// 		$scope.MODES = {
-// 			'view': 'view',
-// 			'edit': 'edit',
-// 			'add': 'add'
-// 		};
-// 		$scope.mode = $scope.MODES.view;
-// 		$scope.locked = true;
-// 		$scope.forms = {};
-// 		$scope.H = H;
-// 		$scope.M = M;
-//         $scope.templates = {};
-        
-//         $scope.data.permissions = H.S.defaultPermissions;
-
-// 		//Set currentRoute
-// 		$scope.currentRoute = (function() {
-// 			var route = $location.path().substring(1);
-// 			var slash = route.indexOf('/');
-// 			if (slash > -1) {
-// 				route = route.substring(0, slash);
-// 			}
-// 			return route;
-// 		})();
-
-// 		$scope.currentRouteHref = "#!" + $scope.currentRoute;
-// 		$scope.newRouteHref = "#!" + $scope.currentRoute + "/new";
-// 		$scope.editRouteHref = "#!" + $scope.currentRoute + "/:id";
-
-// 		//Default error handler
-// 		var errorHandler = function(error) {
-// 			if (error && error.status) {
-// 				switch (error.status) {
-// 					case 404:
-// 						$scope.errors.push({
-// 							message: H.MESSAGES.E404
-// 						});
-// 						break;
-// 					case 422:
-// 						$scope.errors.push({
-// 							message: H.MESSAGES.E422
-// 						});
-// 						break;
-// 					case 405:
-// 						$scope.errors.push({
-// 							message: H.MESSAGES.E405
-// 						});
-// 						break;
-// 					case 400:
-// 						$scope.errors.push({
-// 							message: H.MESSAGES.E400
-// 						});
-// 						break;
-// 					case 500:
-// 						$scope.errors.push({
-// 							message: H.MESSAGES.E500
-// 						});
-// 						break;
-// 					case 401:
-// 						$rootScope.$emit('loginRequired');
-// 					case 403:
-// 						$location.path('unauthorized');
-// 					default:
-// 						$scope.errors.push({
-// 							message: H.MESSAGES.E500
-// 						});
-// 						break;
-// 				}
-// 			}
-// 		};
-
-// 		//Initializa new single objetc
-// 		$scope.initSingle = function() {
-// 			$scope.data.single = new Resource();
-//             $scope.data.selectedForeignKeys = [];
-// 			//$scope.buildSingleHeaders();
-// 		};
-
-// 		//Get all rows from your API/table. Provide a query filter in case you want reduced dataset.
-// 		$scope.query = function(q, callback) {
-// 			if (!q) {
-// 				q = {};
-// 			}
-// 			Resource.query(q, function(result) {
-// 				if (result) {
-// 					$scope.data.list = result;
-// 				}
-// 				if (callback) {
-// 					callback(result);
-// 				}
-// 			}, function(error) {
-// 				errorHandler(error);
-// 				if (callback) {
-// 					callback(error);
-// 				}
-// 			});
-// 		};
-
-// 		//Get specific record
-// 		$scope.count = function(query, callback) {
-// 			query = query || {
-// 				count: true
-// 			};
-// 			if (!query['count']) query['count'] = true;
-// 			Resource.query(query, function(result) {
-// 				$scope.data.records = result[0].count;
-// 				if (callback) {
-// 					callback(result);
-// 				}
-// 			}, function(error) {
-// 				errorHandler(error);
-// 				if (callback) {
-// 					callback(error);
-// 				}
-// 			});
-// 		};
-
-
-// 		//Get specific record
-// 		$scope.get = function(id, callback) {
-// 			Resource.get({
-// 				id: id
-// 			}, function(result) {
-// 				$scope.data.single = result;
-// 				//$scope.buildSingleHeaders();
-// 				if (callback) {
-// 					callback(result);
-// 				}
-// 			}, function(error) {
-// 				errorHandler(error);
-// 				if (callback) {
-// 					callback(error);
-// 				}
-// 			});
-// 		};
-
-// 		//Delete specific record
-// 		$scope.delete = function(obj, callback) {
-// 			if (obj && obj.$delete) {
-// 				if (S.legacyMode) {
-// 					$http.post(S.baseUrl + "/" + resourceName + "/delete/", obj).then(function(r) {
-// 						if (callback && r.data) {
-// 							callback(r.data);
-// 						}
-// 					}, function(e) {
-// 						errorHandler(e);
-// 						if (callback) {
-// 							callback(e);
-// 						}
-// 					});
-// 				} else {
-// 					obj.$delete(function(r) {
-// 						if (callback) {
-// 							callback(r);
-// 						}
-// 					}, function(e) {
-// 						errorHandler(e);
-// 						if (callback) {
-// 							callback(e);
-// 						}
-// 					});
-// 				}
-
-// 			} else if (!isNaN(obj)) {
-// 				$scope.get(obj, function(result) {
-// 					if (result && result.$delete) {
-// 						result.$delete();
-// 						if (callback) {
-// 							callback();
-// 						}
-// 					}
-// 				});
-// 			}
-// 		};
-
-// 		$scope.deleteMany = function(resource, obj, callback) {
-// 			if (obj) {
-// 				var r = resource || resourceName;
-// 				var url = H.SETTINGS.baseUrl + "/" + r + "/";
-// 				if (H.S.legacyMode) url = url + "delete/";
-// 				if (Array.isArray(obj)) {
-// 					url = url + "?id=" + JSON.stringify(obj);
-// 				} else {
-// 					if (obj.id) {
-// 						url = url + obj.id;
-// 					}
-// 				}
-// 				if (H.S.legacyMode) {
-// 					return $http.post(url, []).then(function(r) {
-// 						if (callback) {
-// 							callback(r.data);
-// 						}
-// 						return r.data;
-// 					}, function(e) {
-// 						errorHandler(e);
-// 						if (callback) {
-// 							callback(e.data);
-// 						}
-// 						return e.data;
-// 					});
-// 				} else {
-// 					return $http.delete(url).then(function(r) {
-// 						if (callback) {
-// 							callback(r.data);
-// 						}
-// 						return r.data;
-// 					}, function(e) {
-// 						errorHandler(e);
-// 						if (callback) {
-// 							callback(e.data);
-// 						}
-// 						return e.data;
-// 					});
-// 				}
-// 			}
-
-// 		}
-
-// 		//Save a record
-// 		$scope.save = function(obj, callback) {
-// 			if (obj && obj.$save) {
-// 				var promise = obj.$save();
-// 				promise.then(function(r) {
-// 					if (callback) {
-// 						callback(r);
-// 					}
-// 				}, function(e) {
-// 					errorHandler(e);
-// 					if (callback) {
-// 						callback(e);
-// 					}
-// 				});
-// 			} else if ($scope.data.single) {
-// 				var promise = $scope.data.single.$save();
-// 				promise.then(function(r) {
-// 					if (callback) {
-// 						callback(r);
-// 					}
-// 				}, function(e) {
-// 					errorHandler(e);
-// 					if (callback) {
-// 						callback(e);
-// 					}
-// 				});
-// 			}
-// 		};
-
-// 		$scope.post = function(resource, arr, callback) {
-// 			var r = resource || resourceName;
-// 			var url = H.SETTINGS.baseUrl + "/" + r;
-// 			if (arr) {
-// 				if (H.SETTINGS.enableSaaS) {
-// 					arr.map(function(p) {
-// 						if (!p.secret) p.secret = $rootScope.currentUser.secret;
-// 					});
-// 				}
-// 				return $http.post(url, arr)
-// 					.then((function(data, status, headers, config) {
-// 						if (callback) {
-// 							callback(data.data);
-// 						}
-// 						return data.data;
-// 					}), (function(e) {
-// 						errorHandler(e);
-// 						if (callback) {
-// 							callback(e.data);
-// 						}
-// 						return e.data;
-// 					}));
-// 			}
-
-// 		}
-
-// 		$scope.update = function(obj, callback) {
-// 			var url = H.SETTINGS.baseUrl + "/" + resourceName;
-
-// 			if (H.S.legacyMode) {
-// 				return $http.post(url + "/update", obj)
-// 					.then((function(data, status, headers, config) {
-// 						if (callback) {
-// 							callback(data.data);
-// 						}
-// 						return data.data;
-// 					}), (function(e) {
-// 						errorHandler(e);
-// 						if (callback) {
-// 							callback(e.data);
-// 						}
-// 						return e.data;
-// 					}));
-// 			} else {
-// 				return $http.put(url, obj)
-// 					.then((function(data, status, headers, config) {
-// 						if (callback) {
-// 							callback(data.data);
-// 						}
-// 						return data.data;
-// 					}), (function(e) {
-// 						errorHandler(e.data);
-// 						if (callback) {
-// 							callback(e.data);
-// 						}
-// 						return e.data;
-// 					}));
-
-// 			}
-
-// 		};
-
-// 		//Clear errors
-// 		$scope.clearErrors = function() {
-// 			$scope.errors = [];
-// 		};
-
-// 		//Refresh data
-// 		$scope.refreshData = function() {
-// 			$scope.listAll();
-// 		};
-        
-// 		$scope.data.sortCache = {};
-        
-// 		$scope.applySort = function(h){
-// 			$scope.data.queryOptions = $scope.data.queryOptions || {};
-// 			$scope.data.viewOptions = $scope.data.viewOptions || {};
-// 			$scope.data.viewOptions.rawData = $scope.data.viewOptions.rawDataTemp;
-// 			$scope.data.queryOptions.orderBy = h;
-// 			if($scope.data.sortCache[h] && $scope.data.sortCache[h] == "asc"){
-// 				$scope.data.sortCache[h] = "desc";
-// 			} else {
-// 				$scope.data.sortCache[h] = "asc";
-// 			}
-// 			var orderDirections = { "asc" : { title: "Ascending", key: "asc"}, "desc": { title: "Descending", key: "desc"}};
-// 			$scope.data.queryOptions.orderDirection = orderDirections[$scope.data.sortCache[h]];
-// 			$scope.refreshData();
-// 		}
-        
-// 		$scope.applyOptions = function(){
-// 			$scope.data.viewOptions = $scope.data.viewOptions || {};
-// 			$scope.data.viewOptions.rawData = $scope.data.viewOptions.rawDataTemp;
-// 			$scope.refreshData();
-// 		}
-        
-// 		$scope.setActive = function(i) {
-// 			return ($rootScope.currentPage == i) ? 'active' : 'waves-effect';
-// 		};
-
-// 		$scope.mergeQueryOptions = function(query){
-// 			if(query && $scope.data.queryOptions){
-// 				if($scope.data.queryOptions.searchField && $scope.data.queryOptions.search){
-// 					query[$scope.data.queryOptions.searchField + '[in]'] = $scope.data.queryOptions.search;
-// 				}
-// 				if($scope.data.queryOptions.orderBy){
-// 					query.order = $scope.data.queryOptions.orderBy; 
-// 				}
-// 				if($scope.data.queryOptions.orderDirection && $scope.data.queryOptions.orderDirection.key && ['asc', 'desc'].indexOf($scope.data.queryOptions.orderDirection.key) > -1){
-// 					query.orderType = $scope.data.queryOptions.orderDirection.key; 
-// 				}
-// 				if($scope.data.queryOptions.limit){
-// 					$scope.data.limit = $scope.data.queryOptions.limit;
-// 				}                
-// 			}
-// 			return query;
-			
-// 		}
-        
-// 		//Load all entries on initialization
-// 		$scope.listAll = async function(currentPage) {
-// 			if (!$scope.beforeLoadAll) $scope.beforeLoadAll = async function(query) {
-// 				return query;
-// 			};
-// 			var countQueryParam = {
-// 				count: false
-// 			};
-//             countQueryParam = $scope.mergeQueryOptions(countQueryParam);            
-// 			var countQuery = await $scope.beforeLoadAll(countQueryParam) || countQueryParam;
-
-// 			//$scope.loading = true;
-// 			$scope.count(countQuery, async function() {
-// 				$scope.loading = true;
-// 				$scope.data.pagesCount = parseInt(($scope.data.records - 1) / $scope.data.limit) + 1;
-// 				$scope.data.pages = [];
-// 				for (var i = 0; i < $scope.data.pagesCount; i++) {
-// 					$scope.data.pages.push(i + 1);
-// 				}
-// 				if (!currentPage) {
-// 					if (!($scope.data.pages.indexOf($rootScope.currentPage) > -1)) {
-// 						if ($rootScope.currentPage > 0) {
-// 							$rootScope.currentPage = $scope.data.pages[$scope.data.pagesCount - 1];
-// 						} else {
-// 							$rootScope.currentPage = 1;
-// 						}
-// 					}
-// 				} else {
-// 					$rootScope.currentPage = currentPage;
-// 				}
-// 				var dataQueryParam = {
-// 					limit: $scope.data.limit,
-// 					offset: ($rootScope.currentPage - 1) * $scope.data.limit
-// 				};
-//                 dataQueryParam = $scope.mergeQueryOptions(dataQueryParam);                
-// 				var dataQuery = await $scope.beforeLoadAll(dataQueryParam) || dataQueryParam;
-
-// 				$scope.query(dataQuery, function(r) {
-// 					$scope.loading = false;
-                    
-// 					setTimeout(function(){
-// 						if(!$scope.loadedOnce){
-// 							$scope.loadedOnce = true;
-// 							$("table").tableExport();
-// 						}
-// 					}, 500);
-                    
-// 					if (r && r.length > 0) {
-// 						// var headers = Object.getOwnPropertyNames(r[0]);
-// 						// $scope.data.listHeadersRaw = headers;
-// 						// if(headers.indexOf("id") > -1) headers.splice(headers.indexOf("id"), 1);
-// 						// if(headers.indexOf("secret") > -1) headers.splice(headers.indexOf("secret"), 1);
-// 						// headers = headers.filter(function(p){ return (p.slice(-3) !== "_id")});
-// 						// if($scope.removeListHeaders){
-// 						// 	var removeHeaders = $scope.removeListHeaders();
-// 						// 	for (var i = 0; i < removeHeaders.length; i++) {
-// 						// 		var h = removeHeaders[i];
-// 						// 		if(headers.indexOf(h) > -1) headers.splice(headers.indexOf(h), 1);
-// 						// 	}
-// 						// }
-// 						// $scope.data.listKeys = headers;
-// 						// headers = headers.map(function(p){ return H.toTitleCase(H.replaceAll(p, '_', ' '))});
-
-// 						$scope.data.listKeys = $scope.data.singleKeys.map(function(p){ return p; });
-// 						var headers = $scope.data.singleKeys.map(function(p) {
-// 							return $scope.data.singleKeysInfo[p].title;
-// 						});
-						
-// 						if($scope.removeListHeaders){
-// 							var removeHeaders = $scope.removeListHeaders();
-// 							for (var i = 0; i < removeHeaders.length; i++) {
-// 								var h = removeHeaders[i];
-// 								if(headers.indexOf(h) > -1) {
-// 									var ind = headers.indexOf(h);
-// 									headers.splice(ind, 1);
-// 									$scope.data.listKeys.splice(ind, 1);
-// 								}
-// 							}
-// 						}
-                        
-// 						$scope.setListHeaders(headers);
-// 						setTimeout(function(){
-// 							try{
-// 								$('.tableexport-caption').detach();
-// 								$('table').tableExport();
-// 							} catch(ex){
-								
-// 							}
-							
-// 						}, 1000);                        
-// 					}
-                    
-//                     if(dataQuery.order && dataQuery.orderType) $scope.data.sortCache[dataQuery.order] = dataQuery.orderType;
-                    
-// 					if ($scope.onLoadAll) $scope.onLoadAll(r);
-// 				});
-
-// 			});
-// 		};
-
-// 		$scope.listAllPrev = function() {
-// 			if (($scope.currentPage - 1) > 0) {
-// 				$scope.listAll($scope.currentPage - 1);
-// 			}
-// 		}
-
-// 		$scope.listAllNext = function() {
-// 			if (($scope.currentPage + 1) <= $scope.data.pages.length) {
-// 				$scope.listAll($scope.currentPage + 1);
-// 			}
-// 		}
-
-// 		//Load entry on initialization
-// 		$scope.loadSingle = async function(callback) {
-// 			//$scope.loading = true;
-// 			$scope.get($routeParams.id, async function(r) {
-// 				if ($scope.onLoad) await $scope.onLoad(r);
-// 				if (callback) callback(r);
-// 				GLOBALS.methods.autoFocus();
-// 				//$scope.loading = false;
-// 			});
-// 		};
-
-
-// 		//Toggle Visibility
-// 		$scope.toggleVisibility = function(item) {
-// 			item.visible = !item.visible;
-// 		};
-
-// 		//Toggle lock
-// 		$scope.toggleLock = function() {
-// 			$scope.locked = !$scope.locked;
-// 			if(!$scope.locked){
-//                 $scope.mode = $scope.MODES.edit;
-// 				GLOBALS.methods.autoFocus();
-// 			}            
-// 		};
-
-// 		//Update a single record
-// 		$scope.updateSingle = function(callback) {
-// 			//$scope.loading = true;
-//             $scope.saveClicked = true;
-// 			if ($scope.beforeUpdate) {
-// 				$scope.beforeUpdate($scope.data.single, function(r) {
-// 					var update = true;
-// 					if ($scope.beforeUpdateBase) update = $scope.beforeUpdateBase();
-// 					if (update) {
-// 						$scope.update($scope.data.single, function(r) {
-// 							$scope.locked = true;
-
-// 							if (r && r.error) {
-// 								if ($scope.onError) {
-// 									$scope.onError(r.error, function(e) {
-// 										if ($scope.onErrorBase) $scope.onErrorBase(e);
-// 										return;
-// 									});
-// 									return;
-// 								} else {
-// 									if ($scope.onErrorBase) $scope.onErrorBase(r.error);
-// 									return;
-// 								}
-// 							}
-
-// 							if ($scope.onUpdate) {
-// 								$scope.onUpdate(r, function(r) {
-// 									if ($scope.onUpdateBase) $scope.onUpdateBase(r);
-// 								});
-// 							} else {
-// 								if ($scope.onUpdateBase) $scope.onUpdateBase(r);
-// 							}
-
-// 							if (callback) callback(r);
-// 							//$scope.loading = false;
-// 						});
-// 					}
-
-// 				});
-// 			} else {
-// 				var update = true;
-// 				if ($scope.beforeUpdateBase) update = $scope.beforeUpdateBase();
-// 				if (update) {
-// 					$scope.update($scope.data.single, function(r) {
-// 						$scope.locked = true;
-
-// 						if (r && r.error) {
-// 							if ($scope.onError) {
-// 								$scope.onError(r.error, function(e) {
-// 									if ($scope.onErrorBase) $scope.onErrorBase(e);
-// 									return;
-// 								});
-// 								return;
-// 							} else {
-// 								if ($scope.onErrorBase) $scope.onErrorBase(r.error);
-// 								return;
-// 							}
-// 						}
-
-// 						if ($scope.onUpdate) {
-// 							$scope.onUpdate(r, function(r) {
-// 								if ($scope.onUpdateBase) $scope.onUpdateBase(r);
-// 							});
-// 						} else {
-// 							if ($scope.onUpdateBase) $scope.onUpdateBase(r);
-// 						}
-
-// 						if (callback) callback(r);
-// 						//$scope.loading = false;
-// 					});
-// 				}
-// 			}
-// 		};
-// 		//Initialize a single record
-// 		$scope.newSingle = async function(callback) {
-// 			$scope.locked = false;
-//             $scope.mode = $scope.MODES.add;
-// 			$scope.initSingle();
-// 			if ($scope.onInit) await $scope.onInit($scope.data.single);
-// 			if (callback) callback();
-// 		};
-
-// 		//Save a new single record
-// 		$scope.saveSingle = function(callback) {
-// 			//$scope.loading = true;
-//             $scope.saveClicked = true;
-// 			if ($scope.beforeSave) {
-// 				$scope.beforeSave($scope.data.single, function(r) {
-// 					var save = true;
-// 					if ($scope.beforeSaveBase) save = $scope.beforeSaveBase();
-// 					if (save) {
-// 						$scope.save($scope.data.single, function(r) {
-// 							$scope.locked = true;
-
-// 							if ((r && r.error) || (r && r.data && r.data.error)) {
-// 								if ($scope.onError) {
-// 									$scope.onError(r.error, function(e) {
-// 										if ($scope.onErrorBase) $scope.onErrorBase(e);
-// 										return;
-// 									});
-// 									return;
-// 								} else {
-// 									if ($scope.onErrorBase) $scope.onErrorBase(r.data.error);
-// 									return;
-// 								}
-// 							}
-
-// 							if ($scope.onSave) {
-// 								$scope.onSave(r, function(r) {
-// 									if ($scope.onSaveBase) $scope.onSaveBase(r);
-// 								});
-// 							} else {
-// 								if ($scope.onSaveBase) $scope.onSaveBase(r);
-// 							}
-
-// 							if (callback) callback(r);
-// 							//$scope.loading = false;
-// 						});
-// 					}
-// 				});
-// 			} else {
-// 				var save = true;
-// 				if ($scope.beforeSaveBase) save = $scope.beforeSaveBase();
-// 				if (save) {
-// 					$scope.save($scope.data.single, function(r) {
-// 						$scope.locked = true;
-
-// 						if ((r && r.error) || (r && r.data && r.data.error)) {
-// 							if ($scope.onError) {
-// 								$scope.onError(r.error, function(e) {
-// 									if ($scope.onErrorBase) $scope.onErrorBase(e);
-// 									return;
-// 								});
-// 								return;
-// 							} else {
-// 								if ($scope.onErrorBase) $scope.onErrorBase(r.data.error);
-// 								return;
-// 							}
-// 						}
-
-// 						if ($scope.onSave) {
-// 							$scope.onSave(r, function(r) {
-// 								if ($scope.onSaveBase) $scope.onSaveBase(r);
-// 							});
-// 						} else {
-// 							if ($scope.onSaveBase) $scope.onSaveBase(r);
-// 						}
-
-// 						if (callback) callback(r);
-// 						//$scope.loading = false;
-// 					});
-// 				}
-// 			}
-
-// 		};
-
-// 		//Change a property in single
-// 		$scope.changeSingle = function(property, value) {
-// 			this.data.single[property] = value;
-// 		};
-
-
-// 		/*Define options
-// 			init:true -> Load all records when the controller loads
-// 		*/
-// 		if (options) {
-// 			$scope.options = options;
-// 			if ($scope.options.init) {
-// 				$scope.query();
-// 			}
-// 		}
-
-// 		//Any extra stuff you might want to merge into the data object
-// 		if (extras) {
-// 			for (var e in extras) {
-// 				$scope.data[e] = extras[e];
-// 			}
-// 		}
-
-
-// 		//Localized resources
-// 		$scope.textResources = {
-// 			title: {
-// 				single: '',
-// 				list: ''
-// 			},
-// 			templates: {
-// 				edit: '',
-// 				create: '',
-// 				list: ''
-// 			}
-// 		};
-
-// 		$scope.initTextResources = function(listTitle, singleTitle, listTemplate, listItemTemplate, listHeaderTemplate, listFooterTemplate, newTemplate, editTemplate, singleHeaderTemplate, singleFooterTemplate) {
-// 			$scope.textResources.title.list = listTitle;
-// 			$scope.textResources.title.single = singleTitle;
-// 			$scope.textResources.templates.list = listTemplate;
-// 			$scope.textResources.templates.listItem = listItemTemplate;
-// 			$scope.textResources.templates.listHeader = listHeaderTemplate;
-// 			$scope.textResources.templates.listFooter = listFooterTemplate;
-// 			$scope.textResources.templates.create = newTemplate;
-// 			$scope.textResources.templates.edit = editTemplate;
-// 			$scope.textResources.templates.singleHeader = singleHeaderTemplate;
-// 			$scope.textResources.templates.singleFooter = singleFooterTemplate;
-// 		};
-
-// 		$scope.initTextResourcesEasy = function(route, singular) {
-// 			if (!route || route == '') {
-// 				route = $scope.currentRoute;
-// 			}
-// 			var plural = route.toUpperCase();
-			
-//             //if (!singular || singular == '') singular = plural.substring(0, plural.length - 1);
-// 			if (!singular || singular == '') singular = H.toSingular(plural).toUpperCase();
-
-//             var listTemplate = 'app/modules/' + route + '/list.html';
-// 			var listItemTemplate = 'app/modules/' + route + '/list-item.html';
-// 			var listHeaderTemplate = 'app/modules/' + route + '/list-header.html';
-// 			var listFooterTemplate = 'app/modules/' + route + '/list-footer.html';
-// 			var singleTemplate = 'app/modules/' + route + '/single.html';
-// 			var singleHeaderTemplate = 'app/modules/' + route + '/single-header.html';
-// 			var singleFooterTemplate = 'app/modules/' + route + '/single-footer.html';
-
-// 			$scope.initTextResources(plural, singular, listTemplate, listItemTemplate, listHeaderTemplate, listFooterTemplate, singleTemplate, singleTemplate, singleHeaderTemplate, singleFooterTemplate);
-// 		};
-
-
-// 		$scope.initTextResourcesAuto = function(route, singular) {
-// 			if (!route || route == '') {
-// 				route = $scope.currentRoute;
-// 			}
-// 			var plural = route.toUpperCase();
-
-//             //if (!singular || singular == '') singular = plural.substring(0, plural.length - 1);
-// 			if (!singular || singular == '') singular = H.toSingular(plural).toUpperCase();;
-
-// 			var common = "common/templates";
-
-
-// 			var listTemplate = 'app/modules/' + common + '/list-extra.html';
-// 			var listItemTemplate = 'app/modules/' + common + '/list-item.html';
-// 			var listHeaderTemplate = 'app/modules/' + common + '/list-header.html';
-// 			var listFooterTemplate = 'app/modules/' + common + '/list-footer.html';
-// 			var singleTemplate = 'app/modules/' + common + '/single.html';
-// 			var singleHeaderTemplate = 'app/modules/' + common + '/single-header.html';
-// 			var singleFooterTemplate = 'app/modules/' + common + '/single-footer.html';
-
-// 			$scope.initTextResources(plural, singular, listTemplate, listItemTemplate, listHeaderTemplate, listFooterTemplate, singleTemplate, singleTemplate, singleHeaderTemplate, singleFooterTemplate);
-// 		};
-
-// 		$scope.setTitle = function(t, v) {
-// 			$scope.textResources.title[t] = v;
-// 		};
-
-// 		$scope.getTitle = function(t) {
-// 			switch (t) {
-// 				case 'single':
-// 					if ($scope.getSingularTitle) return $scope.getSingularTitle();
-// 					return $scope.textResources.title.single;
-// 				case 'list':
-// 					return $scope.textResources.title.list;
-// 				default:
-// 					return $scope.textResources.title.list;
-// 			}
-// 		};
-
-// 		$scope.getTemplate = function(t) {
-// 			switch (t) {
-// 				case 'edit':
-// 					return $scope.textResources.templates.edit;
-// 				case 'new':
-// 					return $scope.textResources.templates.create;
-// 				case 'list':
-// 					return $scope.textResources.templates.list;
-// 				case 'list-item':
-// 					return $scope.textResources.templates.listItem;
-// 				case 'list-header':
-// 					return $scope.textResources.templates.listHeader;
-// 				case 'list-footer':
-// 					return $scope.textResources.templates.listFooter;
-// 				case 'single-header':
-// 					return $scope.textResources.templates.singleHeader;
-// 				case 'single-footer':
-// 					return $scope.textResources.templates.singleFooter;
-// 				default:
-// 					return '';
-// 			}
-
-// 		};
-        
-// 		$scope.setTemplate = function(key, value){
-// 			$scope.templates[key] = value;
-// 		}
-
-// 		$scope.getTableHeaders = function() {
-// 			var headers = [];
-// 			if ($scope.data.list && $scope.data.list.length > 0 && $scope.data.list[0]) {
-// 				headers = Object.getOwnPropertyNames($scope.data.list[0]);
-// 			}
-// 			return headers;
-// 		};
-
-// 		$scope.setListHeaders = function(headers) {
-// 			$scope.data.listHeaders = headers;
-// 		};
-
-// 		$scope.changeListHeaders = function(header, replacement) {
-// 			if ($scope.data.listHeaders && $scope.data.listHeaders.indexOf(header) > -1) {
-// 				$scope.data.listHeaders[$scope.data.listHeaders.indexOf(header)] = replacement;
-// 			}
-// 		};
-
-// 		$scope.buildSingleHeaders = function() {
-// 			$scope.data.singleKeys = [] //Object.getOwnPropertyNames($scope.data.single).filter(function(p){ return !(p.startsWith('$') || p == 'secret'); });
-// 			$scope.data.foreignKeys = {};
-// 			$scope.data.foreignKeysResources = {};
-// 			$scope.data.singleKeysInfo = {};
-// 			for (i in $scope.metadata) {
-// 				var o = JSON.parse(JSON.stringify($scope.metadata[i]));
-// 				var k = o.Field;
-// 				if (k == "secret") continue;
-// 				$scope.data.singleKeys.push(k);
-// 				var type = "text";
-// 				var required = o.Null == 'NO';
-// 				var title = H.toTitleCase(H.replaceAll(k, '_', ' '));
-// 				if(title.endsWith(' Id')) title = title.substring(0,title.length - 3);
-// 				if (o.Key == "MUL"){
-// 					type = "fkey";
-// 					//fkeyTable = title.replace(' ', '_').toLowerCase() + 's';
-// 					fkeyTable = H.toPlural(title.replace(' ', '_').toLowerCase());					
-// 					$scope.data.foreignKeysResources[fkeyTable] = R.get(fkeyTable);
-					
-// 					(function(fkeyTable){
-// 						$scope.data.foreignKeysResources[fkeyTable].query({}, function(r){
-// 							$scope.data.foreignKeys[fkeyTable] = r;
-// 						}, function(e){
-// 						});
-// 					})(fkeyTable);
-// 				} else if (k.startsWith("is_") || o.Type == "tinyint(1)") {
-// 					type = "bool";
-// 				} else if (o.Type.startsWith("int") || o.Type.startsWith("bigint") || o.Type.startsWith("mediumint") || o.Type.startsWith("smallint") || o.Type.startsWith("float") || o.Type.startsWith("double") || o.Type.startsWith("tinyint")) {
-// 					type = "number";
-// 				} else if (o.Type == "date"){
-// 					type = "date";
-// 				} else if (o.Type == "datetime"){
-// 					type = "datetime";
-// 				} else if (k.endsWith("email")) {
-// 					type = "email";
-// 				} else if (k.indexOf("password") > -1) {
-// 					type = "password";
-// 				} else if (o.Type == "text") {
-// 					type = "textarea";
-// 				} else {
-// 					type = "text";
-// 				}
-// 				$scope.data.singleKeysInfo[k] = {
-// 					type: type,
-// 					title: title,
-// 					required: required
-// 				};
-// 			}
-
-// 		}
-
-// 		$scope.showDialog = function(ev, title, content, okText = "OK", cancelText = "Cancel", okHandler, cancelHandler, closeHandler) {
-// 			Popup.show({
-// 					title: title,
-// 					body: content,
-// 					buttons: [{
-// 						text: okText,
-// 						theme: 'success',
-// 						click: function(callback, btn, data) {
-// 							if (okHandler) okHandler();
-// 							if (callback) callback(btn);
-// 						},
-// 						cleanup: function(data) {
-
-// 						}
-// 					}, {
-// 						text: cancelText,
-// 						theme: 'warning',
-// 						click: function(callback, btn, data) {
-// 							if (cancelHandler) cancelHandler();
-// 						}
-// 					}],
-// 					scope: $scope,
-// 					spinner: true,
-// 					close: closeHandler || function(data) {
-
-// 					}
-// 				})
-// 				// var confirm = $mdDialog.confirm()
-// 				//       .title(title)
-// 				//       .textContent(content)
-// 				//       .ariaLabel('')
-// 				//       .targetEvent(ev)
-// 				//       .ok(okText)
-// 				//       .cancel(cancelText);
-
-// 			// $mdDialog.show(confirm).then(function() {
-// 			//   if(okHandler) okHandler();
-// 			// }, function() {
-// 			//   if(cancelHandler) cancelHandler();
-// 			// });
-// 		};
-
-// 		$scope.onErrorBase = function(obj) {
-// 			$scope.showDialog(null, M.ERROR_TITLE, M.SAVED_ERROR, M.SAVED_OK, M.SAVED_CANCEL, function() {
-// 				$scope.locked = false;
-// 			}, function() {
-// 				$location.path($scope.currentRoute);
-// 			}, function(){ 
-// 				$scope.locked = false; 
-// 			});
-// 		};
-
-// 		$scope.onSaveBase = function(obj) {
-// 			$scope.showDialog(null, M.SAVED_TITLE, M.SAVED_MESSAGE, M.SAVED_OK, M.SAVED_CANCEL, function() {
-// 				$scope.newSingle();
-// 			}, function() {
-// 				$location.path($scope.currentRoute);
-// 			}, function() {
-//                 $scope.mode = $scope.MODES.view;
-//             });
-// 		};
-
-// 		$scope.onUpdateBase = function(obj) {
-// 			$scope.showDialog(null, M.SAVED_TITLE, M.SAVED_MESSAGE, M.SAVED_OK, M.SAVED_CANCEL, function() {}, function() {
-// 				$location.path($scope.currentRoute);
-// 			});
-// 		};
-
-// 		$scope.beforeSaveBase = $scope.beforeUpdateBase = function(obj) {
-// 			return (!Object.keys($scope.forms[$scope.currentRoute + "Form"].$error).length);
-// 		};
-
-// 		$scope.goToEdit = function() {
-// 			$location.path($scope.currentRoute + "/" + $scope.data.single.id);
-// 		};
-
-// 		$scope.goToNew = function() {
-// 			$location.path($scope.currentRoute + "/" + "new");
-// 		};
-
-// 		$scope.initLaunched = false;
-// 		$scope.launchInit = async function(){
-// 			if(!$scope.initLaunched){
-// 				if($scope.init) await $scope.init();
-// 				$scope.initLaunched = true;	
-// 			}
-// 		}
-		
-// 		$scope.$watch('init', function(n, o){
-// 			$scope.launchInit();
-// 		});
-        
-		
-// 		GLOBALS.methods.autoFocus();
-
-// 	};
-// }
-
 
 //ControllerFactory helps wrap basic CRUD operations for any API resource
 function ControllerFactory(resourceName, options, extras) {
@@ -2424,11 +1426,11 @@ function ControllerFactory(resourceName, options, extras) {
 				};
 			}
 
-			console.log('DATA');
-			console.log($scope.data.singleKeys);
-			console.log($scope.data.singleKeysInfo);
-			console.log($scope.data.foreignKeys);
-			console.log($scope.data.foreignKeysResources);
+			// console.log('DATA');
+			// console.log($scope.data.singleKeys);
+			// console.log($scope.data.singleKeysInfo);
+			// console.log($scope.data.foreignKeys);
+			// console.log($scope.data.foreignKeysResources);
 
 			
 
@@ -2534,7 +1536,7 @@ function ControllerFactory(resourceName, options, extras) {
 /*global app, ControllerFactory, RegisterRoutes, RegisterData*/
 function RegisterEasyController(route, headers, controller, auto = false, alias = null) {
 	var x = (alias ? alias : route);
-	console.log('registering ' + x + 'ControllerBase');
+	//console.log('registering ' + x + 'ControllerBase');
 
 	app.controller(x + 'ControllerBase', ControllerFactory(route));
 
@@ -2593,7 +1595,7 @@ function RegisterEasyController(route, headers, controller, auto = false, alias 
 	for (var i in aliases) {
 		alias = i;
 		route = aliases[i];
-		console.log('trying to register ' + alias + ' for route ' + route);
+		//console.log('trying to register ' + alias + ' for route ' + route);
 		RegisterEasyController(route, null, null, true, alias /*, data[easyRoutes[i]].headers*/ );
 	}
 })();
@@ -3761,18 +2763,48 @@ app.service('Popup', function($uibModal) {
 });
 /*global app*/
 //Service for quickly getting the API Resource Object
-app.service('R', function($resource, $http, S) {
+app.service('R', function($resource, $http, S,$rootScope) {
 	return {
 		get: function(resourceName) {
 			return $resource(S.baseUrl + '/' + resourceName + '/:id', {
 				id: '@id'
 			});
 		},
-		count: async function(resourceName, cb) {
-			$http.get(S.baseUrl + '/' + resourceName + '/?count=true')
+		getby: function(resourceName,email,name) {
+			return $http.get(S.baseUrl + '/' + resourceName + '?'+name+'='+ email)
 				.then(function(results) {
 					if (results && results.data && results.data.length > 0)
+					{
+						return results.data.length;
+					}
+					else{
+						return 0;
+					}
+						
+					// {
+					// 	console.log("resources: -" +JSON.stringify(results.data.length));
+					// }
 						if (cb) cb(results.data[0].count);
+				}, function(e) {});
+		},
+		getdesignation: function(id) {
+			return $http.get(S.baseUrl + '/profiles?user_id='+ id)
+				.then(function(results) {
+					if (results && results.data && results.data.length > 0)
+						return results.data;
+					// {
+					// 	console.log("resources: -" +JSON.stringify(results.data.length));
+					// }
+					//	if (cb) cb(results.data[0].count);
+				}, function(e) {});
+		},
+		count: async function(resourceName, cb) {
+		return $http.get(S.baseUrl + '/' + resourceName + '/?count=true')
+				.then(function(results) {
+					if (results && results.data.length && results.data.length > 0)
+						return results.data;
+					
+					//if (cb) cb(results.data[0].count);
 				}, function(e) {});
 		},
 		query: async function(resourceName, q, cb){
@@ -4444,10 +3476,21 @@ app.controller('unauthorizedController', function($scope, H){
 //you need to provide templates inside 'app/modules/tasks' folder. If you want to keep your templates somewhere else, you can pick
 //'autoRoutes' and then override the templates using setTemplate function.
 //Note that for 'autoRoutes', it is not even required to write Controller Extensions unless you want to modify the behaviour.
-app.controller('bugsControllerExtension', function($scope,$route, $controller, $rootScope, $http, $location, Popup, H, M) {
+app.controller('bugsControllerExtension', function($scope,$route, $controller, $rootScope, $http, $location, Popup, H, M,R) {
     
     //This function is called when you need to make changes to the new single object.
     
+   // $scope.R = R;
+
+    var id = $rootScope.currentUser.id;
+
+    R.getdesignation(id).then(function(result){
+
+        //console.log("result is :-"+JSON.stringify(result[0].designation_id));
+			$scope.did = result[0].designation_id;
+    }); 
+
+
     
     
     $scope.onInit = async function(obj){
@@ -4469,7 +3512,31 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
         //This is where you can modify your query parameters.    
         // query.is_active = 1;
         query.is_deleted = 0;
-         console.log($rootScope.currentUser.role);
+        // console.log(JSON.stringify(query));
+
+         if($rootScope.currentUser.role !== 'admin')
+         {      
+             switch($scope.did){
+
+                case 7 :
+                    query.caught_by_id = $rootScope.currentUser.id;
+                    break;
+                case 2 :
+                    query.assign_to_id = $rootScope.currentUser.id;
+                    break;
+                case 1 :
+                    query.fix_by_id = $rootScope.currentUser.id;
+                    break;
+                default :
+                query.caught_by_id = $rootScope.currentUser.id;
+                    break;
+             }
+
+               
+
+                
+         }
+        
         //return query;
     };
 
@@ -4508,7 +3575,7 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
         
         
 
-        console.log("Post data : "+obj);
+       // console.log("Post data : "+obj);
         next();
     };
     
@@ -4571,6 +3638,23 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
             
                 console.log(data);
                 $route.reload();
+        },
+            function(e) {
+                alert("... Error:" + e.data.error.message);
+            });
+    }
+
+
+    $scope.tech = function(){
+        
+        //alert("tech");
+        $http.get(H.S.baseUrl + '/profiles?designation_id='+2).then(function(res)
+        {
+            
+               // console.log("response " +JSON.stringify(res.data[0]));
+                $scope.res = res.data;
+                
+                //$route.reload();
         },
             function(e) {
                 alert("... Error:" + e.data.error.message);
@@ -5355,6 +4439,8 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 
 	};
 	
+     
+
 	function getNextNumber(n) {
 		var m = n % $scope.data.bgColors.length;
 		return m;
@@ -5373,19 +4459,61 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 		}
 	}
 	
-	function setCount(resourceName, counterName) {
-		R.count(resourceName, function (result) {
+	function setCount(resourceName, counterName,name) {
 		
-		//	$scope.data.counters[counterName].value = result;
+		
+		if($rootScope.currentUser.role == 'admin' )
+		{
+			R.count(resourceName).then(function(result){
+				console.log("result: -" +resourceName);
+			$scope.data.counters[counterName].value = result[0].count;
+		//	console.log("result is  : - "+ $scope.data.counters[counterName].value);
 		});
+
+		}
+		else{
+		var email = $rootScope.currentUser.id;
+			R.getby(resourceName,email,name).then(function(result){
+				$scope.data.counters[counterName].value = result;
+				//console.log("result is :-"+result);
+				//$scope.ca = result;
+			});
+		}	
+		//
+		
+	
 	}
+		
+
+		// $scope.getbi = function(){
+
+		// 	var bug = 'bugs';
+		// var email = $rootScope.currentUser.id;
+		// 	R.getby(bug,email).then(function(result){
+		// 		//console.log("result is :-"+result);
+		// 		$scope.ca = result;
+		// 	});
+		// 	//$scope.ca = $scope.ct;
+		// }
+
+	// function getbi(bug,email){
+	// 		
+
+	// }
 	
 	function setCounts(resources) {
-		for (var i = 0; i < resources.length; i++) {
+
+		var name = ['user_id','assign_to_id','user_group_id','assign_to_id','user_id'];
+		var namee;
+			for (var i = 0; i <= resources.length; i++) {
 			var resourceName = resources[i];
 			var counterName = resourceName + 'Counter';
-			setCount(resourceName, counterName);
+			var namee = name[i];
+			setCount(resourceName, counterName,namee);
 		}
+
+		
+		
 	}
 	
 	function setCountsDefault(){
@@ -5664,6 +4792,24 @@ app.controller('milestonesControllerExtension', function($scope, $route, $contro
                 alert("... Error:" + e.data.error.message);
             });
     }   
+
+    $scope.currentDate = new Date();
+        $scope.checkDate = function(dt)
+        {
+            console.log( H.toDate(dt));    
+            return H.toDate(dt) > $scope.currentDate;
+        }
+        $scope.checkDay = function(dt)
+        {
+            // console.log( H.toDate(dt));    
+             $scope.diffTime = Math.ceil($scope.currentDate-H.toDate(dt) );
+             $scope.diff= Math.ceil($scope.diffTime / (1000 * 60 * 60 * 24)); 
+             if($scope.diff > 0)
+             {
+             return $scope.diff+' days';
+             }
+            //  console.log($scope.diff);            
+        }
     
 
 });
@@ -6269,6 +5415,7 @@ app.controller('profilesControllerExtension', function($scope, $controller, $roo
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
         
+        
         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
     };
@@ -6350,8 +5497,8 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         
         $scope.currentDate = new Date();
         $scope.checkDate = function(dt){
-            console.log( H.toDate(dt));
-            console.log($scope.currentDate);
+            // console.log( H.toDate(dt));
+            // console.log($scope.currentDate);
             return H.toDate(dt) > $scope.currentDate;
         }
 		
@@ -6361,7 +5508,10 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
 	// {
 	// 	$scope.start=initial_date;
 	// }
-		
+     
+        
+   
+
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
         // obj.is_active = 1;
@@ -6372,9 +5522,9 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     //This function is called when you are in edit mode. i.e. after a call has returned from one of your API that returns a single object. e.g http://localhost:8080/api/tasks/1
     $scope.onLoad = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        console.log($rootScope.data);
+      
         
-  
+       
     };
     
     //This function is called when you are in list mode. i.e. before a call has been placed to one of your API that returns a the paginated list of all objects matching your API.
@@ -6384,10 +5534,17 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         //return query;
          //query.status.type=='project';
         query.is_deleted = 0;
+        // if($rootScope.currentUser.role !== 'admin')
+        //  {  
 
+        //         query.user_group_id = $rootScope.currentUser.id;
+        //  }
+
+        
+     
         // query.type='project';
     };
-
+   // console.log("this is user group : -"+ $rootScope.query.user_id);
     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
@@ -6395,27 +5552,14 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         //  var d = new Date();
       //console.log(obj[2].due_date);
       //console.log(dat);
-      for(var i=0;i<obj.length; i++)
-      {
-
-        if(obj[i].due_date <= $scope.dtmax){
-
-            //var msg = "your project is late";
-            console.log("project is late");
-           // $scope.obj[i];
-        }
-        else{
-            //$scope.msg = "OnTime";
-            console.log("OnTime");
-        }
-
-      }  
+      
+     // console.log("single project"+$scope.data.single);
         
         // You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
         
     };
-    console.log($scope.dtmax);
+    //
   //    $scope.checkErr = function(initial_date,due_date){
   //  $scope.errMessage = '';
   //  $scope.curDate = new Date();
@@ -6625,180 +5769,6 @@ app.controller('settingsController', function($scope, $rootScope, $http, $cookie
     GLOBALS.methods.autoFocus();
 
 });
-// /*global app*/
-// //The name of the controller should be plural that matches with your API, ending with ControllerExtension. 
-// //Example: your API is http://localhost:8080/api/tasks then the name of the controller is tasksControllerExtension.
-// //To register this controller, just go to app/config/routes.js and add 'tasks' in 'easyRoutes' or 'autoRoutes' array.
-// //
-// //The main difference in 'easyRoutes' and 'autoRoutes' is that 'autoRoutes' generates complete CRUD pages, where as in 'easyRoutes'
-// //you need to provide templates inside 'app/modules/tasks' folder. If you want to keep your templates somewhere else, you can pick
-// //'autoRoutes' and then override the templates using setTemplate function.
-// //Note that for 'autoRoutes', it is not even required to write Controller Extensions unless you want to modify the behaviour.
-// app.controller('tasksControllerExtension', function($scope, $controller, $rootScope, $http, $location, Popup, H, M) {
-    
-//     $scope.visible = false;
-//     if($rootScope.currentUser.role=='admin')
-//     {
-//     	$scope.visible=true;
-//     }
-    
-//     //This function is called when you need to make changes to the new single object.
-//     $scope.onInit = async function(obj){
-//         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
-//         obj.is_active = 1;
-//     };
-    
-//     //This function is called when you are in edit mode. i.e. after a call has returned from one of your API that returns a single object. e.g http://localhost:8080/api/tasks/1
-//     $scope.onLoad = async function(obj){
-//         //$scope.data.single is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        
-//     };
-    
-//     //This function is called when you are in list mode. i.e. before a call has been placed to one of your API that returns a the paginated list of all objects matching your API.
-//     $scope.beforeLoadAll = async function(query){
-//         //This is where you can modify your query parameters.    
-//         //query.is_active = 1;
-//         //return query;
-//         if($scope.errMessage)
-//         {
-//         	// $route.reload();
-//         	alert("Select Proper Date");
-//         	$route.reload();
-//         }
-//         query.is_deleted=0;
-//     };
-
-//     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
-//     $scope.onLoadAll = async function(obj){
-//         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        
-//         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
-//         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
-//     };
-    
-//     //This function is called before the create (POST) request goes to API
-//     $scope.beforeSave = async function(obj, next){
-//         //You can choose not to call next(), thus rejecting the save request. This can be used for extra validations.
-//     	delete obj.status_id;
-//     	delete obj.user_story_id;
-//     	delete obj.priority_id;
-//     	delete obj.updated_by;
-// 		delete obj.assign_to;
-		
-//         next();
-//     };
-
-//     //This function is called after the create (POST) request is returned from API
-//     $scope.onSave = async function (obj, next){
-//         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been created.
-//         next();
-//     };
-    
-//     //This function is called before the update (PUT) request goes to API
-//     $scope.beforeUpdate = async function(obj, next){
-//         //You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
-//         next();
-//     };
-
-//     //This function is called after the update (PUT) request is returned from API
-//     $scope.onUpdate = async function (obj, next){
-//         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been updated.
-//         next();
-//     };
-    
-//     //This function will be called whenever there is an error during save/update operations.
-//     $scope.onError = async function (obj, next){
-//         //You can choose not to call next(), thus preventing the page to display the popup that confirms there has been an error.
-        
-//         next();
-        
-//     };
-//     var date = new Date().getDate();
-// 	var month = new Date().getMonth()+1;
-// 	var year = new Date().getFullYear();
-// 	// var pattern = /^([0-9]{2})-([0-9]{2})-([0-9]{4})$/;
-// 	$scope.dtmax  = year+"-"+month+"-"+date;
-// 	// $scope.dtmax  = date+"-"+month+"-"+year;
-// 	// console.log($scope.dtmax);
-// 	// $scope.data1 = function (initial_date,due_date)
-// 	// 	{
-// 	// 	//	$scope.abcd = initial_date;
-// 	// 		// alert("hello");
-//  //           $scope.errMessage = '';
-//  //           if (initial_date > due_date)
-//  //           {
-//  //               $scope.errMessage = 'End Date should be greater than start date';
-//  //               return false;
-//  //           }
-//  //       };
-//   $scope.data1 = function (initial_date, due_date)
-// 		{
-// 			// var pattern = /^([0-9]{2})-([0-9]{2})-([0-9]{4})$/;
-// 			// alert("hello");
-//             $scope.errMessage = '';
-//             if (initial_date > due_date )
-//             {
-//                 $scope.errMessage = 'End Date should be greater than start date';
-//                 return false;
-//             }
-//         };
-  
-  
-  
-//   $scope.a=1
-//     $scope.remove=function(id){
-//         var data = {
-//                 is_deleted:$scope.a
-//         };
-        
-//         $http.put(H.S.baseUrl + '/tasks/' + id,data).then(function(res)
-//         {
-            
-//                 console.log(data);
-//                 $route.reload();
-//         },
-//             function(e) {
-//                 alert("... Error:" + e.data.error.message);
-//             });
-//     }
-  
-  
-  
-  
-  
-//     // If the singular of your title is having different spelling then you can define it as shown below.
-//     // $scope.getSingularTitle = function(){
-//     //     return "TASK";
-//     // }
-
-//     // If you want don't want to display certain columns in the list view you can remove them by defining the function below.
-//     // if($rootScope.currentUser.role == 'user' || $rootScope.currentUser.role == 'admin')
-//     // {
-//     $scope.removeListHeaders = function(){
-//         return ['Is Deleted'];
-//     }
-//     //}
-
-//     // If you want to refresh the data loaded in grid, you can call the following method
-//     // $scope.refreshData();
-    
-//     // If you are using autoRoutes, and you want to override any templates, you may use the following function
-//     // $scope.setTemplate('list-item', 'app/your-path/your-template.html');
-//     // $scope.setTemplate('single', 'app/your-path/your-template.html');
-    
-//     // list-item.html template uses the 'td' element which will be rendered inside a 'table' & 'tr'. 
-//     // If you don't like the layout, and you want to replace it with your own, you can use the following method.
-//     // Note that if you override the 'list-items', then you have to use ng-repeat or any other mechanism to iterate over your data that is available in $scope.data.list.
-//     // $scope.setTemplate('list-items', 'app/your-path/your-template.html');
-    
-
-// });
-
-
-
-
-
-
 /*global app*/
 //The name of the controller should be plural that matches with your API, ending with ControllerExtension. 
 //Example: your API is http://localhost:8080/api/tasks then the name of the controller is tasksControllerExtension.
@@ -6833,6 +5803,10 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
         //This is where you can modify your query parameters.    
         //query.is_active = 1;
         //return query;
+        if($rootScope.currentUser.role !== 'admin')
+        {
+            query.assign_to_id=$rootScope.currentUser.id;
+        }
         if($scope.errMessage)
         {
         	// $route.reload();
@@ -7227,7 +6201,7 @@ app.controller('user_groupsControllerExtension', function($scope, $controller, $
     //This function is called when you are in edit mode. i.e. after a call has returned from one of your API that returns a single object. e.g http://localhost:8080/api/tasks/1
     $scope.onLoad = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        console.log($rootScope.data)
+      //  console.log($rootScope.data)
         
     };
     
@@ -7235,13 +6209,19 @@ app.controller('user_groupsControllerExtension', function($scope, $controller, $
     $scope.beforeLoadAll = async function(query){
         //This is where you can modify your query parameters.    
         //query.is_active = 1;
+        // if($rootScope.currentUser.role == 'admin')
+        // {
+            query.user_id = $rootScope.currentUser.id; 
+        // }
         //return query;
     };
 
     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        
+        //console.log("data list "+JSON.stringify($scope.data.list[0].group.name));
+         $rootScope.group = $scope.data.list[0].group.name;
+        // console.log($rootScope.group);
         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
     };
