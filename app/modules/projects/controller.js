@@ -10,42 +10,75 @@
 app.controller('projectsControllerExtension', function($scope, $controller, $rootScope, $http, $location,$route, Popup, H, M) {
     
     //This function is called when you need to make changes to the new single object.
-        var date = new Date().getDate();    
-        var month = new Date().getMonth()+1;
+		var date = new Date().getDate();
+		var month = new Date().getMonth()+1;
 		var year = new Date().getFullYear();
-		$scope.dtmax  = year+"-"+month+"-"+(date);
-        // console.log($scope.dtmax);
-        
+		$scope.dtmax  = year+"-"+month+"-"+date;
+		// console.log($scope.dtmax);
+		
+		$scope.data1 = function (initial_date, due_date)
+		{
+            $scope.errMessage = '';   
+            if (initial_date > due_date)
+            {
+                $scope.errMessage = 'End Date should be greater than start date';
+                return false;
+            }
+           
+        };
+        // $scope.due_date=$scope.due_date;
+        // var date1 = new Date($scope.dtmax);
+        // var date2 = new Date(dt);
+        // var diffTime = Math.abs(date2 - date1);
+        // var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        // console.log(diffDays);
+
         $scope.currentDate = new Date();
-        $scope.checkDate = function(dt){
-            // console.log( H.toDate(dt));
-            // console.log($scope.currentDate);
+        $scope.checkDate = function(dt)
+        {
+            // console.log( H.toDate(dt));    
             return H.toDate(dt) > $scope.currentDate;
         }
-		
-		
-        
-	// $scope.data1=function(initial_date)
-	// {
-	// 	$scope.start=initial_date;
-	// }
-     
-        
-   
+        $scope.checkDay = function(dt)
+        {
+            // console.log( H.toDate(dt));    
+             $scope.diffTime = Math.ceil($scope.currentDate-H.toDate(dt) );
+             $scope.diff= Math.ceil($scope.diffTime / (1000 * 60 * 60 * 24)); 
+             if($scope.diff > 0)
+             {
+             return $scope.diff+' days';
+             }
+            //  console.log($scope.diff);            
+        }
+    $scope.Visible = false;
+    // console.log($rootScope.currentUser.role);
+    // if($rootScope.currentUser.role=='ninja')
+    // {
+    //     console.log("hi");
+    // }        
+    if($rootScope.currentUser.role == 'user')
+    {       
+        $scope.Visible=false;
+    }
+    $scope.IsVisible = false;
+    if($rootScope.currentUser.role == 'admin')
+    {
+        $scope.IsVisible=true;
+    }
 
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
         // obj.is_active = 1;
         // query.status.type=='project';
-        
+       
     };
     
     //This function is called when you are in edit mode. i.e. after a call has returned from one of your API that returns a single object. e.g http://localhost:8080/api/tasks/1
     $scope.onLoad = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-      
+        console.log($rootScope.data);
         
-       
+  
     };
     
     //This function is called when you are in list mode. i.e. before a call has been placed to one of your API that returns a the paginated list of all objects matching your API.
@@ -55,32 +88,26 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         //return query;
          //query.status.type=='project';
         query.is_deleted = 0;
-        // if($rootScope.currentUser.role !== 'admin')
-        //  {  
-
-        //         query.user_group_id = $rootScope.currentUser.id;
-        //  }
-
-        
-     
         // query.type='project';
     };
-   // console.log("this is user group : -"+ $rootScope.query.user_id);
+
     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
          //obj.type='project';
-        //  var d = new Date();
-      //console.log(obj[2].due_date);
-      //console.log(dat);
-      
-     // console.log("single project"+$scope.data.single);
-        
+         if($rootScope.currentUser.role=='admin')
+         {
+         $scope.setListHeaders(['Id','Title','Initial_date','Due_date','Budget','Logo','Description','User Group','Status','is_deleted','delay']);
+         }
+         if($rootScope.currentUser.role=='user')
+         {
+            $scope.setListHeaders(['Title','Initial_date','Due_date','Budget','Logo','Description','User Group','Status','delay']);
+         }
         // You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
         
     };
-    //
+    console.log($scope.dtmax);
   //    $scope.checkErr = function(initial_date,due_date){
   //  $scope.errMessage = '';
   //  $scope.curDate = new Date();
