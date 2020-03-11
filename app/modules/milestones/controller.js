@@ -32,7 +32,14 @@ app.controller('milestonesControllerExtension', function($scope, $route, $contro
     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        
+        if($rootScope.currentUser.role=='user')
+        {
+            $scope.setListHeaders(['Id','Title','Initial Date','Due Date','Amount','Project','User Group','Release Date','Delay']);    
+        }
+        if($rootScope.currentUser.role=='admin')
+        {
+        $scope.setListHeaders(['Id','Title','Initial Date','Due Date','Amount','Project','User Group','Release Date','Is Active','Is Deleted','Delay']);
+        }
         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
     };
@@ -75,9 +82,13 @@ app.controller('milestonesControllerExtension', function($scope, $route, $contro
     // }
 
     // If you want don't want to display certain columns in the list view you can remove them by defining the function below.
-    // $scope.removeListHeaders = function(){
-    //     return ['is_active'];
-    // }
+    if($rootScope.currentUser.role=='user')
+    { 
+        $scope.removeListHeaders = function()
+        {
+             return ['Is Deleted','Is Active'];
+        }
+    }
 
     // If you want to refresh the data loaded in grid, you can call the following method
     // $scope.refreshData();
@@ -100,7 +111,7 @@ app.controller('milestonesControllerExtension', function($scope, $route, $contro
             $scope.errMessage = '';
             if (initial_date > due_date)
             {
-                $scope.errMessage = 'Dnd Date should be greater than Start Date';
+                $scope.errMessage = 'Due Date should be greater than Start Date';
                 return false;
             }
         };
