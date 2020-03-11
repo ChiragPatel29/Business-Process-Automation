@@ -18,8 +18,8 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         
         $scope.currentDate = new Date();
         $scope.checkDate = function(dt){
-            console.log( H.toDate(dt));
-            console.log($scope.currentDate);
+            // console.log( H.toDate(dt));
+            // console.log($scope.currentDate);
             return H.toDate(dt) > $scope.currentDate;
         }
 		
@@ -29,7 +29,10 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
 	// {
 	// 	$scope.start=initial_date;
 	// }
-		
+     
+        
+   
+
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
         // obj.is_active = 1;
@@ -40,9 +43,9 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     //This function is called when you are in edit mode. i.e. after a call has returned from one of your API that returns a single object. e.g http://localhost:8080/api/tasks/1
     $scope.onLoad = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        console.log($rootScope.data);
+      
         
-  
+       
     };
     
     //This function is called when you are in list mode. i.e. before a call has been placed to one of your API that returns a the paginated list of all objects matching your API.
@@ -52,10 +55,17 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         //return query;
          //query.status.type=='project';
         query.is_deleted = 0;
+        // if($rootScope.currentUser.role !== 'admin')
+        //  {  
 
+        //         query.user_group_id = $rootScope.currentUser.id;
+        //  }
+
+        
+     
         // query.type='project';
     };
-
+   // console.log("this is user group : -"+ $rootScope.query.user_id);
     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
@@ -63,27 +73,14 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         //  var d = new Date();
       //console.log(obj[2].due_date);
       //console.log(dat);
-      for(var i=0;i<obj.length; i++)
-      {
-
-        if(obj[i].due_date <= $scope.dtmax){
-
-            //var msg = "your project is late";
-            console.log("project is late");
-           // $scope.obj[i];
-        }
-        else{
-            //$scope.msg = "OnTime";
-            console.log("OnTime");
-        }
-
-      }  
+      
+     // console.log("single project"+$scope.data.single);
         
         // You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
         
     };
-    console.log($scope.dtmax);
+    //
   //    $scope.checkErr = function(initial_date,due_date){
   //  $scope.errMessage = '';
   //  $scope.curDate = new Date();

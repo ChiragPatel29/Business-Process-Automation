@@ -19,7 +19,7 @@ app.controller('user_groupsControllerExtension', function($scope, $controller, $
     //This function is called when you are in edit mode. i.e. after a call has returned from one of your API that returns a single object. e.g http://localhost:8080/api/tasks/1
     $scope.onLoad = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        console.log($rootScope.data)
+      //  console.log($rootScope.data)
         
     };
     
@@ -27,13 +27,19 @@ app.controller('user_groupsControllerExtension', function($scope, $controller, $
     $scope.beforeLoadAll = async function(query){
         //This is where you can modify your query parameters.    
         //query.is_active = 1;
+        // if($rootScope.currentUser.role == 'admin')
+        // {
+            query.user_id = $rootScope.currentUser.id; 
+        // }
         //return query;
     };
 
     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        
+        //console.log("data list "+JSON.stringify($scope.data.list[0].group.name));
+         $rootScope.group = $scope.data.list[0].group.name;
+        // console.log($rootScope.group);
         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
     };

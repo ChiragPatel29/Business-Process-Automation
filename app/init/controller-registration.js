@@ -1,7 +1,7 @@
 /*global app, ControllerFactory, RegisterRoutes, RegisterData*/
 function RegisterEasyController(route, headers, controller, auto = false, alias = null) {
 	var x = (alias ? alias : route);
-	console.log('registering ' + x + 'ControllerBase');
+	//console.log('registering ' + x + 'ControllerBase');
 
 	app.controller(x + 'ControllerBase', ControllerFactory(route));
 
@@ -60,7 +60,7 @@ function RegisterEasyController(route, headers, controller, auto = false, alias 
 	for (var i in aliases) {
 		alias = i;
 		route = aliases[i];
-		console.log('trying to register ' + alias + ' for route ' + route);
+		//console.log('trying to register ' + alias + ' for route ' + route);
 		RegisterEasyController(route, null, null, true, alias /*, data[easyRoutes[i]].headers*/ );
 	}
 })();

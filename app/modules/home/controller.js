@@ -125,6 +125,8 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 
 	};
 	
+     
+
 	function getNextNumber(n) {
 		var m = n % $scope.data.bgColors.length;
 		return m;
@@ -143,19 +145,61 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 		}
 	}
 	
-	function setCount(resourceName, counterName) {
-		R.count(resourceName, function (result) {
+	function setCount(resourceName, counterName,name) {
 		
-		//	$scope.data.counters[counterName].value = result;
+		
+		if($rootScope.currentUser.role == 'admin' )
+		{
+			R.count(resourceName).then(function(result){
+				console.log("result: -" +resourceName);
+			$scope.data.counters[counterName].value = result[0].count;
+		//	console.log("result is  : - "+ $scope.data.counters[counterName].value);
 		});
+
+		}
+		else{
+		var email = $rootScope.currentUser.id;
+			R.getby(resourceName,email,name).then(function(result){
+				$scope.data.counters[counterName].value = result;
+				//console.log("result is :-"+result);
+				//$scope.ca = result;
+			});
+		}	
+		//
+		
+	
 	}
+		
+
+		// $scope.getbi = function(){
+
+		// 	var bug = 'bugs';
+		// var email = $rootScope.currentUser.id;
+		// 	R.getby(bug,email).then(function(result){
+		// 		//console.log("result is :-"+result);
+		// 		$scope.ca = result;
+		// 	});
+		// 	//$scope.ca = $scope.ct;
+		// }
+
+	// function getbi(bug,email){
+	// 		
+
+	// }
 	
 	function setCounts(resources) {
-		for (var i = 0; i < resources.length; i++) {
+
+		var name = ['user_id','assign_to_id','user_group_id','assign_to_id','user_id'];
+		var namee;
+			for (var i = 0; i <= resources.length; i++) {
 			var resourceName = resources[i];
 			var counterName = resourceName + 'Counter';
-			setCount(resourceName, counterName);
+			var namee = name[i];
+			setCount(resourceName, counterName,namee);
 		}
+
+		
+		
 	}
 	
 	function setCountsDefault(){

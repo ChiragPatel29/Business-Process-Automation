@@ -14,7 +14,7 @@
 				<div ng-if="data.singleKeysInfo.user_story_id.required && !data.single.user_story_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div>
 			</div>
 		</div>
-	<!--{{currentUser.role}}-->
+	
 	</div>
 
 	<div class="form-group row">
@@ -43,29 +43,17 @@
 		</div>
 	</div>
 
-	<!-- <div class="form-group row">
-		<label for="is_active" class="col-md-4 col-form-label text-md-right">assignTo</label>
-		<div class="col-md-6">
-			<div class="dropdown">
-				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" multiple aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
-					{{data.single.user.username || 'choose'}}
-				</button>
-				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="d in data.foreignKeys.users track by $index " href="" ng-click="data.single.user_id = d.id; data.single.user = d">{{d.username}}</a>
-				</div>
-			</div>
-		</div>
-	</div> -->
+	
 
 	<div class="form-group row">
 		<label for="assign_tos" class="col-md-4 col-form-label text-md-right">Assign_to</label>
 		<div class="col-md-6">
 			<div class="dropdown">
-				<button class="btn btn-default dropdown-toggle" type="button" id="assign_tos" name="assign_tos" data-toggle="dropdown" multiple aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
+				<button class="btn btn-default dropdown-toggle" type="button" id="assign_tos" name="assign_tos" ng-click="tech()" data-toggle="dropdown" multiple aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
 					{{data.single.assign_tos.username || 'choose'}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.assign_tos track by $index"  href="" ng-click="data.single.assign_to_id = c.id; data.single.assign_tos = c">{{c.username}}</a>
+					<a class="dropdown-item" ng-repeat="c in res"  href="" ng-click="data.single.assign_to_id = c.user.id; data.single.assign_tos = c.user">{{c.first_name}}</a>
 					
 				</div>
 				<input type="hidden" class="form-control" id="assign_tos" name="assign_tos" ng-model="data.single.assign_to_id" ng-required="data.singleKeysInfo.assign_to_id.required" />
@@ -74,6 +62,7 @@
 		</div>
 		
 	</div>
+	<!-- {{c}} -->
 	<!-- {{data.foreignKeys.fix_bies}}	 -->
 
 
@@ -173,38 +162,6 @@
 		</div>
 
 	</div>
-
-
-
-	<!--<div class="form-group row">-->
-	<!--	<label for="bugs_title" class="col-md-4 col-form-label text-md-right">inital date:</label>-->
-	<!--	<div class="col-md-6">-->
-	<!--		<input id="bugs_title" name="bugs_title" type="text" class="form-control" ng-model="data.single.title" required ng-disabled="locked" autofocus>-->
-	<!--	</div>-->
-	<!--	<div ng-messages="forms.bugsForm.bugs_title.$error" ng-show="forms.bugsForm.bugs_title.$dirty">-->
-	<!--		<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>-->
-	<!--	</div>-->
-	<!--</div>-->
-
-	<!--<div class="form-group row">-->
-	<!--	<label for="bugs_title" class="col-md-4 col-form-label text-md-right">submited date:</label>-->
-	<!--	<div class="col-md-6">-->
-	<!--		<input id="bugs_title" name="bugs_title" type="text" class="form-control" ng-model="data.single.title" required ng-disabled="locked" autofocus>-->
-	<!--	</div>-->
-	<!--	<div ng-messages="forms.bugsForm.bugs_title.$error" ng-show="forms.bugsForm.bugs_title.$dirty">-->
-	<!--		<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>-->
-	<!--	</div>-->
-	<!--</div>-->
-
-	<!-- <div class="form-group row">
-		<label for="category_is_active" class="col-md-4 col-form-label text-md-right">{{M.FIELD_ACTIVE}}:</label>
-		<div class="col-md-6">
-			<div class="custom-control custom-switch form-switch">
-				<input class="custom-control-input" type="checkbox" id="category_is_active" name="category_is_active" ng-disabled="locked" ng-true-value="1" ng-false-value="0" ng-model="data.single.is_active">
-				<label class="custom-control-label" for="category_is_active"></label>
-			</div>
-		</div>
-	</div> -->
 
 	<div class="form-group row">
 		<div class='col-md-6 offset-md-4'>

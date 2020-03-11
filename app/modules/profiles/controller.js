@@ -36,6 +36,7 @@ app.controller('profilesControllerExtension', function($scope, $controller, $roo
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
         
+        
         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
     };

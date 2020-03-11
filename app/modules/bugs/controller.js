@@ -7,10 +7,21 @@
 //you need to provide templates inside 'app/modules/tasks' folder. If you want to keep your templates somewhere else, you can pick
 //'autoRoutes' and then override the templates using setTemplate function.
 //Note that for 'autoRoutes', it is not even required to write Controller Extensions unless you want to modify the behaviour.
-app.controller('bugsControllerExtension', function($scope,$route, $controller, $rootScope, $http, $location, Popup, H, M) {
+app.controller('bugsControllerExtension', function($scope,$route, $controller, $rootScope, $http, $location, Popup, H, M,R) {
     
     //This function is called when you need to make changes to the new single object.
     
+   // $scope.R = R;
+
+    var id = $rootScope.currentUser.id;
+
+    R.getdesignation(id).then(function(result){
+
+        //console.log("result is :-"+JSON.stringify(result[0].designation_id));
+			$scope.did = result[0].designation_id;
+    }); 
+
+
     
     
     $scope.onInit = async function(obj){
@@ -32,7 +43,31 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
         //This is where you can modify your query parameters.    
         // query.is_active = 1;
         query.is_deleted = 0;
-         console.log($rootScope.currentUser.role);
+        // console.log(JSON.stringify(query));
+
+         if($rootScope.currentUser.role !== 'admin')
+         {      
+             switch($scope.did){
+
+                case 7 :
+                    query.caught_by_id = $rootScope.currentUser.id;
+                    break;
+                case 2 :
+                    query.assign_to_id = $rootScope.currentUser.id;
+                    break;
+                case 1 :
+                    query.fix_by_id = $rootScope.currentUser.id;
+                    break;
+                default :
+                query.caught_by_id = $rootScope.currentUser.id;
+                    break;
+             }
+
+               
+
+                
+         }
+        
         //return query;
     };
 
@@ -71,7 +106,7 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
         
         
 
-        console.log("Post data : "+obj);
+       // console.log("Post data : "+obj);
         next();
     };
     
@@ -134,6 +169,23 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
             
                 console.log(data);
                 $route.reload();
+        },
+            function(e) {
+                alert("... Error:" + e.data.error.message);
+            });
+    }
+
+
+    $scope.tech = function(){
+        
+        //alert("tech");
+        $http.get(H.S.baseUrl + '/profiles?designation_id='+2).then(function(res)
+        {
+            
+               // console.log("response " +JSON.stringify(res.data[0]));
+                $scope.res = res.data;
+                
+                //$route.reload();
         },
             function(e) {
                 alert("... Error:" + e.data.error.message);

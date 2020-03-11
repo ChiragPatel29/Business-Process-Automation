@@ -1,17 +1,47 @@
 /*global app*/
 //Service for quickly getting the API Resource Object
-app.service('R', function($resource, $http, S) {
+app.service('R', function($resource, $http, S,$rootScope) {
 	return {
 		get: function(resourceName) {
 			return $resource(S.baseUrl + '/' + resourceName + '/:id', {
 				id: '@id'
 			});
 		},
-		count: async function(resourceName, cb) {
-			$http.get(S.baseUrl + '/' + resourceName + '/?count=true')
+		getby: function(resourceName,email,name) {
+			return $http.get(S.baseUrl + '/' + resourceName + '?'+name+'='+ email)
 				.then(function(results) {
 					if (results && results.data && results.data.length > 0)
+					{
+						return results.data.length;
+					}
+					else{
+						return 0;
+					}
+						
+					// {
+					// 	console.log("resources: -" +JSON.stringify(results.data.length));
+					// }
 						if (cb) cb(results.data[0].count);
+				}, function(e) {});
+		},
+		getdesignation: function(id) {
+			return $http.get(S.baseUrl + '/profiles?user_id='+ id)
+				.then(function(results) {
+					if (results && results.data && results.data.length > 0)
+						return results.data;
+					// {
+					// 	console.log("resources: -" +JSON.stringify(results.data.length));
+					// }
+					//	if (cb) cb(results.data[0].count);
+				}, function(e) {});
+		},
+		count: async function(resourceName, cb) {
+		return $http.get(S.baseUrl + '/' + resourceName + '/?count=true')
+				.then(function(results) {
+					if (results && results.data.length && results.data.length > 0)
+						return results.data;
+					
+					//if (cb) cb(results.data[0].count);
 				}, function(e) {});
 		},
 		query: async function(resourceName, q, cb){
