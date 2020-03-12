@@ -184,9 +184,12 @@ app.controller('timesheetsControllerExtension', function($scope,$filter, $contro
     // }
 
     // If you want don't want to display certain columns in the list view you can remove them by defining the function below.
-    // $scope.removeListHeaders = function(){
-    //     return ['is_active'];
-    // }
+     $scope.removeListHeaders = function(){
+        //  return ['is_active'];
+        return ['Is Active', 'Is Deleted'];
+         
+
+     }
 
     // If you want to refresh the data loaded in grid, you can call the following method
     // $scope.refreshData();
