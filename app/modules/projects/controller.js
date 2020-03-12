@@ -105,7 +105,8 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
             if(obj[i].user_group.user.id == $rootScope.currentUser.id)
             {
                 console.log(obj[i]);
-                return obj[i];   
+                // obj.push(obj);
+
             }
         // obj.push(obj[i]);
         //    {     
