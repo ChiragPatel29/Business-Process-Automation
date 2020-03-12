@@ -15,6 +15,8 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
     	$scope.visible=true;
     }
     
+    var uby=$rootScope.currentUser.id;
+    console.log(uby);
     //This function is called when you need to make changes to the new single object.
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
@@ -39,17 +41,26 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
         if($scope.errMessage)
         {
         	// $route.reload();
-        	alert("Select Proper Date");
+            alert("Select Proper Date");
         	$route.reload();
         }
         query.is_deleted=0;
+;
         
     };
 
     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
+        // var title = [];
+        for(i=0;i<=obj.length;i++)
+        {
+        // console.log(obj[i].user_story.projects.title);
+         $scope.title=obj[i].user_story.projects.title;
+         console.log($scope.title);
+        }
         
+        $scope.setListHeaders(['Id','Title','Initial date','Due date','Status','Description','Assign To','Updated At','Updated By','User Story','Priority','Estimated Hour','Actual Hour','Is Active','Project']);
         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
     };
@@ -62,21 +73,23 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
     	delete obj.priority;
     	delete obj.updated_bies;
 		delete obj.assign_tos;
-		
+		obj.updated_by_id=$rootScope.currentUser.id;
         next();
     };
 
     //This function is called after the create (POST) request is returned from API
     $scope.onSave = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been created.
+        
+        // console.log(obj);
         next();
     };
     
     //This function is called before the update (PUT) request goes to API
     $scope.beforeUpdate = async function(obj, next){
         //You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
-        alert("helo");
-        console.log($scope.data);
+        // alert("helo");
+        // console.log($scope.data);
         next();
     };
 
@@ -104,8 +117,8 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
 
     $scope.currentDate = new Date();
     $scope.checkDate = function(dt){
-        console.log( H.toDate(dt));
-        console.log($scope.currentDate);
+        // console.log( H.toDate(dt));
+        // console.log($scope.currentDate);
         return H.toDate(dt) > $scope.currentDate;
     }
 
@@ -150,8 +163,31 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
             }
         };
   
-  
-  
+        $scope.tech = function(){
+        
+            //alert("tech");
+            $http.get(H.S.baseUrl + '/profiles?designation_id='+1).then(function(res)
+            {
+                
+                   // console.log("response " +JSON.stringify(res.data[0]));
+                    $scope.res = res.data;
+                    
+                    //$route.reload();
+            },
+                function(e) {
+                    alert("... Error:" + e.data.error.message);
+                });
+        }
+        
+        $scope.project = function(){
+            $http.get(H.S.baseUrl + '/projects').then(function(res)
+            {
+                $scope.resproj = res.data;
+            },
+            function(e) {
+                    alert("... Error:" + e.data.error.message);
+                });
+        }
   
   
   

@@ -137,9 +137,6 @@
 		</div>
 	</div>
 
-
-
-
 	<div class="form-group row">
 		<label for="task_status" class="col-md-4 col-form-label text-md-right">Status:</label>
 		<div class="col-md-6">
@@ -154,7 +151,6 @@
 				<input type="hidden" class="form-control" id="status" name="status" ng-model="data.single.status_id" ng-required="data.singleKeysInfo.status_id.required" />
 				<!-- <div ng-if="data.singleKeysInfo.status_id.required && !data.single.status_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div> -->
 			</div>
-
 		</div>
 	</div>
 
@@ -172,12 +168,11 @@
 		<label for="task_assign_to" class="col-md-4 col-form-label text-md-right">Assign To:</label>
 		<div class="col-md-6">
 			<div class="dropdown">
-				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
+				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-click="tech()" ng-disabled="locked">
 					{{data.single.assign_tos.username || 'Choose an option'}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="r in data.foreignKeys.assign_tos track by $index" href="" 
-					ng-click="data.single.assign_to_id = r.id; data.single.assign_tos  = r">{{r.username}}</a>
+					<a class="dropdown-item" ng-repeat="c in res" href="" ng-click="data.single.assign_to_id = c.user.id; data.single.assign_tos = c.user">{{c.first_name}}</a>
 				</div>
 				<input type="hidden" class="form-control" id="assign_to_id" name="assign_to_id" ng-model="data.single.assign_to_id" ng-required="data.singleKeysInfo.assign_to_id.required" />
 				<!-- <div ng-if="data.singleKeysInfo.assign_to_id.required && !data.single.assign_to_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div> -->
@@ -205,23 +200,45 @@
 	<!--    </div>-->
 	<!--</div>-->
 	
-	<div class="form-group row">
+	<!-- <div class="form-group row">
 		<label for="is_active" class="col-md-4 col-form-label text-md-right">Updated by:</label>
 		<div class="col-md-6">
 			<div class="dropdown">
-				<button class="btn btn-default dropdown-toggle" type="button" id="updated_by" name="updated_by" data-toggle="dropdown" multiple aria-haspopup="true" aria-expanded="false" required ng-disabled="locked">
-					{{data.single.updated_bies.username || 'Choose an option'}}
+				<button class="btn btn-default dropdown-toggle" type="button" id="updated_by" name="updated_by" data-toggle="dropdown"  multiple aria-haspopup="true" aria-expanded="false" required ng-disabled="locked">
+					{{data.single.updated_bies.username}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.updated_bies track by $index " href="" ng-click="data.single.updated_by_id= c.id; data.single.updated_bies = c">{{c.username}}</a>
+					<a class="dropdown-item"  href="" ng-click="data.single.updated_by_id= currentUser.id; data.single.updated_bies = currentUser">{{currentUser.username}}</a>
 				</div>
-				<input type="hidden" class="form-control" id="updated_by_id" name="updated_by_id" ng-model="data.single.updated_by_id" ng-required="data.singleKeysInfo.updated_by_id.required" />
+				<input type="hidden" class="form-control" id="updated_by_id" name="updated_by_id" ng-model="data.single.updated_by_id" ng-required="data.singleKeysInfo.updated_by_id.required" /> -->
 				<!-- <div ng-if="data.singleKeysInfo.updated_by_id.required && !data.single.updated_by_id && saveClicked" 
 				class="small col-red">{{M.REQUIRED}}</div> -->
-			</div>
+			<!-- </div>
 		</div>
-	</div>
+	</div> -->
 
+	
+
+	<div class="form-group row" >
+        <label for="user_story" class="col-md-4 col-form-label text-md-right">Project:</label>
+        <div class="col-md-6">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="drop" name="drop" ng-click='project()' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="locked" required>
+                    {{ project.title || 'Choose an option'}}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" ng-repeat="c in resproj" href="" ng-click="project.title = c.title;project.id = c.id;">{{c.title}}</a>
+                </div>
+                <input type="hidden" class="form-control" id="drop" name="drop" ng-model="data.single.user_story_id" ng-required="data.singleKeysInfo.user_story_id.required" />
+                <div ng-if="data.singleKeysInfo.user_story_id.required && !data.single.user_story_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div>
+            </div>
+        </div>
+    
+	</div>
+	
+
+	
+	
 
 	<div class="form-group row">
 		<label for="task_user_story_id" class="col-md-4 col-form-label text-md-right">User Story:</label>
@@ -231,7 +248,7 @@
 					{{data.single.user_story.title || 'Choose an option'}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="d in data.foreignKeys.user_stories track by $index " href="" ng-click="data.single.user_story_id = d.id; data.single.user_story = d">{{d.title}}</a>
+					<a class="dropdown-item" ng-repeat="d in data.foreignKeys.user_stories track by $index " href="" ng-if="d.projects.id == project.id" ng-click="data.single.user_story_id = d.id; data.single.user_story = d">{{d.title}}</a>
 				</div>
 				<input type="hidden" class="form-control" id="user_story_id" name="user_story_id" ng-model="data.single.user_story_id" ng-required="data.singleKeysInfo.user_story_id.required" />
 				<div ng-if="data.singleKeysInfo.user_story_id.required && !data.single.user_story_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div>
