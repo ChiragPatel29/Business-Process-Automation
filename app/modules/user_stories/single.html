@@ -1,6 +1,6 @@
 <!--This is the template that will be used in new/edit screens. It should be in <form></form> tag. The name of the form should be matching the name of your API route, prefixed with 'froms.' and suffixed by 'Form'. e.g. in this case, it would be 'forms.tasksForm'-->
 
-Dynamic Example
+<!-- Dynamic Example -->
 <form name="forms.{{resourceName}}Form" id="forms.{{resourceName}}Form">
 	<div ng-repeat="i in data.singleKeys">
      	<div class="form-group row"  ng-if="!(['bool', 'fkey', 'date', 'datetime', 'textarea'].indexOf(data.singleKeysInfo[i].type) > -1) && i != 'id' && !(i.endsWith('_file') || i.endsWith('_image') || i.endsWith('_photo') || i.endsWith('_video') || i.endsWith('_sound') || i.endsWith('_music') || i.endsWith('_audio') || i.endsWith('_attachment') || i.endsWith('file') || i.endsWith('attachment') || i.endsWith('image')) ">

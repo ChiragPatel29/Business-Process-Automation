@@ -38,7 +38,7 @@ app.controller('milestonesControllerExtension', function($scope, $route, $contro
         }
         if($rootScope.currentUser.role=='admin')
         {
-        $scope.setListHeaders(['Id','Title','Initial Date','Due Date','Amount','Project','User Group','Release Date','Is Active','Is Deleted','Delay']);
+            $scope.setListHeaders(['Id','Title','Initial Date','Due Date','Amount','Project','User Group','Release Date','Is Active','Delay']);
         }
         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
@@ -86,7 +86,14 @@ app.controller('milestonesControllerExtension', function($scope, $route, $contro
     { 
         $scope.removeListHeaders = function()
         {
-             return ['Is Deleted','Is Active'];
+             return ['Is Active','Is Deleted'];
+        }
+    }
+    if($rootScope.currentUser.role=='admin')
+    { 
+        $scope.removeListHeaders = function()
+        {
+             return ['Is Deleted'];
         }
     }
 
