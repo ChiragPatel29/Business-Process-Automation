@@ -74,11 +74,22 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        //console.log(obj);
+        // var project = [];
+        // var projects = [];
+        // var proj = [];
+        // for(i=0;i<=obj.length-1;i++)
+        // {
+        //     project.push(obj[i].user_story.projects.title);
+        // }
+        // $scope.proj = project;
+        // console.log($scope.proj);
+
+        
         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
     };
-    
+
+    $scope.projects =  $scope.proj;
     //This function is called before the create (POST) request goes to API
     $scope.beforeSave = async function(obj, next){
         //You can choose not to call next(), thus rejecting the save request. This can be used for extra validations.
@@ -114,7 +125,7 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
     $scope.beforeUpdate = async function(obj, next){
         //You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
        // alert(obj);
-        console.log(JSON.stringify(obj));
+       // console.log(JSON.stringify(obj));
         next();
         
         
@@ -123,7 +134,7 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
     //This function is called after the update (PUT) request is returned from API
     $scope.onUpdate = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been updated.
-        console.log("onsubmit "+obj);
+       // console.log("onsubmit "+obj);
         next();
     };
     
@@ -145,14 +156,7 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
     	
     	$scope.data1 = function (initial_date)
 		{
-		//	alert(initial_date);
-			$scope.abcd = initial_date;
-            // $scope.errMessage = '';
-            // if (initial_date >= due_date)
-            // {
-            //     $scope.errMessage = 'End Date should be greater than start date';
-            //     return false;
-            // }
+			$scope.abcd = initial_date;  
         };
     
     
@@ -163,10 +167,8 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
         var data = {
                 is_deleted:$scope.a
         };
-        
         $http.put(H.S.baseUrl + '/bugs/' + id,data).then(function(res)
         {
-            
                 console.log(data);
                 $route.reload();
         },
@@ -174,23 +176,26 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
                 alert("... Error:" + e.data.error.message);
             });
     }
-
-
     $scope.tech = function(){
-        
-        //alert("tech");
         $http.get(H.S.baseUrl + '/profiles?designation_id='+2).then(function(res)
         {
-            
-               // console.log("response " +JSON.stringify(res.data[0]));
-                $scope.res = res.data;
-                
-                //$route.reload();
+            $scope.res = res.data;
         },
-            function(e) {
+        function(e) {
                 alert("... Error:" + e.data.error.message);
             });
     }
+    $scope.project = function(){
+        $http.get(H.S.baseUrl + '/projects').then(function(res)
+        {
+            $scope.resproj = res.data;
+        },
+        function(e) {
+                alert("... Error:" + e.data.error.message);
+            });
+    }
+
+
 
 	
 	
