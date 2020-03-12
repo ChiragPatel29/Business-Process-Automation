@@ -24,7 +24,7 @@ function RegisterMenuItems(){
         	    // {action: 'categories', icon: 'list', color: 'orange', text: 'Categories'},
         	    // {action: 'users', icon: 'person', color: 'blue', text: 'Users'},
                 // {action: 'groups', icon: 'group', color: 'green', text: 'Groups'},
-                // {action: 'user_groups', icon: 'group', color: 'green', text: 'user Groups'}
+                {action: 'user_groups', icon: 'group', color: 'green', text: 'user Groups'}
                 ],
 	        allowedRoles: ['admin','user']
         },
