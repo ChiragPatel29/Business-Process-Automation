@@ -148,10 +148,10 @@ app.controller('homeController', function ($scope, $rootScope, H, R) {
 	function setCount(resourceName, counterName,name) {
 		
 		
-		if($rootScope.currentUser.role == 'admin' )
+		if($rootScope.currentUser.role == 'admin' || $rootScope.currentUser.role == 'superadmin' )
 		{
 			R.count(resourceName).then(function(result){
-				console.log("result: -" +resourceName);
+				// console.log("result: -" +resourceName);
 			$scope.data.counters[counterName].value = result[0].count;
 		//	console.log("result is  : - "+ $scope.data.counters[counterName].value);
 		});

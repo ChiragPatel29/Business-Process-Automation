@@ -1625,7 +1625,7 @@ function RegisterMenuItems(){
         	    // {action: 'categories', icon: 'list', color: 'orange', text: 'Categories'},
         	    // {action: 'users', icon: 'person', color: 'blue', text: 'Users'},
                 // {action: 'groups', icon: 'group', color: 'green', text: 'Groups'},
-                // {action: 'user_groups', icon: 'group', color: 'green', text: 'user Groups'}
+                {action: 'user_groups', icon: 'group', color: 'green', text: 'user Groups'}
                 ],
 	        allowedRoles: ['admin','user']
         },
@@ -5514,7 +5514,6 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
                 $scope.errMessage = 'End Date should be greater than start date';
                 return false;
             }
-           
         };
         // $scope.due_date=$scope.due_date;
         // var date1 = new Date($scope.dtmax);
@@ -5540,35 +5539,21 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
              }
             //  console.log($scope.diff);            
         }
-    $scope.Visible = false;
-    // console.log($rootScope.currentUser.role);
-    // if($rootScope.currentUser.role=='ninja')
-    // {
-    //     console.log("hi");
-    // }        
-    if($rootScope.currentUser.role == 'user')
-    {       
-        $scope.Visible=false;
-    }
-    $scope.IsVisible = false;
-    if($rootScope.currentUser.role == 'admin')
-    {
-        $scope.IsVisible=true;
-    }
 
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
         // obj.is_active = 1;
         // query.status.type=='project';
+        // console.log(obj);
+        // obj.currentUser.id=user_group.user.id;
+
        
     };
     
     //This function is called when you are in edit mode. i.e. after a call has returned from one of your API that returns a single object. e.g http://localhost:8080/api/tasks/1
     $scope.onLoad = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        console.log($rootScope.data);
-        
-  
+          
     };
     
     //This function is called when you are in list mode. i.e. before a call has been placed to one of your API that returns a the paginated list of all objects matching your API.
@@ -5576,7 +5561,14 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         //This is where you can modify your query parameters.    
         //query.is_active = 1;
         //return query;
+
          //query.status.type=='project';
+
+        //  if($rootScope.currentUser.role!=='admin')
+        //  {
+        //      console.log(query.user_group_id=$rootScope.currentUser.id);
+        //  }
+        // console.log(query.user_id.id);
         query.is_deleted = 0;
         // query.type='project';
     };
@@ -5585,33 +5577,42 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
          //obj.type='project';
-         if($rootScope.currentUser.role=='admin')
-         {
-         $scope.setListHeaders(['Id','Title','Initial_date','Due_date','Budget','Logo','Description','User Group','Status','is_deleted','delay']);
-         }
-         if($rootScope.currentUser.role=='user')
-         {
+        if($rootScope.currentUser.role=='admin')
+        {
+            $scope.setListHeaders(['Id','Title','Initial_date','Due_date','Budget','Logo','Description','User Group','Status','is_deleted','delay']);
+        }
+        if($rootScope.currentUser.role=='user')
+        {
             $scope.setListHeaders(['Title','Initial_date','Due_date','Budget','Logo','Description','User Group','Status','delay']);
-         }
+        }
+        
+        if($rootScope.currentUser.role!=='admin')
+        {
+        for(i=0;i<obj.length;i++)
+        {  
+            //console.log(obj[i].user_group.user.id);  
+            //return obj[i].user_group.user.id == $rootScope.currentUser.id ?  obj[i] : delete obj[i]; 
+            if(obj[i].user_group.user.id == $rootScope.currentUser.id)
+            {
+                console.log(obj[i]);
+                // obj.push(obj);
+
+            }
+        // obj.push(obj[i]);
+        //    {     
+        //        console.log("asd");
+        //        return obj[i];
+        //    }
+        //    else{
+        //        console.log("asdf");
+        //    }
+       // console.log("object"+JSON.stringify(obj[i]));
+        }
+    }
+        // console.log(obj);
         // You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
-        
     };
-    console.log($scope.dtmax);
-  //    $scope.checkErr = function(initial_date,due_date){
-  //  $scope.errMessage = '';
-  //  $scope.curDate = new Date();
-
-  //  if(initial_date < due_date){
-  //    $scope.errMessage = 'End Date should be greate than start date';
-  //    return false;
-  //  }
-  //  if(initial_date < due_date){
-  //     $scope.errMessage = 'Start date should not be before today.';
-  //     return false;
-  //  }
-
-  //};
     //This function is called before the create (POST) request goes to API
     $scope.beforeSave = async function(obj, next,$route){
         //You can choose not to call next(), thus rejecting the save request. This can be used for extra validations.
@@ -5632,18 +5633,15 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     //This function is called after the create (POST) request is returned from API
     $scope.onSave = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been created.
-        
         // alert("onsave");
-        
-        console.log(obj);
        
         next();
     };
     
     //This function is called before the update (PUT) request goes to API
     $scope.beforeUpdate = async function(obj, next){
-        //You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
-        console.log(JSON.stringify(obj));
+        // You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
+        // console.log(JSON.stringify(obj));
         next();
         
         delete obj.logo;
@@ -5670,7 +5668,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         
         $http.put(H.S.baseUrl + '/projects/' + id,data).then(function(res)
         {
-                console.log(data);
+                // console.log(data);
                 $route.reload();
         },
             function(e) {
