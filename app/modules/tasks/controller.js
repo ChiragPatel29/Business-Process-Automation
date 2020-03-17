@@ -15,8 +15,8 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
     	$scope.visible=true;
     }
     
-    var uby=$rootScope.currentUser.id;
-    console.log(uby);
+    // var uby=$rootScope.currentUser.id;
+    // console.log(uby);
     //This function is called when you need to make changes to the new single object.
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
@@ -25,8 +25,7 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
     
     //This function is called when you are in edit mode. i.e. after a call has returned from one of your API that returns a single object. e.g http://localhost:8080/api/tasks/1
     $scope.onLoad = async function(obj){
-        //$scope.data.single is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        
+        //$scope.data.single is available here. 'obj' refers to the same. It represents the object you are trying to edit. 
     };
     
     //This function is called when you are in list mode. i.e. before a call has been placed to one of your API that returns a the paginated list of all objects matching your API.
@@ -45,7 +44,8 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
         	$route.reload();
         }
         query.is_deleted=0;
-;
+        
+
         
     };
 
@@ -53,14 +53,30 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
         // var title = [];
+        
+        // for(k=0;k<=obj.length;k++)
+        // {
+        //     console.log(obj[k].updated_at);
+            
+        // }
+        
+        if($rootScope.currentUser.role=='admin')
+        {
+            $scope.setListHeaders(['Title','Initial date','Due Date','Status','Description','Assign To','Updated At','Updated By','User Story','Priority','Estimated Hours','Actual Hours','Is Active','Is Deleted','Project','Delay']);
+        }
+        if($rootScope.currentUser.role=='user')
+        {
+            $scope.setListHeaders(['Title','Initial date','Due Date','Status','Description','Assign To','Updated At','Updated By','User Story','Priority','Estimated Hours','Actual Hours','Is Active','Project','Delay']);
+        }
+        
         for(i=0;i<=obj.length;i++)
         {
+            
         // console.log(obj[i].user_story.projects.title);
          $scope.title=obj[i].user_story.projects.title;
          console.log($scope.title);
+        //  console.log($scope.user_story[i].projects.title);
         }
-        
-        $scope.setListHeaders(['Id','Title','Initial date','Due date','Status','Description','Assign To','Updated At','Updated By','User Story','Priority','Estimated Hour','Actual Hour','Is Active','Project']);
         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
     };
@@ -72,15 +88,16 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
     	delete obj.user_story;
     	delete obj.priority;
     	delete obj.updated_bies;
-		delete obj.assign_tos;
-		obj.updated_by_id=$rootScope.currentUser.id;
+		delete obj.assign_to;
+        obj.updated_by_id=$rootScope.currentUser.id;
+        // console.log(obj);
+        
         next();
     };
 
     //This function is called after the create (POST) request is returned from API
     $scope.onSave = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been created.
-        
         // console.log(obj);
         next();
     };
@@ -90,6 +107,7 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
         //You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
         // alert("helo");
         // console.log($scope.data);
+        console.log(JSON.stringify(obj));
         next();
     };
 
@@ -105,6 +123,7 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
         //You can choose not to call next(), thus preventing the page to display the popup that confirms there has been an error.
         next();       
     };
+    
     // console.log(date.toISOString().slice(0,10));
     var date = new Date().getDate();
 	var month = new Date().getMonth()+1;
@@ -112,6 +131,7 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
 	// var pattern = /^([0-9]{2})-([0-9]{2})-([0-9]{4})$/;
     $scope.dtmax  = year+"-"+month+"-"+date;
     //console.log($scope.dtmax);
+    
 
       //  console.log("this is  new time "+H.toDateTime(data.single.su));
 
@@ -122,6 +142,7 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
         return H.toDate(dt) > $scope.currentDate;
     }
 
+    
 
     $scope.checkDay = function(dt)
         {
@@ -151,7 +172,7 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
  //               return false;
  //           }
  //       };
-  $scope.data1 = function (initial_date, due_date)
+        $scope.data1 = function (initial_date, due_date)
 		{
 			// var pattern = /^([0-9]{2})-([0-9]{2})-([0-9]{4})$/;
 			// alert("hello");
@@ -200,12 +221,18 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
     // }
 
     // If you want don't want to display certain columns in the list view you can remove them by defining the function below.
-    // if($rootScope.currentUser.role == 'user' || $rootScope.currentUser.role == 'admin')
-    // {
+    if($rootScope.currentUser.role == 'user')
+    {
     $scope.removeListHeaders = function(){
-        return ['Is Deleted'];
+        return ['Id','Is Deleted'];
     }
-    //}
+    }
+    if($rootScope.currentUser.role == 'admin')
+    {
+    $scope.removeListHeaders = function(){
+        return ['Id'];
+    }
+    }
 
     // If you want to refresh the data loaded in grid, you can call the following method
     // $scope.refreshData();
@@ -219,7 +246,7 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
     // Note that if you override the 'list-items', then you have to use ng-repeat or any other mechanism to iterate over your data that is available in $scope.data.list.
     // $scope.setTemplate('list-items', 'app/your-path/your-template.html');
    
-    console.log("hello");
+    // console.log("hello");
 $scope.a=1
 $scope.remove=function(id){
     var data = {

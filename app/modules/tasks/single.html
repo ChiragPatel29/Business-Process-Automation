@@ -161,6 +161,7 @@
 		</div>
 		<div ng-messages="forms.tasksForm.task_description.$error" ng-show="forms.tasksForm.task_description.$dirty">
 			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
+			
 		</div>
 	</div>
 
@@ -169,10 +170,10 @@
 		<div class="col-md-6">
 			<div class="dropdown">
 				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-click="tech()" ng-disabled="locked">
-					{{data.single.assign_tos.username || 'Choose an option'}}
+					{{data.single.assign_to.username || 'Choose an option'}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="c in res" href="" ng-click="data.single.assign_to_id = c.user.id; data.single.assign_tos = c.user">{{c.first_name}}</a>
+					<a class="dropdown-item" ng-repeat="c in res" href="" ng-click="data.single.assign_to_id = c.user.id; data.single.assign_to = c.user">{{c.first_name}}</a>
 				</div>
 				<input type="hidden" class="form-control" id="assign_to_id" name="assign_to_id" ng-model="data.single.assign_to_id" ng-required="data.singleKeysInfo.assign_to_id.required" />
 				<!-- <div ng-if="data.singleKeysInfo.assign_to_id.required && !data.single.assign_to_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div> -->
@@ -275,7 +276,8 @@
 	<div class="form-group row">
 		<label for="task_estimated_hours" class="col-md-4 col-form-label text-md-right">Estimated Hours:</label>
 		<div class="col-md-6">
-			<input id="task_estimated_hours" name="task_estimated_hours" type="time" class="form-control" ng-model="data.single.estimated_hour" required ng-disabled="locked" autofocus>
+			<span style="position: absolute;margin-top:8px ;margin-left: 220px;"><i>Hours</i></span>
+			<input id="task_estimated_hours" name="task_estimated_hours" type="text" maxlength="3" class="form-control" ng-model="data.single.estimated_hour"  required ng-disabled="locked" autofocus>
 		</div>
 		<div ng-messages="forms.tasksForm.task_estimated_hours.$error" ng-show="forms.tasksForm.task_estimated_hours.$dirty">
 			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
@@ -285,7 +287,9 @@
 	<div class="form-group row">
 		<label for="task_actual_hours" class="col-md-4 col-form-label text-md-right">Actual Hours:</label>
 		<div class="col-md-6">
-			<input id="task_actual_hours" name="task_actual_hours" type="time" class="form-control" ng-model="data.single.actual_hour" required ng-disabled="locked" autofocus>
+			<span style="position: absolute;margin-top:8px ;margin-left: 220px;"><i>Hours</i></span>
+			<input id="task_actual_hours" name="task_actual_hours" type="text" maxlength="3"  class="form-control" ng-model="data.single.actual_hour"  required ng-disabled="locked" autofocus>
+			
 		</div>
 		<div ng-messages="forms.tasksForm.task_actual_hours.$error" ng-show="forms.tasksForm.task_actual_hours.$dirty">
 			<div class="small col-red" ng-message="required">{{M.REQUIRED}}</div>
