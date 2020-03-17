@@ -8,7 +8,7 @@ app.service('R', function($resource, $http, S,$rootScope) {
 			});
 		},
 		getby: function(resourceName,email,name) {
-			return $http.get(S.baseUrl + '/' + resourceName + '?'+name+'='+ email)
+			return $http.get(S.baseUrl + '/' + resourceName + '?'+name+'='+ email+'&is_deleted=0')
 				.then(function(results) {
 					if (results && results.data && results.data.length > 0)
 					{
@@ -17,10 +17,6 @@ app.service('R', function($resource, $http, S,$rootScope) {
 					else{
 						return 0;
 					}
-						
-					// {
-					// 	console.log("resources: -" +JSON.stringify(results.data.length));
-					// }
 						if (cb) cb(results.data[0].count);
 				}, function(e) {});
 		},
@@ -29,9 +25,6 @@ app.service('R', function($resource, $http, S,$rootScope) {
 				.then(function(results) {
 					if (results && results.data && results.data.length > 0)
 						return results.data;
-					// {
-					// 	console.log("resources: -" +JSON.stringify(results.data.length));
-					// }
 					//	if (cb) cb(results.data[0].count);
 				}, function(e) {});
 		},

@@ -20,6 +20,7 @@ function RegisterRoutes() {
             "assign_tos" : "users",
             "caught_bies" : "users",
             "fix_bies" : "users", 
+            "updated_bies" : "users"
         }
     };
 }

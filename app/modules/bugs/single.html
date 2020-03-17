@@ -71,10 +71,10 @@
 		<div class="col-md-6">
 			<div class="dropdown">
 				<button class="btn btn-default dropdown-toggle" type="button" id="assign_tos" name="assign_tos" ng-click="tech()" data-toggle="dropdown" multiple aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
-					{{data.single.assign_tos.username || 'choose'}}
+					{{data.single.assign_to.username || 'choose'}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="c in res"  href="" ng-click="data.single.assign_to_id = c.user.id; data.single.assign_tos = c.user">{{c.first_name}}</a>
+					<a class="dropdown-item" ng-repeat="c in res"  href="" ng-click="data.single.assign_to_id = c.user.id; data.single.assign_to = c.user">{{c.first_name}}</a>
 					
 				</div>
 				<input type="hidden" class="form-control" id="assign_tos" name="assign_tos" ng-model="data.single.assign_to_id" ng-required="data.singleKeysInfo.assign_to_id.required" />
@@ -83,7 +83,7 @@
 		</div>
 		
 	</div>
-	<!-- {{c}} -->
+	<!-- {{res}} -->
 	<!-- {{data.foreignKeys.fix_bies}}	 -->
 
 
@@ -92,10 +92,10 @@
 		<div class="col-md-6">
 			<div class="dropdown">
 				<button class="btn btn-default dropdown-toggle" type="button" id="fix_bies" name="fix_bies" data-toggle="dropdown" multiple aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
-					{{data.single.fix_bies.username || 'choose'}}
+					{{data.single.fix_by.username || 'choose'}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.fix_bies track by $index"  href="" ng-click="data.single.fix_by_id = c.id; data.single.fix_bies = c">{{c.username}}</a>
+					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.fix_bies track by $index"  href="" ng-click="data.single.fix_by_id = c.id; data.single.fix_by = c">{{c.username}}</a>
 					
 				</div>
 				<input type="hidden" class="form-control" id="fix_bies" name="fix_bies" ng-model="data.single.fix_by_id" ng-required="data.singleKeysInfo.fix_by_id.required" />
@@ -110,10 +110,10 @@
 		<div class="col-md-6">
 			<div class="dropdown">
 				<button class="btn btn-default dropdown-toggle" type="button" id="caught_bies" name="caught_bies" data-toggle="dropdown" multiple aria-haspopup="true" aria-expanded="false" ng-disabled="locked">
-					{{data.single.caught_bies.username || 'choose'}}
+					{{data.single.caught_by.username || 'choose'}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.caught_bies track by $index"  href="" ng-click="data.single.caught_by_id = c.id; data.single.caught_bies = c">{{c.username}}</a>
+					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.caught_bies track by $index"  href="" ng-click="data.single.caught_by_id = c.id; data.single.caught_by = c">{{c.username}}</a>
 					
 				</div>
 				<input type="hidden" class="form-control" id="caught_bies" name="caught_bies" ng-model="data.single.caught_by_id" ng-required="data.singleKeysInfo.caught_by_id.required" />
