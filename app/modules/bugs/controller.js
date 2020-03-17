@@ -35,7 +35,8 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
     //This function is called when you are in edit mode. i.e. after a call has returned from one of your API that returns a single object. e.g http://localhost:8080/api/tasks/1
     $scope.onLoad = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It represents the object you are trying to edit.
-        
+
+    
     };
     
     //This function is called when you are in list mode. i.e. before a call has been placed to one of your API that returns a the paginated list of all objects matching your API.
@@ -96,11 +97,11 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
         
         delete obj.status;
         delete obj.priority;
-        delete obj.fix_bies;
-        delete obj.assign_tos;
-        delete obj.caught_bies;
+        delete obj.fix_by;
+        delete obj.assign_to;
+        delete obj.caught_by;
         delete obj.user_story; 
-        
+        console.log("Post data : "+JSON.stringify(obj));
 
     //    if($scope.errMessage)
     //     {
@@ -117,7 +118,7 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
         
         
 
-       // console.log("Post data : "+obj);
+       
         next();
     };
     
@@ -125,7 +126,14 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
     $scope.beforeUpdate = async function(obj, next){
         //You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
        // alert(obj);
-       // console.log(JSON.stringify(obj));
+       
+    //    delete obj.status;
+    //     delete obj.priority;
+    //     delete obj.fix_by;
+    //     delete obj.assign_to;
+    //     delete obj.caught_by;
+    //     delete obj.user_story;
+console.log(JSON.stringify(obj));
         next();
         
         
@@ -135,7 +143,8 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
     $scope.onUpdate = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been updated.
        // console.log("onsubmit "+obj);
-        next();
+       
+       next();
     };
     
     //This function will be called whenever there is an error during save/update operations.
@@ -160,8 +169,7 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
         };
     
     
-    // this is is_deleted functionlity
-    
+    // this is is_deleted functionlity 
     $scope.a=1
     $scope.update=function(id){
         var data = {
@@ -176,6 +184,8 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
                 alert("... Error:" + e.data.error.message);
             });
     }
+
+    //this api return designation of techlead
     $scope.tech = function(){
         $http.get(H.S.baseUrl + '/profiles?designation_id='+2).then(function(res)
         {
@@ -185,6 +195,8 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
                 alert("... Error:" + e.data.error.message);
             });
     }
+    //this api return projects
+    
     $scope.project = function(){
         $http.get(H.S.baseUrl + '/projects').then(function(res)
         {
