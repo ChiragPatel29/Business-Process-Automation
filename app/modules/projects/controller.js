@@ -10,6 +10,27 @@
 app.controller('projectsControllerExtension', function($scope, $controller, $rootScope, $http, $location,$route, Popup, H, M) {
     
     //This function is called when you need to make changes to the new single object.
+    
+    // $http.get(H.S.baseUrl + '/user_groups?user_id='+5).then(function(res)
+    //     {   
+    //         //var ggg = '';
+    //         for(i=0;i<res.data.length;i++ )
+    //         {a
+    //             console.log("this is groups:- "+JSON.stringify(res.data[i].group.id));
+    //             $scope.gid = res.data[i].group.id;
+               
+    //         }
+    //         $rootScope.gg = $scope.gid;
+            
+            
+    //         //$scope.resproj = res.data;
+    //     },
+    //     function(e) {
+    //             alert("... Error:" + e.data.error.message);
+    //         });
+        
+    //         console.log("group"+$rootScope.gg); 
+
 		var date = new Date().getDate();
 		var month = new Date().getMonth()+1;
 		var year = new Date().getFullYear();
@@ -59,7 +80,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
 
        
     };
-    
+
     //This function is called when you are in edit mode. i.e. after a call has returned from one of your API that returns a single object. e.g http://localhost:8080/api/tasks/1
     $scope.onLoad = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It represents the object you are trying to edit.
@@ -71,15 +92,20 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         //This is where you can modify your query parameters.    
         //query.is_active = 1;
         //return query;
-
-         //query.status.type=='project';
-
+        // query.user_group_id.user.id=$rootScope.currentUser.id
         //  if($rootScope.currentUser.role!=='admin')
         //  {
         //      console.log(query.user_group_id=$rootScope.currentUser.id);
         //  }
         // console.log(query.user_id.id);
+        if($rootScope.currentUser.role!=='admin')
+        {
+        console.log(query.user_group_id=$rootScope.currentUser.id);
+        }
+        // console.log(query.user=$rootScope.currentUser.id);
         query.is_deleted = 0;
+        // query.data.obj;
+        // console.log(query.group_id = $rootScope.currentUser.id);
         // query.type='project';
     };
 
@@ -87,37 +113,53 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     $scope.onLoadAll = async function(obj){
         //$scope.data.list is available here. 'obj' refers to the same. It represents the object you are trying to edit.
          //obj.type='project';
+        
         if($rootScope.currentUser.role=='admin')
         {
             $scope.setListHeaders(['Id','Title','Initial_date','Due_date','Budget','Logo','Description','User Group','Status','is_deleted','delay']);
         }
         if($rootScope.currentUser.role=='user')
         {
-            $scope.setListHeaders(['Title','Initial_date','Due_date','Budget','Logo','Description','User Group','Status','delay']);
+            $scope.setListHeaders(['Title','Initial_date','Due_date','Budget','Logo','Description','user group','Status','delay']);
         }
-        
-        if($rootScope.currentUser.role!=='admin')
-        {
-        for(i=0;i<obj.length;i++)
-        {  
-            //console.log(obj[i].user_group.user.id);  
-            //return obj[i].user_group.user.id == $rootScope.currentUser.id ?  obj[i] : delete obj[i]; 
-            if(obj[i].user_group.user.id == $rootScope.currentUser.id)
-            {
-                console.log(obj[i]);
-                return obj[i];   
-            }
-        // obj.push(obj[i]);
-        //    {     
-        //        console.log("asd");
-        //        return obj[i];
-        //    }
-        //    else{
-        //        console.log("asdf");
-        //    }
-       // console.log("object"+JSON.stringify(obj[i]));
-        }
-    }
+    //     if($rootScope.currentUser.role!=='admin')
+    //     {
+    //     for(i=0;i<obj.length;i++)
+    //     {
+    //         // var data=[];
+    //         // data = obj[i].user_group.user.id==$rootScope.currentUser.id;
+    //         if(obj[i].user_group.user.id==$rootScope.currentUser.id)
+    //         {
+    //             var abcd = [];
+    //             //console.log("data is "+JSON.stringify( obj[i]));
+    //             obj = obj[i];
+                
+                
+    //             // return data[i];
+    //         }
+    //         else
+    //         {
+    //            delete obj[i];
+    //         }
+    //         // return(obj[i].user_group.user.id==$rootScope.currentUser.id);
+    //     }
+    //     $scope.obj = $scope.abcd;
+    // }
+        // var data=[];
+    //     if($rootScope.currentUser.role!=='admin')
+    //     {
+    //     for(i=0;i<obj.length;i++)
+    //     {  
+    //         if(obj[i].user_group.user.id == $rootScope.currentUser.id)
+    //         {
+    //             console.log(obj[i]);
+            
+    //             // data.push(obj);
+    //             return obj[i];
+                
+    //         }
+    //     }
+    // }
         // console.log(obj);
         // You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
@@ -135,15 +177,13 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         	alert("select proper date");
         	$route.reload();
         }
-        
         next();
     };
 
     //This function is called after the create (POST) request is returned from API
     $scope.onSave = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms the object has been created.
-        // alert("onsave");
-       
+        // alert("onsave");       
         next();
     };
     
@@ -162,7 +202,6 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         //delete obj.logo;
         next();
     };
-    
     //This function will be called whenever there is an error during save/update operations.
     $scope.onError = async function (obj, next){
         //You can choose not to call next(), thus preventing the page to display the popup that confirms there has been an error.
@@ -184,8 +223,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
                 alert("... Error:" + e.data.error.message);
             });
     }
-    
-    
+        
     // If the singular of your title is having different spelling then you can define it as shown below.
     // $scope.getSingularTitle = function(){
     //     return "TASK";

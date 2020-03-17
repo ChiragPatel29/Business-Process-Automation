@@ -7,9 +7,13 @@
 //you need to provide templates inside 'app/modules/tasks' folder. If you want to keep your templates somewhere else, you can pick
 //'autoRoutes' and then override the templates using setTemplate function.
 //Note that for 'autoRoutes', it is not even required to write Controller Extensions unless you want to modify the behaviour.
-app.controller('profilesControllerExtension', function($scope, $controller, $rootScope, $http, $location, Popup, H, M) {
+app.controller('profilesControllerExtension', function($scope, $controller, $rootScope,$route, $http, $location, Popup, H, M) {
     
     //This function is called when you need to make changes to the new single object.
+    $scope.notuser=false;
+    if($rootScope.currentUser.role=='admin'){
+        $scope.notuser=true;
+    }
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
         //obj.is_active = 1;
@@ -24,7 +28,7 @@ app.controller('profilesControllerExtension', function($scope, $controller, $roo
     //This function is called when you are in list mode. i.e. before a call has been placed to one of your API that returns a the paginated list of all objects matching your API.
     $scope.beforeLoadAll = async function(query){
         //This is where you can modify your query parameters.    
-        //query.is_active = 1;
+        query.is_deleted = 0;
         //return query;
         if($rootScope.currentUser.role !== 'admin')
         {
@@ -44,6 +48,9 @@ app.controller('profilesControllerExtension', function($scope, $controller, $roo
     //This function is called before the create (POST) request goes to API
     $scope.beforeSave = async function(obj, next){
         //You can choose not to call next(), thus rejecting the save request. This can be used for extra validations.
+        delete obj.user;
+        delete obj.department;
+        delete obj.designation;
         if(!(['admin', 'superadmin'].indexOf($rootScope.currentUser.role) > -1)){
             $location.path('unauthorized');
         }
@@ -95,6 +102,20 @@ app.controller('profilesControllerExtension', function($scope, $controller, $roo
     // If you don't like the layout, and you want to replace it with your own, you can use the following method.
     // Note that if you override the 'list-items', then you have to use ng-repeat or any other mechanism to iterate over your data that is available in $scope.data.list.
     // $scope.setTemplate('list-items', 'app/your-path/your-template.html');
-    
+    $scope.a=1
+    $scope.remove=function(id){
+        var data = {
+            is_deleted:$scope.a
+        };
+        
+        $http.put(H.S.baseUrl + '/profiles/' + id,data).then(function(res)
+        {
+            console.log(data);
+            $route.reload();
+        },
+        function(e) {
+            alert("... Error:" + e.data.error.message);
+        });
+    }
 
 });

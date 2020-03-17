@@ -7,7 +7,7 @@
 //you need to provide templates inside 'app/modules/tasks' folder. If you want to keep your templates somewhere else, you can pick
 //'autoRoutes' and then override the templates using setTemplate function.
 //Note that for 'autoRoutes', it is not even required to write Controller Extensions unless you want to modify the behaviour.
-app.controller('departmentsControllerExtension', function($scope, $controller, $rootScope, $http, $location, Popup, H, M) {
+app.controller('departmentsControllerExtension', function($scope, $controller, $rootScope,$route, $http, $location, Popup, H, M) {
     
     //This function is called when you need to make changes to the new single object.
 	if(!(['admin', 'superadmin'].indexOf($rootScope.currentUser.role) > -1)){
@@ -30,6 +30,7 @@ app.controller('departmentsControllerExtension', function($scope, $controller, $
         //This is where you can modify your query parameters.    
         //query.is_active = 1;
         //return query;
+        query.is_deleted=0;
     };
 
     //This function is called when you are in list mode. i.e. after a call has returned from one of your API that returns a the paginated list of all objects matching your API.
@@ -76,7 +77,21 @@ app.controller('departmentsControllerExtension', function($scope, $controller, $
         //You can choose not to call next(), thus preventing the page to display the popup that confirms there has been an error.
         next();
     };
-    
+    $scope.a=1
+    $scope.remove=function(id){
+        var data = {
+                is_deleted:$scope.a
+        };
+        
+        $http.put(H.S.baseUrl + '/departments/' + id,data).then(function(res)
+        {
+                // console.log(data);
+                $route.reload();
+        },
+            function(e) {
+                alert("... Error:" + e.data.error.message);
+            });
+    }
     
     $scope.removeListHeaders = function(){
         return ['Id','Is Deleted'];
