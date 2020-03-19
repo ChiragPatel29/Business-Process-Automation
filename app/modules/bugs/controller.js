@@ -90,7 +90,7 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
         //or You can call $scope.changeListHeaders('current column name', 'new column name') to change the display text of the headers;
     };
 
-    $scope.projects =  $scope.proj;
+   // $scope.projects =  $scope.proj;
     //This function is called before the create (POST) request goes to API
     $scope.beforeSave = async function(obj, next){
         //You can choose not to call next(), thus rejecting the save request. This can be used for extra validations.
@@ -133,7 +133,8 @@ app.controller('bugsControllerExtension', function($scope,$route, $controller, $
     //     delete obj.assign_to;
     //     delete obj.caught_by;
     //     delete obj.user_story;
-console.log(JSON.stringify(obj));
+    
+//console.log(JSON.stringify(obj));
         next();
         
         
@@ -171,7 +172,7 @@ console.log(JSON.stringify(obj));
     
     // this is is_deleted functionlity 
     $scope.a=1
-    $scope.update=function(id){
+    $scope.remov=function(id){
         var data = {
                 is_deleted:$scope.a
         };
@@ -187,7 +188,7 @@ console.log(JSON.stringify(obj));
 
     //this api return designation of techlead
     $scope.tech = function(){
-        $http.get(H.S.baseUrl + '/profiles?designation_id='+2).then(function(res)
+        $http.get(H.S.baseUrl + '/profiles?designation_id='+1).then(function(res)
         {
             $scope.res = res.data;
         },
