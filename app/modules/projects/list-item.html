@@ -25,10 +25,13 @@
 			<a ng-if="item[key]" ng-href="{{ H.getAbsolutePath(S.baseUrl + '/' + item[key]) }}">{{ H.getAbsolutePath(S.baseUrl + '/' + item[key]) }}</a>
     </div>
 </td>
+
 <td>
 	<!-- <span class="small col-green">{{ item['due_date']}} </span> -->
 	<span class="medium col-red"> {{  checkDay(item['due_date'])  }}{{$scope.diff}} </span>
 	<br>
+	<!-- {{data.list[0].status.name=='completed'}} -->
+	<!-- {{data.list[1].status.name='completed' ? 'sss' : 'ddd'}} -->
 	<span class="medium col-red"> {{  checkDate(item['due_date']) ? '' : 'Delayed' }} </span>
 	<div style="margin-top:-20px;">
 	<span class="medium col-blue" >{{  checkDate(item['due_date']) ? 'OnTime' : '' }}</span>

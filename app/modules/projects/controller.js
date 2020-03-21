@@ -30,7 +30,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     //         });
         
     //         console.log("group"+$rootScope.gg); 
-
+        
 		var date = new Date().getDate();
 		var month = new Date().getMonth()+1;
 		var year = new Date().getFullYear();
@@ -46,13 +46,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
                 return false;
             }
         };
-        // $scope.due_date=$scope.due_date;
-        // var date1 = new Date($scope.dtmax);
-        // var date2 = new Date(dt);
-        // var diffTime = Math.abs(date2 - date1);
-        // var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-        // console.log(diffDays);
-
+       
         $scope.currentDate = new Date();
         $scope.checkDate = function(dt)
         {
@@ -122,6 +116,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         {
             $scope.setListHeaders(['Title','Initial_date','Due_date','Budget','Logo','Description','user group','Status','delay']);
         }
+        
     //     if($rootScope.currentUser.role!=='admin')
     //     {
     //     for(i=0;i<obj.length;i++)
@@ -190,8 +185,9 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     //This function is called before the update (PUT) request goes to API
     $scope.beforeUpdate = async function(obj, next){
         // You can choose not to call next(), thus rejecting the update request. This can be used for extra validations.
-        // console.log(JSON.stringify(obj));
+        console.log(JSON.stringify(obj));
         next();
+
         
         delete obj.logo;
     };
@@ -213,6 +209,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
         var data = {
                 is_deleted:$scope.a
         };
+
         
         $http.put(H.S.baseUrl + '/projects/' + id,data).then(function(res)
         {
