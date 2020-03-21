@@ -197,6 +197,7 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
                 return false;
             }
         };
+        
   
         // $scope.tech = function(){
         

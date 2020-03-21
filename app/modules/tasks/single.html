@@ -173,7 +173,7 @@
 					{{data.single.assign_to.username || 'Choose an option'}}
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.assign_tos track by $index" href="" ng-if="c.role == 'use	r'" ng-click="data.single.assign_to_id = c.id; data.single.assign_to = c">{{c.username}}</a>
+					<a class="dropdown-item" ng-repeat="c in data.foreignKeys.assign_tos track by $index" href="" ng-if="c.role == 'user'" ng-click="data.single.assign_to_id = c.id; data.single.assign_to = c">{{c.username}}</a>
 				</div>
 				<input type="hidden" class="form-control" id="assign_to_id" name="assign_to_id" ng-model="data.single.assign_to_id" ng-required="data.singleKeysInfo.assign_to_id.required" />
 				<!-- <div ng-if="data.singleKeysInfo.assign_to_id.required && !data.single.assign_to_id && saveClicked" class="small col-red">{{M.REQUIRED}}</div> -->
@@ -276,7 +276,7 @@
 	<div class="form-group row">
 		<label for="task_estimated_hours" class="col-md-4 col-form-label text-md-right">Estimated Hours:</label>
 		<div class="col-md-6">
-			<span style="position: absolute;margin-top:8px ;margin-left: 220px;"><i>Hours</i></span>
+			<span style="position: absolute;margin-top:8px ;margin-left: 390px;"><i>Hours</i></span>
 			<input id="task_estimated_hours" name="task_estimated_hours" type="text" maxlength="3" class="form-control" ng-model="data.single.estimated_hour"  required ng-disabled="locked" autofocus>
 		</div>
 		<div ng-messages="forms.tasksForm.task_estimated_hours.$error" ng-show="forms.tasksForm.task_estimated_hours.$dirty">
@@ -287,7 +287,7 @@
 	<div class="form-group row">
 		<label for="task_actual_hours" class="col-md-4 col-form-label text-md-right">Actual Hours:</label>
 		<div class="col-md-6">
-			<span style="position: absolute;margin-top:8px ;margin-left: 220px;"><i>Hours</i></span>
+			<span style="position: absolute;margin-top:8px ;margin-left: 390px;"><i>Hours</i></span>
 			<input id="task_actual_hours" name="task_actual_hours" type="text" maxlength="3"  class="form-control" ng-model="data.single.actual_hour"  required ng-disabled="locked" autofocus>
 			
 		</div>
