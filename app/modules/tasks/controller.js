@@ -9,11 +9,14 @@
 //Note that for 'autoRoutes', it is not even required to write Controller Extensions unless you want to modify the behaviour.
 app.controller('tasksControllerExtension', function($scope, $controller, $rootScope, $http, $location, Popup, H, M , $route) {
     
-    $scope.visible = false;
-    if($rootScope.currentUser.role=='admin')
-    {
-    	$scope.visible=true;
-    }
+
+
+    
+    // $scope.visible = false;
+    // if($rootScope.currentUser.role=='admin')
+    // {
+    // 	$scope.visible=true;
+    // }
     
     // var uby=$rootScope.currentUser.id;
     // console.log(uby);
@@ -33,10 +36,15 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
         //This is where you can modify your query parameters.    
         //query.is_active = 1;
         //return query;
+
+        //user login to data are logged data
+
         if($rootScope.currentUser.role !== 'admin')
         {
             query.assign_to_id=$rootScope.currentUser.id;
         }
+
+        
         if($scope.errMessage)
         {
         	// $route.reload();
@@ -59,6 +67,7 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
         //     console.log(obj[k].updated_at);
             
         // }
+        console.log(obj);
         
         if($rootScope.currentUser.role=='admin')
         {
@@ -74,7 +83,7 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
             
         // console.log(obj[i].user_story.projects.title);
          $scope.title=obj[i].user_story.projects.title;
-         console.log($scope.title);
+        //  console.log($scope.title);
         //  console.log($scope.user_story[i].projects.title);
         }
         //You can call $scope.setListHeaders(['column1','column2',...]) in case the auto generated column names are not what you wish to display.
@@ -84,11 +93,16 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
     //This function is called before the create (POST) request goes to API
     $scope.beforeSave = async function(obj, next){
         //You can choose not to call next(), thus rejecting the save request. This can be used for extra validations.
-    	delete obj.status;
+        
+        //delete the object to save data in foreign keys
+        delete obj.status;
     	delete obj.user_story;
     	delete obj.priority;
     	delete obj.updated_bies;
-		delete obj.assign_to;
+        delete obj.assign_to;
+        
+
+        //updated_by 
         obj.updated_by_id=$rootScope.currentUser.id;
         // console.log(obj);
         
@@ -123,11 +137,11 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
         //You can choose not to call next(), thus preventing the page to display the popup that confirms there has been an error.
         next();       
     };
-    
     // console.log(date.toISOString().slice(0,10));
     var date = new Date().getDate();
 	var month = new Date().getMonth()+1;
-	var year = new Date().getFullYear();
+    var year = new Date().getFullYear();
+    
 	// var pattern = /^([0-9]{2})-([0-9]{2})-([0-9]{4})$/;
     $scope.dtmax  = year+"-"+month+"-"+date;
     //console.log($scope.dtmax);
@@ -183,22 +197,23 @@ app.controller('tasksControllerExtension', function($scope, $controller, $rootSc
                 return false;
             }
         };
-  
-        $scope.tech = function(){
         
-            //alert("tech");
-            $http.get(H.S.baseUrl + '/profiles?designation_id='+1).then(function(res)
-            {
+  
+        // $scope.tech = function(){
+        
+        //     //alert("tech");
+        //     $http.get(H.S.baseUrl + '/profiles?designation_id='+1).then(function(res)
+        //     {
                 
-                   // console.log("response " +JSON.stringify(res.data[0]));
-                    $scope.res = res.data;
+        //            // console.log("response " +JSON.stringify(res.data[0]));
+        //             $scope.res = res.data;
                     
-                    //$route.reload();
-            },
-                function(e) {
-                    alert("... Error:" + e.data.error.message);
-                });
-        }
+        //             //$route.reload();
+        //     },
+        //         function(e) {
+        //             alert("... Error:" + e.data.error.message);
+        //         });
+        // }
         
         $scope.project = function(){
             $http.get(H.S.baseUrl + '/projects').then(function(res)
