@@ -37,8 +37,8 @@ function RegisterMenuItems(){
                 {action: 'leaves', icon: 'note_add', color: 'green', text: 'Leaves'},
                 {action: 'timesheets', icon: 'timeline', color: 'green', text: 'Timesheet'},
                 
-                 {action: 'departments', icon: 'portrait', color: 'orange', text: 'Department'},
-                 {action: 'designations', icon: 'assignment', color: 'blue', text: 'Designation'},
+                //  {action: 'departments', icon: 'portrait', color: 'orange', text: 'Department'},
+                //  {action: 'designations', icon: 'assignment', color: 'blue', text: 'Designation'},
                 {action: 'reports', icon: 'pie_chart', color: 'purple', text: 'Reports',
         	    	items: [
         	    			{action: 'reports/1', icon: 'pie_chart', color: 'red', text: 'Sample Report #1'},

@@ -10,6 +10,16 @@
 app.controller('milestonesControllerExtension', function($scope, $route, $controller, $rootScope, $http, $location, Popup, H, M) {
     
     //This function is called when you need to make changes to the new single object.
+    $scope.Visible = false;
+    if($rootScope.currentUser.role == 'user')
+    {
+        $scope.Visible=true;
+    }
+    $scope.IsVisible = false;
+    if($rootScope.currentUser.role == 'admin')
+    {
+        $scope.IsVisible=true;
+    }
     $scope.onInit = async function(obj){
         //$scope.data.single is available here. 'obj' refers to the same. It is the new instance of your 'tasks' resource that matches the structure of your 'tasks' API.
         // obj.is_active = 1;
@@ -26,6 +36,10 @@ app.controller('milestonesControllerExtension', function($scope, $route, $contro
         //This is where you can modify your query parameters.    
         //query.is_active = 1;
         //return query;
+        if($rootScope.currentUser.role!=='admin')
+        {
+        console.log(query.user_group_id=$rootScope.currentUser.id);
+        }
         query.is_deleted = 0;
     };
 

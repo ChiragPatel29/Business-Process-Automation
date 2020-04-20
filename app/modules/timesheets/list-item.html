@@ -26,8 +26,8 @@
 
 <!--The following code creates a link to view detailed record. You can use 'currentRoute' to represent the current base route that matches your API. e.g. 'tasks' in this case.-->
 <td>
-	<a href="#!/{{currentRoute}}/{{item.id}}">View</a>&nbsp;&nbsp;
-	<a href="#!/{{currentRoute}}/" ng-click="delete(item.id)" ng-if="currentUser.role=='admin'">Delete</a>
+	<a href="#!/{{currentRoute}}/{{item.id}}"  >View</a>&nbsp;&nbsp;
+	<a href="#!/{{currentRoute}}/" ng-click="delete(item.id)" ng-if="currentUser.role=='user'">Delete</a>
 </td>
 <!-- 
 <td>

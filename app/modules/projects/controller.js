@@ -234,7 +234,7 @@ app.controller('projectsControllerExtension', function($scope, $controller, $roo
     if($rootScope.currentUser.role=='user')
     {
     $scope.removeListHeaders = function(){
-        return ['Id','Is Deleted'];
+        return ['Id','Is Deleted','Actions'];
     }
    }    
 
